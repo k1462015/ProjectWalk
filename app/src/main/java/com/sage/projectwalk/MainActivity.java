@@ -4,13 +4,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.sage.projectwalk.Data.DataRetriever;
+
 
 public class MainActivity extends AppCompatActivity {
-
+    DataRetriever dataRetriever;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Initialise all layout components
+        TextView textViewer = (TextView) findViewById(R.id.textViewer);
+
+        //Class used to fetch data
+        dataRetriever = new DataRetriever();
+        dataRetriever.fetchData(textViewer,"http://api.worldbank.org/countries/all/indicators/SP.POP.TOTL?format=json");
+
+
     }
 
     @Override
