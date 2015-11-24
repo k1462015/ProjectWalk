@@ -7,8 +7,9 @@
 
     <TextView
         android:id="@+id/textViewer"
-        android:text="@string/hello_world"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:maxLines="1000"
+        android:scrollbars="vertical"/>
 
 </RelativeLayout>

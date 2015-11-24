@@ -1,12 +1,7 @@
 package com.sage.projectwalk.Data;
 
+import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.TextView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,11 +13,11 @@ import java.util.ArrayList;
  * Created by Tahmidul on 23/11/2015.
  */
 public class DataRetriever extends AsyncTask<String,Integer,ArrayList<String>>{
-    private ArrayList<String> fetchedData;
-    private TextView dataViewer;
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    private Context context;
+    private DataStorer ds;
+
+    public DataRetriever(){
+        ds = new DataStorer();
     }
 
     @Override
@@ -33,7 +28,7 @@ public class DataRetriever extends AsyncTask<String,Integer,ArrayList<String>>{
             //Will loop through every url link give
             for (int i = 0;i < urls.length;i++){
                 StringBuffer buffer = new StringBuffer();
-                URL url = new URL(urls[0]);
+                URL url = new URL(urls[i]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setDoInput(true);
@@ -48,6 +43,8 @@ public class DataRetriever extends AsyncTask<String,Integer,ArrayList<String>>{
                 in.close();
                 connection.disconnect();
                 jsonStrings.add(buffer.toString());
+                //Saves the json file to devices internal storage
+                ds.saveToFile(context, "COUNTRY_DATA_" + i, buffer.toString());
             }
             return jsonStrings;
         } catch (IOException e) {
@@ -56,29 +53,14 @@ public class DataRetriever extends AsyncTask<String,Integer,ArrayList<String>>{
         return null;
     }
 
-    @Override
-    protected void onProgressUpdate(Integer... values) {
-        super.onProgressUpdate(values);
-    }
-
-    @Override
-    protected void onPostExecute(ArrayList<String> jsonStrings) {
-        super.onPostExecute(jsonStrings);
-        fetchedData = jsonStrings;
-        for (String data:fetchedData){
-            dataViewer.setText(dataViewer.getText()+" "+data);
-        }
-    }
-
     /**
      *
-     * @param dataViewer - The view that you want the data to show in
-     * @param urls - All links that data should be fetched from
+     * @param context - The context of the application
+     * @param urls - All urls with JSON data
      */
-    public void fetchData(TextView dataViewer,String... urls){
+    public void fetchData(Context context,String... urls){
+        this.context = context;
         this.execute(urls);
-        this.dataViewer = dataViewer;
-
     }
 }
 
