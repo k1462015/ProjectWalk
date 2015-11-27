@@ -1,7 +1,7 @@
 package com.sage.projectwalk;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sage.projectwalk.Data.DataRetriever;
+import com.sage.projectwalk.InfoGraphs.BatteryGraph;
+import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
+import com.sage.projectwalk.InfoGraphs.FactCards;
+import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +30,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 
-public class MainActivity extends AppCompatActivity implements InfoGraphic.onButtonClickListener{
+public class MainActivity extends AppCompatActivity {
     DataRetriever dataRetriever;
     TextView textViewer;
     @Override
@@ -35,21 +39,22 @@ public class MainActivity extends AppCompatActivity implements InfoGraphic.onBut
         setContentView(R.layout.activity_main);
 
         //Gets required fragment stuff
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        //Loads up fragment 1
-        InfoGraphic infoGraphic = new InfoGraphic();
-        fragmentTransaction.add(R.id.indicator_one,infoGraphic);
-        fragmentTransaction.commit();
 
-        //Initialise all layout components
-//        textViewer = (TextView) findViewById(R.id.textViewer);
-//        textViewer.setMovementMethod(new ScrollingMovementMethod());    //Makes textview scrollable
-//        //Class used to fetch data
-//        dataRetriever = new DataRetriever();
-//        dataRetriever.fetchData(this,"http://api.worldbank.org/countries?format=json");
-//        loadDataFromStorage();
+        //Adds all fragments to main activity
+        BatteryGraph batteryGraph = new BatteryGraph();
+        EnergyRatioGraph energyRatioGraph = new EnergyRatioGraph();
+        FactCards factCards = new FactCards();
+        RenewableBreakdownContainer renewableBreakdownContainer = new RenewableBreakdownContainer();
+
+        //Adds all fragments to corresponding containers
+        fragmentTransaction.add(R.id.batteryGraphContainer,batteryGraph);
+        fragmentTransaction.add(R.id.energyRatioContainer,energyRatioGraph);
+        fragmentTransaction.add(R.id.factCardsContainer,factCards);
+        fragmentTransaction.add(R.id.renewableSourcesContainer,renewableBreakdownContainer);
+        fragmentTransaction.commit();
 
     }
 

@@ -24,28 +24,22 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <!-- Example: Indicator 1-->
+            <!-- Indicator 1-->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:id="@+id/indicator_one">
+                android:id="@+id/batteryGraphContainer">
 
-                <!--<TextView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:text="Indicator 1"/>-->
             </LinearLayout>
-            <!-- Example: Indicator 2-->
+            <!-- Indicator 2-->
             <LinearLayout
+                android:id="@+id/energyRatioContainer"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Indicator 2"/>
+
             </LinearLayout>
 
         </LinearLayout>
@@ -57,43 +51,26 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <!-- Example: Indicator 1-->
+            <!-- Indicator 1-->
             <LinearLayout
+                android:id="@+id/renewableSourcesContainer"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Indicator 3"/>
+
             </LinearLayout>
-            <!-- Example: Indicator 2-->
+            <!-- Indicator 2-->
             <LinearLayout
+                android:id="@+id/factCardsContainer"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Indicator 4"/>
+
             </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:background="#E01ED1">
-        <TextView
-            android:text="Country list would go here"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1000"
-            android:scrollbars="vertical"/>
-    </RelativeLayout>
 
 </LinearLayout>
