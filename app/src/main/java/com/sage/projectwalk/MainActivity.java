@@ -1,5 +1,7 @@
 package com.sage.projectwalk;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sage.projectwalk.Data.DataRetriever;
@@ -23,7 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements InfoGraphic.onButtonClickListener{
     DataRetriever dataRetriever;
     TextView textViewer;
     @Override
@@ -31,14 +34,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Initialise all layout components
-        textViewer = (TextView) findViewById(R.id.textViewer);
-        textViewer.setMovementMethod(new ScrollingMovementMethod());    //Makes textview scrollable
-        //Class used to fetch data
-        dataRetriever = new DataRetriever();
-        dataRetriever.fetchData(this,"http://api.worldbank.org/countries?format=json");
-        loadDataFromStorage();
+        //Gets required fragment stuff
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+        //Loads up fragment 1
+        InfoGraphic infoGraphic = new InfoGraphic();
+        fragmentTransaction.add(R.id.indicator_one,infoGraphic);
+        fragmentTransaction.commit();
+
+        //Initialise all layout components
+//        textViewer = (TextView) findViewById(R.id.textViewer);
+//        textViewer.setMovementMethod(new ScrollingMovementMethod());    //Makes textview scrollable
+//        //Class used to fetch data
+//        dataRetriever = new DataRetriever();
+//        dataRetriever.fetchData(this,"http://api.worldbank.org/countries?format=json");
+//        loadDataFromStorage();
+
+    }
+
+    public void onButtonPressed(String response){
+        Log.i("MYAPP",response);
     }
 
     /**
