@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.MainActivity;
 import com.sage.projectwalk.R;
 
@@ -33,7 +35,8 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
     private DataStorer ds;
     ProgressDialog progressDialog;
     ArrayList<String> indicators;
-
+    ArrayList<Country> countries;
+    int counter;
     public DataRetriever(MainActivity context){
         this.context = context;
         ds = new DataStorer();
@@ -52,12 +55,12 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
             StringBuffer buffer = processURL(urls[0]);
             //Saves the json file to devices internal storage
             ds.saveToFile(context, "Countries", buffer.toString());
-            publishProgress(100);
-            ArrayList<Country> countries = new ArrayList<>();
+            countries = new ArrayList<>();
             JSONArray jsonArray = (new JSONArray(buffer.toString())).getJSONArray(1);
             for (int i = 0;i < jsonArray.length();i++){
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 Country country = new Country();
+                country.setName(jsonObject.getString("name"));
                 country.setIsoCode(jsonObject.getString("iso2Code"));
                 countries.add(country);
             }
@@ -65,6 +68,7 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
             //Now loop through every indicator and download data
             String baseURL = "http://api.worldbank.org/countries/CCODE/indicators/ICODE?format=json&per_page=10000";
             for (int i = 0;i < countries.size();i++){
+                counter = i;
                 Country country = countries.get(i);
                 String isoCode = country.getIsoCode();
                 String URL = baseURL.replace("CCODE", isoCode);
@@ -73,9 +77,8 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
                     Log.i("MYAPP",indicatorURL);
                     buffer = processURL(indicatorURL);
                     //Save the json file to internal storage
-                    ds.saveToFile(context,isoCode+"_"+indicators.get(j)+".json",buffer.toString());
+                    ds.saveToFile(context,isoCode+"_"+indicators.get(j),buffer.toString());
                 }
-//                Double percentageComplete = new Double((i / countries.size())*100));
                 double currentProgress = i;
                 double toDo = countries.size();
                 Double status = (currentProgress / toDo) * 100;
@@ -116,6 +119,9 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
+        if(counter < countries.size()){
+            progressDialog.setMessage("Fetching data for "+countries.get(counter+1).getName());
+        }
         progressDialog.setProgress(values[0]);
         Log.i("MYAPP","UPDATING PROGRESS TO "+values[0]+"%");
     }
@@ -125,33 +131,6 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
         super.onPostExecute(aVoid);
         progressDialog.hide();
     }
-
-    //    /**
-//     *
-//     * @param context - The context of the application
-//     * @param urls - All urls with JSON data
-//     */
-//    public void fetchData(Context context,String... urls){
-//        this.context = context;
-//        this.execute(urls);
-//    }
-
-//    public void fetchCountryData(){
-//        getIndicatorData = false;
-//        fileName = "Countries";
-//        execute("http://api.worldbank.org/countries?format=json&per_page=300");
-//    }
-//
-//    public void fetchIndicatorData(){
-//        getIndicatorData = true;
-//        indicators = new ArrayList<>();
-//        indicators.add("3.1_RE.CONSUMPTION");
-//        indicators.add("8.1.1_FINAL.ENERGY.CONSUMPTION");
-//        indicators.add("3.1.3_HYDRO.CONSUM");
-//        indicators.add("3.1.4_BIOFUELS.CONSUM");
-//        execute();
-//    }
-
 
 }
 

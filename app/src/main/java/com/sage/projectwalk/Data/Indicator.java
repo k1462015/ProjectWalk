@@ -1,6 +1,7 @@
 package com.sage.projectwalk.Data;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by Tahmidul on 28/11/2015.
@@ -53,5 +54,14 @@ public class Indicator {
 
     public void setIndicatorData(HashMap<Integer, Double> indicatorData) {
         this.indicatorData = indicatorData;
+    }
+
+    public String toString(){
+        Set<Integer> allYears = indicatorData.keySet();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Integer year:allYears){
+            stringBuilder.append("Year: "+year+" Value: "+indicatorData.get(year)+"|");
+        }
+        return stringBuilder.toString();
     }
 }

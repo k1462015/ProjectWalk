@@ -1,6 +1,7 @@
 package com.sage.projectwalk.Data;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by Tahmidul on 28/11/2015.
@@ -72,5 +73,19 @@ public class Country {
 
     public void setIndicators(HashMap<String, Indicator> indicators) {
         this.indicators = indicators;
+    }
+
+    public void addIndicator(Indicator indicator){
+        indicators.put(indicator.getId(),indicator);
+    }
+
+    public String toString(){
+        String toReturn =  name+" iso2Code: "+isoCode+" capitalCity: "+capitalCity;
+        Set<String> indicatorIds = indicators.keySet();
+        for (String id:indicatorIds){
+            Indicator indicator = indicators.get(id);
+            toReturn = indicator.toString();
+        }
+        return toReturn;
     }
 }

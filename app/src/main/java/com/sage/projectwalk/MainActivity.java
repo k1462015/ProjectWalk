@@ -1,20 +1,19 @@
 package com.sage.projectwalk;
 
 import android.app.ProgressDialog;
+import android.content.res.AssetManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.Data.DataRetriever;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
@@ -22,16 +21,9 @@ import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
 import com.sage.projectwalk.InfoGraphs.FactCards;
 import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -53,6 +45,18 @@ public class MainActivity extends AppCompatActivity {
             fetchData(null);
         }
 
+        try {
+            Country bangladesh = dataManager.getCountryIndicator("GB", "3.1.9_BIOGAS.CONSUM","3.1.8_WASTE.CONSUM","3.1.9_BIOGAS.CONSUM");
+            if(bangladesh == null){
+                Log.i("MYAPP","Couldn't find BD");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i("MYAPP", "Couldn't retrieve file for countries");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.i("MYAPP", "JSON Exception");
+        }
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -73,8 +77,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void getCountry(View view){
+        EditText editText = (EditText) findViewById(R.id.countryOption);
+        String input = editText.getText().toString();
+        try {
+            Country country = dataManager.getCountryIndicator(input,"3.1.9_BIOGAS.CONSUM");
+            Log.i("MYAPP","Got Country data for "+country.getName());
+            //THIS IS TEMPORARY //TODO:REMOVE THIS AFTER
+            BatteryGraph batteryGraph = (BatteryGraph) getSupportFragmentManager().findFragmentById(R.id.batteryGraphContainer);
+            TextView title = (TextView) batteryGraph.getView().findViewById(R.id.title);
+            if(title != null && country != null){
+                title.setText(country.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("MYAPP","Couldn't find data for "+input);
+        }
+    }
+
     public void fetchData(View view){
-        progressDialog.setTitle("Fetching data");
+        progressDialog.setTitle("Synchronizing Data");
         progressDialog.setMessage("Retrieving latest data from World Data Bank");
         progressDialog.setProgressStyle(progressDialog.STYLE_HORIZONTAL);
         progressDialog.setProgress(0);
