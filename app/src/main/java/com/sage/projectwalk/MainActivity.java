@@ -1,5 +1,6 @@
 package com.sage.projectwalk;
 
+import android.app.ProgressDialog;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.AsyncTask;
@@ -9,9 +10,12 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.Data.DataRetriever;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
@@ -31,12 +35,23 @@ import java.io.InputStreamReader;
 
 
 public class MainActivity extends AppCompatActivity {
+    DataManager dataManager;
     DataRetriever dataRetriever;
     TextView textViewer;
+    public ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dataManager = new DataManager(this);
+
+        //Get required views
+        progressDialog = new ProgressDialog(this);
+
+        //Checks if there is any data in device
+        if(!dataManager.checkIfDataExists()){
+            fetchData(null);
+        }
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -58,71 +73,40 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onButtonPressed(String response){
-        Log.i("MYAPP",response);
-    }
-
-    /**
-     * Looks inside the devices internal directory
-     * ANd loads all json files
-     */
-    public void loadDataFromStorage(){
+    public void fetchData(View view){
+        progressDialog.setTitle("Fetching data");
+        progressDialog.setMessage("Retrieving latest data from World Data Bank");
+        progressDialog.setProgressStyle(progressDialog.STYLE_HORIZONTAL);
+        progressDialog.setProgress(0);
+        progressDialog.show();
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(dataRetriever.getStatus() != AsyncTask.Status.FINISHED){
-                    Log.i("MYAPP","WAITING FOR DATA RETRIEVAL");
-                }
-                Log.i("MYAPP","ATTEMPTING TO READ DATA");
-                try {
-                    //This grabs all available files saved in internal storage
-                    File[] allFiles = getFilesDir().listFiles();
-                    //This loads the country json files
-                    FileInputStream fip = openFileInput(allFiles[0].getName());
-                    if(fip != null){
-                        Log.i("MYAPP","LOADED "+allFiles[0].getName());
-                    }else{
-                        Log.i("MYAPP","FILE NOT FOUND");
-                    }
-                    //Starts reading the file
-                    InputStreamReader inputStreamReader = new InputStreamReader(fip);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    StringBuilder sb = new StringBuilder();
+                dataManager.synchronizeData();
+            }
+        });
+        thread.start();
+    }
 
-                    //Reads contents of file, line by line
-                    String line;
-                    while((line = bufferedReader.readLine()) != null){
-                        sb.append(line);
-                    }
-                    final StringBuilder completedFile = sb;
-                    JSONArray jsonArray = new JSONArray(completedFile.toString());
-                    JSONArray allCountryData = jsonArray.getJSONArray(1);
-                    String allCountries = "";
-                    for (int i = 0; i < allCountryData.length();i++){
-                        JSONObject country = allCountryData.getJSONObject(i);
-                        String countryName = country.getString("name");
-                        allCountries += countryName+"\n";
-                    }
-                    final String textViewCountries = allCountries;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            textViewer.setText(textViewCountries);
-                        }
-                    });
-                    fip.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    Log.i("MYAPP","FILE NOT FOUND EXCEPTION");
+    public void getData(View view){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    dataManager.getCountryList();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.i("MYAPP", "IO EXCEPTION");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
         thread.start();
+
+    }
+
+    public void onButtonPressed(String response){
+        Log.i("MYAPP",response);
     }
 
     @Override
