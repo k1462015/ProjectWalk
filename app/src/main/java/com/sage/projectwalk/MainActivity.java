@@ -1,14 +1,20 @@
 package com.sage.projectwalk;
 
+import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.os.AsyncTask;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -17,6 +23,7 @@ import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
 import com.sage.projectwalk.InfoGraphs.FactCards;
 import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
+import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +40,17 @@ import java.io.InputStreamReader;
 public class MainActivity extends AppCompatActivity {
     DataRetriever dataRetriever;
     TextView textViewer;
+
+
+    private static final int NUM_PAGES = 2;
+
+
+    private ViewPager mPager;
+
+
+    private PagerAdapter mPagerAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +74,24 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.renewableSourcesContainer,renewableBreakdownContainer);
         fragmentTransaction.commit();
 
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+
+    /*    SlideOutPanel slideOutPanel = new SlideOutPanel();
+
+        ft.add(R.id.out, slideOutPanel);
+        ft.setCustomAnimations(R.anim.slide_in_right, 0);
+        ft.show(slideOutPanel);
+        ft.commit(); */
+
+
     }
+
+
 
     public void onButtonPressed(String response){
         Log.i("MYAPP",response);
@@ -146,4 +181,23 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return new SlideOutPanel();
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
+        }
+    }
+
 }
+
+
