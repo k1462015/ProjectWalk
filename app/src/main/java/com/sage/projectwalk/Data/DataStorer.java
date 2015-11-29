@@ -25,7 +25,7 @@ public class DataStorer {
             fos = context.openFileOutput(FILENAME + ".json", Context.MODE_PRIVATE);
             fos.write(data.getBytes());
             fos.close();
-            Log.i("MYAPP","DATA SUCCESFULLY SAVED");
+            Log.i("MYAPP",FILENAME+" SUCCESFULLY SAVED");
         }catch (FileNotFoundException e){
             e.printStackTrace();
             Log.i("MYAPP", "fILE NOT FOUND EXCEPTION");

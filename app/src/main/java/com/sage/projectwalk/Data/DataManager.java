@@ -60,6 +60,7 @@ public class DataManager {
             JSONObject countryJSON = jsonArray.getJSONObject(i);
             Country country = new Country();
             country.setName(countryJSON.getString("name"));
+            country.setIsoCode(countryJSON.getString("iso2Code"));
             country.setCapitalCity(countryJSON.getString("capitalCity"));
             country.setLongitude(countryJSON.getString("longitude"));
             country.setLatitude(countryJSON.getString("latitude"));
@@ -84,9 +85,13 @@ public class DataManager {
     public void synchronizeData(){
         dataRetriever = new DataRetriever(context);
         //First refresh the countries.json file
-        dataRetriever.fetchCountryData();
-        //Then for each indicator
-        //Update it's isoCode_indicator.json file
+        ArrayList<String> indicators = new ArrayList<>();
+        indicators.add("3.1_RE.CONSUMPTION");
+        indicators.add("8.1.1_FINAL.ENERGY.CONSUMPTION");
+        indicators.add("3.1.3_HYDRO.CONSUM");
+        indicators.add("3.1.4_BIOFUELS.CONSUM");
+        dataRetriever.indicators = indicators;
+        dataRetriever.execute("http://api.worldbank.org/countries?format=json&per_page=300");
     }
 
     public String readFile(FileInputStream fileInputStream) throws IOException {
