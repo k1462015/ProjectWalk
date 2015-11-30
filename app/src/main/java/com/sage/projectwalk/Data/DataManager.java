@@ -1,13 +1,9 @@
 package com.sage.projectwalk.Data;
 
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.MainActivity;
-import com.sage.projectwalk.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +11,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,7 +19,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class DataManager {
-    private DataRetriever dataRetriever;
     private MainActivity context;
     ArrayList<String> indicators;
 
@@ -45,6 +39,8 @@ public class DataManager {
         indicators.add("3.1.9_BIOGAS.CONSUM");
         //For Fragment 3
         indicators.add("8.1.2_FINAL.ENERGY.INTENSITY");
+        //For Population
+        indicators.add("SP.POP.TOTL");
     }
     /**
      * Fetched a country object
@@ -79,7 +75,6 @@ public class DataManager {
                             try{
                                 date = Integer.parseInt(jsonObject.getString("date"));
                                 ind.addData(date, value);
-//                                Log.i("MYAPP","Added "+jsonObject.getString("date")+" with value: "+value+" for indicator "+id);
                             }catch (Exception e){
                                 Log.i("MYAPP","Date "+jsonObject.getString("date")+"not in correct format");
                             }
@@ -90,20 +85,18 @@ public class DataManager {
                     Log.i("MYAPP","COUDLN'T GET "+isoCode+" "+indicator);
                 }
             }
-            try {
-                FileInputStream fileInputStream = context.openFileInput(isoCode+".json");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }else{
-            return null;
         }
         return country;
     }
 
+    /**
+     *
+     * @param iso2Code - Country ISO CODE
+     * @return Country object with basic information included
+     * @throws IOException
+     * @throws JSONException
+     */
     public Country getCountryBaseData(String iso2Code) throws IOException, JSONException {
-        //First check if present in internal storage
-        boolean inInteralStorage = false;
         JSONArray jsonArray = retrieveFile("Countries.json");
         //Get data part of array
         jsonArray = jsonArray.getJSONArray(1);
@@ -111,9 +104,12 @@ public class DataManager {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             if(jsonObject.getString("iso2Code").equals(iso2Code)){
                 Country country = new Country();
-                country.setIsoCode(iso2Code);
                 country.setName(jsonObject.getString("name"));
+                country.setId(jsonObject.getString("id"));
+                country.setIsoCode(iso2Code);
                 country.setCapitalCity(jsonObject.getString("capitalCity"));
+                country.setLongitude(jsonObject.getString("longitude"));
+                country.setLatitude(jsonObject.getString("latitude"));
                 return country;
             }
         }
@@ -143,10 +139,7 @@ public class DataManager {
      */
     public ArrayList<Country> getCountryList() throws IOException, JSONException {
         ArrayList<Country> countries = new ArrayList<>();
-        //First get Countries.json file
-        FileInputStream fileInputStream = context.openFileInput("Countries.json");
-        String fileData = readFile(fileInputStream);
-        JSONArray jsonArray = (new JSONArray(fileData)).getJSONArray(1);
+        JSONArray jsonArray = retrieveFile("Countries.json");
         //Loop through array and create country object
         for(int i = 0;i < jsonArray.length();i++){
             JSONObject countryJSON = jsonArray.getJSONObject(i);
@@ -175,27 +168,19 @@ public class DataManager {
      * Goes to the world data site and fetches all data
      */
     public void synchronizeData(){
-        dataRetriever = new DataRetriever(context);
+        DataRetriever dataRetriever = new DataRetriever(context);
         dataRetriever.indicators = indicators;
         //Fetches countries.json and then all indicators
         dataRetriever.execute("http://api.worldbank.org/countries?format=json&per_page=300");
     }
 
-    public String readFile(FileInputStream fileInputStream) throws IOException {
-        //Starts reading the file
-        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        StringBuilder sb = new StringBuilder();
-
-        //Reads contents of file, line by line
-        String line;
-        while((line = bufferedReader.readLine()) != null){
-            sb.append(line);
-        }
-        return sb.toString();
-
-    }
-
+    /**
+     * This retrieves the file from internal storage
+     * The data in the internal storage would have been
+     * retrieved from the internet/World Data bank
+     * @param fileName - Name of file
+     * @return JSONArray - Containing file data
+     */
     public JSONArray readFileInternal(String fileName){
         try {
             FileInputStream fileInputStream = context.openFileInput(fileName);
@@ -215,6 +200,11 @@ public class DataManager {
         }
     }
 
+    /**
+     * This retrieves the file from the assets folder
+     * @param fileName - Name of File
+     * @return JSONArray containing file data
+     */
     public JSONArray readFileAsset(String fileName){
         //Load from assets folder
         AssetManager assetManager = context.getAssets();
@@ -234,23 +224,6 @@ public class DataManager {
         }
 
     }
-
-    /**
-     * Checks if there is any data on the current device
-     * @return True: If there is data False: No data found
-     */
-    public boolean checkIfDataExists(){
-        //Check if country data available
-        try{
-            FileInputStream fileInputStream = context.openFileInput("Countries.json");
-            return true;
-        }catch (FileNotFoundException e){
-            return false;
-        }
-    }
-
-
-
 
 
 }

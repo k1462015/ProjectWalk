@@ -35,7 +35,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:id="@+id/batteryGraphContainer">
+                    android:id="@+id/batteryGraphContainer"
+                    android:orientation="vertical">
 
                 </LinearLayout>
                 <!-- Indicator 2-->
@@ -43,7 +44,8 @@
                     android:id="@+id/energyRatioContainer"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
 
                 </LinearLayout>
@@ -62,7 +64,8 @@
                     android:id="@+id/renewableSourcesContainer"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
 
                 </LinearLayout>
@@ -71,31 +74,11 @@
                     android:id="@+id/factCardsContainer"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-
+                    android:layout_weight="1"
+                    android:orientation="vertical">
                 </LinearLayout>
 
             </LinearLayout>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Fetch Data"
-                android:onClick="fetchData"/>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Get data"
-                android:onClick="getData"/>
-            <EditText
-                android:id="@+id/countryOption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="getData"
-                android:onClick="getCountry"/>
         </LinearLayout>
 
     </LinearLayout>

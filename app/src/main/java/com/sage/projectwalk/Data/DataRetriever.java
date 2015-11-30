@@ -20,6 +20,8 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -32,14 +34,12 @@ import java.util.ArrayList;
  */
 public class DataRetriever extends AsyncTask<String,Integer,Void>{
     private MainActivity context;
-    private DataStorer ds;
     ProgressDialog progressDialog;
     ArrayList<String> indicators;
     ArrayList<Country> countries;
     int counter;
     public DataRetriever(MainActivity context){
         this.context = context;
-        ds = new DataStorer();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
             //First process retrieving the country base data
             StringBuffer buffer = processURL(urls[0]);
             //Saves the json file to devices internal storage
-            ds.saveToFile(context, "Countries", buffer.toString());
+            saveToFile(context, "Countries", buffer.toString());
             countries = new ArrayList<>();
             JSONArray jsonArray = (new JSONArray(buffer.toString())).getJSONArray(1);
             for (int i = 0;i < jsonArray.length();i++){
@@ -77,7 +77,7 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
                     Log.i("MYAPP",indicatorURL);
                     buffer = processURL(indicatorURL);
                     //Save the json file to internal storage
-                    ds.saveToFile(context,isoCode+"_"+indicators.get(j),buffer.toString());
+                    saveToFile(context,isoCode+"_"+indicators.get(j),buffer.toString());
                 }
                 double currentProgress = i;
                 double toDo = countries.size();
@@ -120,16 +120,38 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
         if(counter < countries.size()){
+            //Updates progress message specifying which country is being downloaded
             progressDialog.setMessage("Fetching data for "+countries.get(counter+1).getName());
         }
         progressDialog.setProgress(values[0]);
-        Log.i("MYAPP","UPDATING PROGRESS TO "+values[0]+"%");
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         progressDialog.hide();
+    }
+
+    /**
+     *
+     * @param context - Application Context
+     * @param FILENAME - Name that you want to save file as
+     * @param data - Actual data that is in JSON format
+     */
+    public void saveToFile(Context context,String FILENAME,String data){
+        FileOutputStream fos;
+        try {
+            fos = context.openFileOutput(FILENAME + ".json", Context.MODE_PRIVATE);
+            fos.write(data.getBytes());
+            fos.close();
+            Log.i("MYAPP",FILENAME+" SUCCESFULLY SAVED");
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+            Log.i("MYAPP", "File NOT FOUND EXCEPTION");
+        }catch (IOException e){
+            e.printStackTrace();
+            Log.i("MYAPP", "IOEXCEPTION");
+        }
     }
 
 }
