@@ -39,8 +39,8 @@ public class SlideOutPanel extends Fragment {
     }
 
     public interface CountryListListener{
-        public void onCountryOption1Selected(Country country);
-        public void onCountryOption2Selected(Country country);
+        void onCountryOption1Selected(Country country);
+        void onCountryOption2Selected(Country country);
     }
 
     @Override
