@@ -12,8 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sage.projectwalk.Data.Country;
+import com.sage.projectwalk.Data.Indicator;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * This adapter allows a list view to correctly display the details about a country
@@ -51,7 +55,19 @@ public class CountryAdapter extends ArrayAdapter<Country> {
 
         Country country = data.get(position);
         holder.countryName.setText(country.getName());
-        holder.capitalCity.setText(country.getCapitalCity());
+        Indicator popIndicator = country.getIndicators().get("SP.POP.TOTL");
+        String population = " ";
+        if(popIndicator != null){
+            Set<Integer> allYears = popIndicator.getIndicatorData().keySet();
+            int maxYear = Collections.max(allYears);
+            Double popAmount = popIndicator.getIndicatorData().get(maxYear);
+            BigDecimal myNumber = new BigDecimal(popAmount);
+            int pop = myNumber.intValue();
+            population += "\t Population("+maxYear+"): "+pop;
+        }else{
+            Log.i("MYAPP","Population empty for "+country.getName());
+        }
+        holder.capitalCity.setText(country.getCapitalCity()+population);
 
         //Finds the image for the flag in the drawable folder
         String uri = "drawable/"+country.getIsoCode().toLowerCase()+"_img";
