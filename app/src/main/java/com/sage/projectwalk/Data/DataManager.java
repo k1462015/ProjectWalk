@@ -141,7 +141,7 @@ public class DataManager {
      */
     public ArrayList<Country> getCountryList() throws IOException, JSONException {
         ArrayList<Country> countries = new ArrayList<>();
-        JSONArray jsonArray = retrieveFile("Countries.json");
+        JSONArray jsonArray = retrieveFile("Countries.json").getJSONArray(1);
         //Loop through array and create country object
         for(int i = 0;i < jsonArray.length();i++){
             JSONObject countryJSON = jsonArray.getJSONObject(i);
@@ -152,6 +152,7 @@ public class DataManager {
             country.setLongitude(countryJSON.getString("longitude"));
             country.setLatitude(countryJSON.getString("latitude"));
             countries.add(country);
+            Log.i("MYAPP","COUNTRY LIST: "+country.toString());
         }
         //Sort all by country name alphabetically
         Collections.sort(countries, new Comparator<Country>() {

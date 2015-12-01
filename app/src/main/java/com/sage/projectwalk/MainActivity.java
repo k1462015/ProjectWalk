@@ -5,13 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.InfoGraphs.DummyFragment;
@@ -36,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Example of how to retrieve a country object
-        try {
-            Country bangladesh = dataManager.getCountryIndicator("GB", "3.1.9_BIOGAS.CONSUM","3.1.8_WASTE.CONSUM","3.1.9_BIOGAS.CONSUM");
-        } catch (Exception e) {
-            Log.i("MYAPP", "Couldn't retrieve file for countries");
-        }
+//        try {
+//            Country bangladesh = dataManager.getCountryIndicator("GB", "3.1.9_BIOGAS.CONSUM","3.1.8_WASTE.CONSUM","3.1.9_BIOGAS.CONSUM");
+//        } catch (Exception e) {
+//            Log.i("MYAPP", "Couldn't retrieve file for countries");
+//        }
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -66,10 +64,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openSlideFragment(View v) {
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         SlideOutPanel menuFragment = new SlideOutPanel();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, 0);
+//        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, 0);
         fragmentTransaction.add(R.id.out, menuFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -78,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void closeSlideFragment(View v){
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         DummyFragment menuFragment = new DummyFragment();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, 0);
+//        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, 0);
         fragmentTransaction.replace(R.id.out, menuFragment);
         fragmentTransaction.commit();
         button.setVisibility(View.VISIBLE);
