@@ -15,7 +15,7 @@ import com.sage.projectwalk.R;
 /**
  * Created by Mihai on 28/11/2015.
  */
-public class SlideOutPanel extends android.support.v4.app.Fragment {
+public class SlideOutPanel extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
