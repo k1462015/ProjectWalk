@@ -1,42 +1,44 @@
 package com.sage.projectwalk;
 
+import android.app.ProgressDialog;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
 
-import com.sage.projectwalk.Data.DataRetriever;
+import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
+import com.sage.projectwalk.InfoGraphs.DummyFragment;
 import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
 import com.sage.projectwalk.InfoGraphs.FactCards;
 import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
+import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
 public class MainActivity extends AppCompatActivity {
-    DataRetriever dataRetriever;
-    TextView textViewer;
+    DataManager dataManager;
+    public ProgressDialog progressDialog;
+    private Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dataManager = new DataManager(this);
+
+        //Get required views
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+
+
+        //Example of how to retrieve a country object
+//        try {
+//            Country bangladesh = dataManager.getCountryIndicator("GB", "3.1.9_BIOGAS.CONSUM","3.1.8_WASTE.CONSUM","3.1.9_BIOGAS.CONSUM");
+//        } catch (Exception e) {
+//            Log.i("MYAPP", "Couldn't retrieve file for countries");
+//        }
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -48,82 +50,58 @@ public class MainActivity extends AppCompatActivity {
         EnergyRatioGraph energyRatioGraph = new EnergyRatioGraph();
         FactCards factCards = new FactCards();
         RenewableBreakdownContainer renewableBreakdownContainer = new RenewableBreakdownContainer();
+//        CountryList countryList = new CountryList();
 
         //Adds all fragments to corresponding containers
         fragmentTransaction.add(R.id.batteryGraphContainer,batteryGraph);
         fragmentTransaction.add(R.id.energyRatioContainer,energyRatioGraph);
         fragmentTransaction.add(R.id.factCardsContainer,factCards);
         fragmentTransaction.add(R.id.renewableSourcesContainer,renewableBreakdownContainer);
+//        fragmentTransaction.add(R.id.renewableSourcesContainer,countryList);
         fragmentTransaction.commit();
+        button = (Button)findViewById(R.id.button2);
 
     }
 
-    public void onButtonPressed(String response){
-        Log.i("MYAPP",response);
+    public void openSlideFragment(View v) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        SlideOutPanel menuFragment = new SlideOutPanel();
+//        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, 0);
+        fragmentTransaction.add(R.id.out, menuFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        button.setVisibility(View.INVISIBLE);
+
     }
 
-    /**
-     * Looks inside the devices internal directory
-     * ANd loads all json files
-     */
-    public void loadDataFromStorage(){
+    public void closeSlideFragment(View v){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        DummyFragment menuFragment = new DummyFragment();
+//        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, 0);
+        fragmentTransaction.replace(R.id.out, menuFragment);
+        fragmentTransaction.commit();
+        button.setVisibility(View.VISIBLE);
+
+    }
+
+
+    public void fetchData(View view){
+        progressDialog.setTitle("Synchronizing Data");
+        progressDialog.setMessage("Retrieving latest data from World Data Bank");
+        progressDialog.setProgressStyle(progressDialog.STYLE_HORIZONTAL);
+        progressDialog.setProgress(0);
+        progressDialog.show();
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(dataRetriever.getStatus() != AsyncTask.Status.FINISHED){
-                    Log.i("MYAPP","WAITING FOR DATA RETRIEVAL");
-                }
-                Log.i("MYAPP","ATTEMPTING TO READ DATA");
-                try {
-                    //This grabs all available files saved in internal storage
-                    File[] allFiles = getFilesDir().listFiles();
-                    //This loads the country json files
-                    FileInputStream fip = openFileInput(allFiles[0].getName());
-                    if(fip != null){
-                        Log.i("MYAPP","LOADED "+allFiles[0].getName());
-                    }else{
-                        Log.i("MYAPP","FILE NOT FOUND");
-                    }
-                    //Starts reading the file
-                    InputStreamReader inputStreamReader = new InputStreamReader(fip);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    StringBuilder sb = new StringBuilder();
-
-                    //Reads contents of file, line by line
-                    String line;
-                    while((line = bufferedReader.readLine()) != null){
-                        sb.append(line);
-                    }
-                    final StringBuilder completedFile = sb;
-                    JSONArray jsonArray = new JSONArray(completedFile.toString());
-                    JSONArray allCountryData = jsonArray.getJSONArray(1);
-                    String allCountries = "";
-                    for (int i = 0; i < allCountryData.length();i++){
-                        JSONObject country = allCountryData.getJSONObject(i);
-                        String countryName = country.getString("name");
-                        allCountries += countryName+"\n";
-                    }
-                    final String textViewCountries = allCountries;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            textViewer.setText(textViewCountries);
-                        }
-                    });
-                    fip.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    Log.i("MYAPP","FILE NOT FOUND EXCEPTION");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.i("MYAPP", "IO EXCEPTION");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                dataManager.synchronizeData();
             }
         });
         thread.start();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
