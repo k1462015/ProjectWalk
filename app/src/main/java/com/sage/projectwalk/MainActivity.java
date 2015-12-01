@@ -1,42 +1,46 @@
 package com.sage.projectwalk;
 
+import android.app.ProgressDialog;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
-import com.sage.projectwalk.Data.DataRetriever;
+import com.sage.projectwalk.Data.Country;
+import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
+import com.sage.projectwalk.InfoGraphs.DummyFragment;
 import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
 import com.sage.projectwalk.InfoGraphs.FactCards;
 import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
+import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-
-public class MainActivity extends AppCompatActivity {
-    DataRetriever dataRetriever;
-    TextView textViewer;
+public class MainActivity extends AppCompatActivity implements SlideOutPanel.CountryListListener{
+    DataManager dataManager;
+    public ProgressDialog progressDialog;
+    private Button openCloseButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dataManager = new DataManager(this);
+
+        //Get required views
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+
+
+        //Example of how to retrieve a country object
+//        try {
+//            Country bangladesh = dataManager.getCountryIndicator("GB", "3.1.9_BIOGAS.CONSUM","3.1.8_WASTE.CONSUM","3.1.9_BIOGAS.CONSUM");
+//        } catch (Exception e) {
+//            Log.i("MYAPP", "Couldn't retrieve file for countries");
+//        }
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -55,74 +59,39 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.factCardsContainer,factCards);
         fragmentTransaction.add(R.id.renewableSourcesContainer,renewableBreakdownContainer);
         fragmentTransaction.commit();
+        openCloseButton = (Button)findViewById(R.id.button2);
 
     }
 
-    public void onButtonPressed(String response){
-        Log.i("MYAPP",response);
+    public void openSlideFragment(View v) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        SlideOutPanel menuFragment = new SlideOutPanel();
+//        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, 0);
+        fragmentTransaction.add(R.id.out, menuFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        openCloseButton.setVisibility(View.INVISIBLE);
+
     }
 
-    /**
-     * Looks inside the devices internal directory
-     * ANd loads all json files
-     */
-    public void loadDataFromStorage(){
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(dataRetriever.getStatus() != AsyncTask.Status.FINISHED){
-                    Log.i("MYAPP","WAITING FOR DATA RETRIEVAL");
-                }
-                Log.i("MYAPP","ATTEMPTING TO READ DATA");
-                try {
-                    //This grabs all available files saved in internal storage
-                    File[] allFiles = getFilesDir().listFiles();
-                    //This loads the country json files
-                    FileInputStream fip = openFileInput(allFiles[0].getName());
-                    if(fip != null){
-                        Log.i("MYAPP","LOADED "+allFiles[0].getName());
-                    }else{
-                        Log.i("MYAPP","FILE NOT FOUND");
-                    }
-                    //Starts reading the file
-                    InputStreamReader inputStreamReader = new InputStreamReader(fip);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    StringBuilder sb = new StringBuilder();
+    public void closeSlideFragment(View v){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        DummyFragment menuFragment = new DummyFragment();
+//        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, 0);
+        fragmentTransaction.replace(R.id.out, menuFragment);
+        fragmentTransaction.commit();
+        openCloseButton.setVisibility(View.VISIBLE);
 
-                    //Reads contents of file, line by line
-                    String line;
-                    while((line = bufferedReader.readLine()) != null){
-                        sb.append(line);
-                    }
-                    final StringBuilder completedFile = sb;
-                    JSONArray jsonArray = new JSONArray(completedFile.toString());
-                    JSONArray allCountryData = jsonArray.getJSONArray(1);
-                    String allCountries = "";
-                    for (int i = 0; i < allCountryData.length();i++){
-                        JSONObject country = allCountryData.getJSONObject(i);
-                        String countryName = country.getString("name");
-                        allCountries += countryName+"\n";
-                    }
-                    final String textViewCountries = allCountries;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            textViewer.setText(textViewCountries);
-                        }
-                    });
-                    fip.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    Log.i("MYAPP","FILE NOT FOUND EXCEPTION");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.i("MYAPP", "IO EXCEPTION");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.start();
+    }
+
+    public void onCountryOption1Selected(Country country){
+        Toast.makeText(this,country.toString(),Toast.LENGTH_SHORT).show();
+    }
+
+    public void onCountryOption2Selected(Country country){
+        Toast.makeText(this,country.toString(),Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -135,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the Home/Up openCloseButton, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
