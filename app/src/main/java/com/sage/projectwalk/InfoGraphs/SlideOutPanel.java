@@ -21,17 +21,17 @@ public class SlideOutPanel extends Fragment {
 
         View view = inflater.inflate(R.layout.slide_out_panel_layout, container, false);
 
-
-        String[] values = {"United Kingdom", "United States", "Kenya", "Albania", "Australia"};
-        Spinner spinner = (Spinner) view.findViewById(R.id.countries);
-        Spinner spinner1 = (Spinner) view.findViewById(R.id.countries2);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(container.getContext(), android.R.layout.simple_spinner_item, values );
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinner.setAdapter(adapter);
-        spinner1.setAdapter(adapter);
+//
+//        String[] values = {"United Kingdom", "United States", "Kenya", "Albania", "Australia"};
+//        Spinner spinner = (Spinner) view.findViewById(R.id.countries);
+//        Spinner spinner1 = (Spinner) view.findViewById(R.id.countries2);
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(container.getContext(), android.R.layout.simple_spinner_item, values );
+//
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        spinner.setAdapter(adapter);
+//        spinner1.setAdapter(adapter);
 
         return view;
     }

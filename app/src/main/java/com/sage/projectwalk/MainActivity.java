@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.renewableSourcesContainer, renewableBreakdownContainer);
         fragmentTransaction.commit();
 
-       button = (Button)findViewById(R.id.button2);
+        button = (Button)findViewById(R.id.button2);
 
     }
 
