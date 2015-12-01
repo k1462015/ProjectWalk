@@ -1,11 +1,13 @@
 package com.sage.projectwalk.InfoGraphs;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 public class SlideOutPanel extends Fragment {
     ListView countryOption1;
     ListView countryOption2;
+    CountryListListener countryListListener;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -35,11 +38,18 @@ public class SlideOutPanel extends Fragment {
         return view;
     }
 
+    public interface CountryListListener{
+        public void onCountryOption1Selected(Country country);
+        public void onCountryOption2Selected(Country country);
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         countryOption1 = (ListView) getView().findViewById(R.id.countryOption1);
+        countryOption1.setOnItemClickListener(new ListViewListener());
         countryOption2 = (ListView) getView().findViewById(R.id.countryOption2);
+        countryOption2.setOnItemClickListener(new ListViewListener());
         DataManager dataManager = new DataManager((MainActivity) getActivity());
         ArrayList<Country> countries = null;
         try {
@@ -53,4 +63,30 @@ public class SlideOutPanel extends Fragment {
             Log.e("MYAPP","JSONException when trying to retrieve countries list in ListFragment");
         }
     }
+
+    private class ListViewListener implements AdapterView.OnItemClickListener{
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Country selectedCountry = (Country) countryOption1.getItemAtPosition(position);
+            if(view.equals(countryOption1)){
+                countryListListener.onCountryOption1Selected(selectedCountry);
+            }else{
+                countryListListener.onCountryOption2Selected(selectedCountry);
+            }
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try{
+            countryListListener = (CountryListListener) context;
+        }catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+    }
+
+
 }

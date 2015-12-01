@@ -9,7 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.InfoGraphs.DummyFragment;
@@ -18,7 +20,7 @@ import com.sage.projectwalk.InfoGraphs.FactCards;
 import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
 import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SlideOutPanel.CountryListListener{
     DataManager dataManager;
     public ProgressDialog progressDialog;
     private Button openCloseButton;
@@ -84,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void onCountryOption1Selected(Country country){
+        Toast.makeText(this,country.toString(),Toast.LENGTH_SHORT).show();
+    }
+
+    public void onCountryOption2Selected(Country country){
+        Toast.makeText(this,country.toString(),Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
