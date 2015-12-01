@@ -9,11 +9,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.DataManager;
-import com.sage.projectwalk.Data.DataRetriever;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
 import com.sage.projectwalk.InfoGraphs.FactCards;
@@ -21,8 +19,6 @@ import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
 
 public class MainActivity extends AppCompatActivity {
     DataManager dataManager;
-    DataRetriever dataRetriever;
-    TextView textViewer;
     public ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

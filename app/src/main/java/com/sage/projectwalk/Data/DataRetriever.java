@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.MainActivity;
+import com.sage.projectwalk.MainMenu;
 import com.sage.projectwalk.R;
 
 import org.json.JSONArray;
@@ -33,19 +34,24 @@ import java.util.ArrayList;
  * Created by Tahmidul on 23/11/2015.
  */
 public class DataRetriever extends AsyncTask<String,Integer,Void>{
-    private MainActivity context;
+    private AppCompatActivity context;
     ProgressDialog progressDialog;
     ArrayList<String> indicators;
     ArrayList<Country> countries;
     int counter;
-    public DataRetriever(MainActivity context){
+    public DataRetriever(AppCompatActivity context){
         this.context = context;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressDialog = context.progressDialog;
+        if(context instanceof MainActivity){
+            progressDialog = ((MainActivity) context).progressDialog;
+
+        }else{
+            progressDialog = ((MainMenu) context).progressDialog;
+        }
     }
 
     @Override
