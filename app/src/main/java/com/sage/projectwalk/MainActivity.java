@@ -9,17 +9,21 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
+import com.sage.projectwalk.InfoGraphs.DummyFragment;
 import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
 import com.sage.projectwalk.InfoGraphs.FactCards;
 import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
+import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
 public class MainActivity extends AppCompatActivity {
     DataManager dataManager;
     public ProgressDialog progressDialog;
+    private Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +61,30 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.renewableSourcesContainer,renewableBreakdownContainer);
 //        fragmentTransaction.add(R.id.renewableSourcesContainer,countryList);
         fragmentTransaction.commit();
+        button = (Button)findViewById(R.id.button2);
+
+    }
+
+    public void openSlideFragment(View v) {
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        SlideOutPanel menuFragment = new SlideOutPanel();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, 0);
+        fragmentTransaction.add(R.id.out, menuFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        button.setVisibility(View.INVISIBLE);
+
+    }
+
+    public void closeSlideFragment(View v){
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        DummyFragment menuFragment = new DummyFragment();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, 0);
+        fragmentTransaction.replace(R.id.out, menuFragment);
+        fragmentTransaction.commit();
+        button.setVisibility(View.VISIBLE);
 
     }
 
