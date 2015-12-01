@@ -1,34 +1,42 @@
 package com.sage.projectwalk;
 
+import android.app.ProgressDialog;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
-import com.sage.projectwalk.Data.DataRetriever;
+import com.sage.projectwalk.Data.Country;
+import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
-import com.sage.projectwalk.InfoGraphs.DummyFragment;
 import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
 import com.sage.projectwalk.InfoGraphs.FactCards;
 import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
-import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
-
 
 public class MainActivity extends AppCompatActivity {
-    private Button button;
-
-
+    DataManager dataManager;
+    public ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dataManager = new DataManager(this);
+
+        //Get required views
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+
+
+        //Example of how to retrieve a country object
+        try {
+            Country bangladesh = dataManager.getCountryIndicator("GB", "3.1.9_BIOGAS.CONSUM","3.1.8_WASTE.CONSUM","3.1.9_BIOGAS.CONSUM");
+        } catch (Exception e) {
+            Log.i("MYAPP", "Couldn't retrieve file for countries");
+        }
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -40,41 +48,34 @@ public class MainActivity extends AppCompatActivity {
         EnergyRatioGraph energyRatioGraph = new EnergyRatioGraph();
         FactCards factCards = new FactCards();
         RenewableBreakdownContainer renewableBreakdownContainer = new RenewableBreakdownContainer();
+//        CountryList countryList = new CountryList();
 
         //Adds all fragments to corresponding containers
         fragmentTransaction.add(R.id.batteryGraphContainer,batteryGraph);
         fragmentTransaction.add(R.id.energyRatioContainer,energyRatioGraph);
         fragmentTransaction.add(R.id.factCardsContainer,factCards);
-        fragmentTransaction.add(R.id.renewableSourcesContainer, renewableBreakdownContainer);
+        fragmentTransaction.add(R.id.renewableSourcesContainer,renewableBreakdownContainer);
+//        fragmentTransaction.add(R.id.renewableSourcesContainer,countryList);
         fragmentTransaction.commit();
-
-        button = (Button)findViewById(R.id.button2);
 
     }
 
 
-    public void openSlideFragment(View v) {
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        SlideOutPanel menuFragment = new SlideOutPanel();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, 0);
-        fragmentTransaction.add(R.id.out, menuFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        button.setVisibility(View.INVISIBLE);
-
+    public void fetchData(View view){
+        progressDialog.setTitle("Synchronizing Data");
+        progressDialog.setMessage("Retrieving latest data from World Data Bank");
+        progressDialog.setProgressStyle(progressDialog.STYLE_HORIZONTAL);
+        progressDialog.setProgress(0);
+        progressDialog.show();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                dataManager.synchronizeData();
+            }
+        });
+        thread.start();
     }
 
-    public void closeSlideFragment(View v){
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        DummyFragment menuFragment = new DummyFragment();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, 0);
-        fragmentTransaction.replace(R.id.out, menuFragment);
-        fragmentTransaction.commit();
-        button.setVisibility(View.VISIBLE);
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -97,37 +98,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
- /**   private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            switch (position) {
-
-                case 0:
-                    return new BatteryGraph();
-                case 1:
-                    return new SlideOutPanel();
-
-
-            default: return new SlideOutPanel();
-            }
-
-        }
-
-        @Override
-        public int getCount() {
-            return NUM_PAGES;
-        }
-    } **/
-
 }
-
-
