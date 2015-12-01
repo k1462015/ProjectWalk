@@ -21,7 +21,7 @@ import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 public class MainActivity extends AppCompatActivity {
     DataManager dataManager;
     public ProgressDialog progressDialog;
-    private Button button;
+    private Button openCloseButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,16 +50,14 @@ public class MainActivity extends AppCompatActivity {
         EnergyRatioGraph energyRatioGraph = new EnergyRatioGraph();
         FactCards factCards = new FactCards();
         RenewableBreakdownContainer renewableBreakdownContainer = new RenewableBreakdownContainer();
-//        CountryList countryList = new CountryList();
 
         //Adds all fragments to corresponding containers
         fragmentTransaction.add(R.id.batteryGraphContainer,batteryGraph);
         fragmentTransaction.add(R.id.energyRatioContainer,energyRatioGraph);
         fragmentTransaction.add(R.id.factCardsContainer,factCards);
         fragmentTransaction.add(R.id.renewableSourcesContainer,renewableBreakdownContainer);
-//        fragmentTransaction.add(R.id.renewableSourcesContainer,countryList);
         fragmentTransaction.commit();
-        button = (Button)findViewById(R.id.button2);
+        openCloseButton = (Button)findViewById(R.id.button2);
 
     }
 
@@ -71,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.out, menuFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-        button.setVisibility(View.INVISIBLE);
+        openCloseButton.setVisibility(View.INVISIBLE);
 
     }
 
@@ -82,24 +80,8 @@ public class MainActivity extends AppCompatActivity {
 //        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, 0);
         fragmentTransaction.replace(R.id.out, menuFragment);
         fragmentTransaction.commit();
-        button.setVisibility(View.VISIBLE);
+        openCloseButton.setVisibility(View.VISIBLE);
 
-    }
-
-
-    public void fetchData(View view){
-        progressDialog.setTitle("Synchronizing Data");
-        progressDialog.setMessage("Retrieving latest data from World Data Bank");
-        progressDialog.setProgressStyle(progressDialog.STYLE_HORIZONTAL);
-        progressDialog.setProgress(0);
-        progressDialog.show();
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                dataManager.synchronizeData();
-            }
-        });
-        thread.start();
     }
 
 
@@ -113,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the Home/Up openCloseButton, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
