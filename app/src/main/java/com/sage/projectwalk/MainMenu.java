@@ -44,7 +44,7 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 if(keyCode == KeyEvent.KEYCODE_BACK){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(progressDialog.getContext());
                     if(dataRetriever != null && dataRetriever.getStatus() == AsyncTask.Status.RUNNING){
                         builder.setMessage("Are you sure you want to cancel the data fetching?")
                                 .setTitle("Warning")
