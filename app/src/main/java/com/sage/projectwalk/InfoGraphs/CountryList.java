@@ -38,17 +38,23 @@ public class CountryList extends ListFragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        DataManager dataManager = new DataManager((MainActivity) getActivity());
-        ArrayList<Country> countries = null;
-        try {
-            //Retrieves all countries in Country object form
-            countries = dataManager.getCountryList();
-            setListAdapter(new CountryAdapter(getActivity(), R.layout.row_country, countries));
-        } catch (IOException e) {
-            Log.e("MYAPP","IOException when trying to retrieve countries list in ListFragment");
-        } catch (JSONException e) {
-            Log.e("MYAPP","JSONException when trying to retrieve countries list in ListFragment");
-        }
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DataManager dataManager = new DataManager((MainActivity) getActivity());
+                    //Retrieves all countries in Country object form
+                    ArrayList<Country> countries = dataManager.getCountryList();
+                    setListAdapter(new CountryAdapter(getActivity(), R.layout.row_country, countries));
+                } catch (IOException e) {
+                    Log.e("MYAPP","IOException when trying to retrieve countries list in ListFragment");
+                } catch (JSONException e) {
+                    Log.e("MYAPP","JSONException when trying to retrieve countries list in ListFragment");
+                }
+            }
+        });
+        t.start();
+
     }
 
     @Override

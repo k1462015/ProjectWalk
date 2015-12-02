@@ -23,6 +23,7 @@ import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 public class MainActivity extends AppCompatActivity implements SlideOutPanel.CountryListListener{
     DataManager dataManager;
     private Button openCloseButton;
+    SlideOutPanel menuFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,37 +40,38 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         EnergyRatioGraph energyRatioGraph = new EnergyRatioGraph();
         FactCards factCards = new FactCards();
         RenewableBreakdownContainer renewableBreakdownContainer = new RenewableBreakdownContainer();
+        menuFragment = new SlideOutPanel();
 
         //Adds all fragments to corresponding containers
         fragmentTransaction.add(R.id.batteryGraphContainer,batteryGraph);
         fragmentTransaction.add(R.id.energyRatioContainer,energyRatioGraph);
         fragmentTransaction.add(R.id.factCardsContainer,factCards);
         fragmentTransaction.add(R.id.renewableSourcesContainer,renewableBreakdownContainer);
+        fragmentTransaction.add(R.id.out,menuFragment);
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
         fragmentTransaction.commit();
         openCloseButton = (Button)findViewById(R.id.button2);
 
     }
 
     public void openSlideFragment(View v) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        SlideOutPanel menuFragment = new SlideOutPanel();
+//        SlideOutPanel menuFragment = new SlideOutPanel();
 //        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, 0);
-        fragmentTransaction.add(R.id.out, menuFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        openCloseButton.setVisibility(View.INVISIBLE);
+//        fragmentTransaction.add(R.id.out, menuFragment);
+//        fragmentTransaction.addToBackStack(null);
+//        fragmentTransaction.commit();
+//        openCloseButton.setVisibility(View.INVISIBLE);
 
     }
 
     public void closeSlideFragment(View v){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        DummyFragment menuFragment = new DummyFragment();
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        DummyFragment menuFragment = new DummyFragment();
 //        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, 0);
-        fragmentTransaction.replace(R.id.out, menuFragment);
-        fragmentTransaction.commit();
-        openCloseButton.setVisibility(View.VISIBLE);
+//        fragmentTransaction.replace(R.id.out, menuFragment);
+//        fragmentTransaction.commit();
+//        openCloseButton.setVisibility(View.VISIBLE);
 
     }
 
