@@ -56,25 +56,25 @@ public class CountryAdapter extends ArrayAdapter<Country> {
 
         Country country = data.get(position);
         holder.countryName.setText(country.getName());
-        Indicator popIndicator = country.getIndicators().get("SP.POP.TOTL");
+//        Indicator popIndicator = country.getIndicators().get("SP.POP.TOTL");
         String population = " ";
-        if(popIndicator != null){
-            Set<Integer> allYears = popIndicator.getIndicatorData().keySet();
-            int maxYear = Collections.max(allYears);
-            Double popAmount = popIndicator.getIndicatorData().get(maxYear);
-            BigDecimal myNumber = new BigDecimal(popAmount);
-            int pop = myNumber.intValue();
-            population += "\t Population("+maxYear+"): "+pop;
-        }else{
-            Log.i("MYAPP","Population empty for "+country.getName());
-        }
+//        if(popIndicator != null){
+//            Set<Integer> allYears = popIndicator.getIndicatorData().keySet();
+//            int maxYear = Collections.max(allYears);
+//            Double popAmount = popIndicator.getIndicatorData().get(maxYear);
+//            BigDecimal myNumber = new BigDecimal(popAmount);
+//            int pop = myNumber.intValue();
+//            population += "\t Population("+maxYear+"): "+pop;
+//        }else{
+//            Log.i("MYAPP","Population empty for "+country.getName());
+//        }
         holder.capitalCity.setText(country.getCapitalCity()+population);
 
         holder.position = position;
 
         //Finds the image for the flag in the drawable folder
         String uri = "drawable/"+country.getIsoCode().toLowerCase()+"_img";
-        new FlagImageTask(position,holder,context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,uri);
+        new FlagImageTask(position,holder,context).execute(uri);
         return row;
     }
 

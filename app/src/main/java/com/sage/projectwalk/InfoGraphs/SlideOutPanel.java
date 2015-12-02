@@ -3,12 +3,15 @@ package com.sage.projectwalk.InfoGraphs;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -41,6 +44,7 @@ public class SlideOutPanel extends Fragment {
     public interface CountryListListener{
         void onCountryOption1Selected(Country country);
         void onCountryOption2Selected(Country country);
+        void hideShowButton();
     }
 
     @Override
@@ -62,6 +66,19 @@ public class SlideOutPanel extends Fragment {
         } catch (JSONException e) {
             Log.e("MYAPP","JSONException when trying to retrieve countries list in ListFragment");
         }
+
+        Button panelSwitch = (Button) getView().findViewById(R.id.panelSwitch);
+        panelSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
+                fragmentTransaction.hide(fragmentManager.findFragmentById(R.id.out));
+                fragmentTransaction.commit();
+                countryListListener.hideShowButton();
+            }
+        });
     }
 
     private class ListViewListener implements AdapterView.OnItemClickListener{
@@ -75,6 +92,8 @@ public class SlideOutPanel extends Fragment {
             }
         }
     }
+
+
 
     @Override
     public void onAttach(Context context) {
