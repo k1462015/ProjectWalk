@@ -22,25 +22,12 @@ import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
 public class MainActivity extends AppCompatActivity implements SlideOutPanel.CountryListListener{
     DataManager dataManager;
-    public ProgressDialog progressDialog;
     private Button openCloseButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dataManager = new DataManager(this);
-
-        //Get required views
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-
-
-        //Example of how to retrieve a country object
-//        try {
-//            Country bangladesh = dataManager.getCountryIndicator("GB", "3.1.9_BIOGAS.CONSUM","3.1.8_WASTE.CONSUM","3.1.9_BIOGAS.CONSUM");
-//        } catch (Exception e) {
-//            Log.i("MYAPP", "Couldn't retrieve file for countries");
-//        }
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
