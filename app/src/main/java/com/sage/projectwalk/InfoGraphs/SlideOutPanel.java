@@ -51,9 +51,9 @@ public class SlideOutPanel extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         countryOption1 = (ListView) getView().findViewById(R.id.countryOption1);
-        countryOption1.setOnItemClickListener(new ListViewListener());
+        countryOption1.setOnItemClickListener(new ListViewListenerOne());
         countryOption2 = (ListView) getView().findViewById(R.id.countryOption2);
-        countryOption2.setOnItemClickListener(new ListViewListener());
+        countryOption2.setOnItemClickListener(new ListViewListenerTwo());
         DataManager dataManager = new DataManager((MainActivity) getActivity());
         ArrayList<Country> countries = null;
         try {
@@ -81,18 +81,21 @@ public class SlideOutPanel extends Fragment {
         });
     }
 
-    private class ListViewListener implements AdapterView.OnItemClickListener{
+    private class ListViewListenerOne implements AdapterView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Country selectedCountry = (Country) countryOption1.getItemAtPosition(position);
-            if(view.equals(countryOption1)){
-                countryListListener.onCountryOption1Selected(selectedCountry);
-            }else{
-                countryListListener.onCountryOption2Selected(selectedCountry);
-            }
+            countryListListener.onCountryOption1Selected(selectedCountry);
         }
     }
+    private class ListViewListenerTwo implements AdapterView.OnItemClickListener{
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+            Country selectedCountry = (Country) countryOption1.getItemAtPosition(position);
+            countryListListener.onCountryOption2Selected(selectedCountry);
 
+        }
+    }
 
 
     @Override

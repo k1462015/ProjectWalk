@@ -1,6 +1,7 @@
 package com.sage.projectwalk;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sage.projectwalk.Data.Country;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     DataManager dataManager;
     private Button showButton;
     SlideOutPanel menuFragment;
+    TextView countryOneHolder;
+    TextView countryTwoHolder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         dataManager = new DataManager(this);
 
         showButton = (Button)findViewById(R.id.Show);
+        countryOneHolder = (TextView) findViewById(R.id.countryOneHolder);
+        countryTwoHolder = (TextView) findViewById(R.id.countryTwoHolder);
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -64,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
     public void openSlideFragment(View v) {
         showButton.setVisibility(View.INVISIBLE);   //Hides show button
+        RelativeLayout relativeLayoutOut = (RelativeLayout) findViewById(R.id.out);
+        relativeLayoutOut.setBackgroundColor(Color.parseColor("#99000000"));
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -77,13 +85,18 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         fadeIn.setDuration(1000);
         showButton.startAnimation(fadeIn);
         showButton.setEnabled(true);
+        showButton.setVisibility(View.VISIBLE);   //Hides show button
+        RelativeLayout relativeLayoutOut = (RelativeLayout) findViewById(R.id.out);
+        relativeLayoutOut.setBackgroundColor(Color.TRANSPARENT);
     }
 
     public void onCountryOption1Selected(Country country){
+        countryOneHolder.setText(country.getName());
         Toast.makeText(this,country.toString(),Toast.LENGTH_SHORT).show();
     }
 
     public void onCountryOption2Selected(Country country){
+        countryTwoHolder.setText(country.getName());
         Toast.makeText(this,country.toString(),Toast.LENGTH_SHORT).show();
     }
 

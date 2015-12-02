@@ -14,7 +14,9 @@
         android:layout_alignParentRight="true"
         android:orientation="vertical"
         android:background="#EFEFEF"
-        android:id="@+id/layoutWrapper">
+        android:id="@+id/layoutWrapper"
+        android:paddingLeft="10dp"
+        android:elevation="50dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -57,7 +59,7 @@
         android:text="Hide"
         android:layout_alignLeft="@id/layoutWrapper"
         android:layout_alignTop="@id/layoutWrapper"
-        android:layout_marginLeft="-86dp"/>
+        android:layout_marginLeft="-82dp"/>
 
 </RelativeLayout>
 
