@@ -1,30 +1,23 @@
 package com.sage.projectwalk.Data;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.sage.projectwalk.InfoGraphs.BatteryGraph;
-import com.sage.projectwalk.MainActivity;
-import com.sage.projectwalk.MainMenu;
-import com.sage.projectwalk.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -39,6 +32,7 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
     ArrayList<String> indicators;
     ArrayList<Country> countries;
     int counter;
+
     public DataRetriever(AppCompatActivity context){
         this.context = context;
     }
@@ -46,12 +40,39 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if(context instanceof MainActivity){
-            progressDialog = ((MainActivity) context).progressDialog;
+        //Get required views
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Synchronising data");
+        progressDialog.setMessage("Connecting to World Data Bank...");
+        progressDialog.setProgress(0);
+        progressDialog.setMax(100);
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(progressDialog.getContext());
+                    builder.setMessage("Are you sure you want to cancel the data fetching?")
+                            .setTitle("Warning")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    cancel(true);
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    progressDialog.show();
+                                }
+                            });
+                    builder.create().show();
+            }
+        });
+        progressDialog.show();
 
-        }else{
-            progressDialog = ((MainMenu) context).progressDialog;
-        }
     }
 
     @Override
@@ -108,18 +129,23 @@ public class DataRetriever extends AsyncTask<String,Integer,Void>{
         } catch (ProtocolException e) {
             e.printStackTrace();
         }
-        connection.setDoInput(true);
-        connection.connect();
-        BufferedReader in;
-        in = new BufferedReader( new InputStreamReader(connection.getInputStream()));
-        String inputLine = in.readLine();
-        while(inputLine != null){
-            buffer.append(inputLine);
-            inputLine = in.readLine();
+        try{
+            connection.setDoInput(true);
+            connection.connect();
+            BufferedReader in;
+            in = new BufferedReader( new InputStreamReader(connection.getInputStream()));
+            String inputLine = in.readLine();
+            while(inputLine != null){
+                buffer.append(inputLine);
+                inputLine = in.readLine();
+            }
+            in.close();
+            connection.disconnect();
+            return buffer;
+        }catch (InterruptedIOException e){
+            Log.e("MYAPP","User may have cancelled data retieving operation");
         }
-        in.close();
-        connection.disconnect();
-        return buffer;
+        return null;
     }
 
     @Override
