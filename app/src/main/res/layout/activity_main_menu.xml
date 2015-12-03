@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="World Data Bank"
-        android:textSize="40dp"
+        android:textSize="70dp"
         android:layout_marginTop="100dp"
         android:gravity="center_horizontal"/>
     <TextView
@@ -39,16 +39,21 @@
 
         <Button
             style="@android:style/Widget.Material.Button.Colored"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
             android:text="InfoGraphic"
-            android:onClick="viewInfoGraphic"/>
+            android:onClick="viewInfoGraphic"
+            android:textSize="30dp"
+            android:layout_marginBottom="20dp"
+            android:background="@android:color/holo_orange_light"/>
         <Button
             style="@android:style/Widget.Material.Button.Colored"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
             android:text="Sync Data"
-            android:onClick="syncData"/>
+            android:onClick="syncData"
+            android:textSize="30dp"
+            android:background="@android:color/holo_orange_light"/>
     </LinearLayout>
 
 </RelativeLayout>

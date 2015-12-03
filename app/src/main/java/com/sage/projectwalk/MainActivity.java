@@ -1,6 +1,7 @@
 package com.sage.projectwalk;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +9,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sage.projectwalk.Data.Country;
@@ -22,12 +30,19 @@ import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
 public class MainActivity extends AppCompatActivity implements SlideOutPanel.CountryListListener{
     DataManager dataManager;
-    private Button openCloseButton;
+    private Button showButton;
+    SlideOutPanel menuFragment;
+    TextView countryOneHolder;
+    TextView countryTwoHolder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dataManager = new DataManager(this);
+
+        showButton = (Button)findViewById(R.id.Show);
+        countryOneHolder = (TextView) findViewById(R.id.countryOneHolder);
+        countryTwoHolder = (TextView) findViewById(R.id.countryTwoHolder);
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -39,45 +54,49 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         EnergyRatioGraph energyRatioGraph = new EnergyRatioGraph();
         FactCards factCards = new FactCards();
         RenewableBreakdownContainer renewableBreakdownContainer = new RenewableBreakdownContainer();
+        menuFragment = new SlideOutPanel();
 
         //Adds all fragments to corresponding containers
         fragmentTransaction.add(R.id.batteryGraphContainer,batteryGraph);
         fragmentTransaction.add(R.id.energyRatioContainer,energyRatioGraph);
         fragmentTransaction.add(R.id.factCardsContainer,factCards);
-        fragmentTransaction.add(R.id.renewableSourcesContainer,renewableBreakdownContainer);
+        fragmentTransaction.add(R.id.renewableSourcesContainer, renewableBreakdownContainer);
+        fragmentTransaction.add(R.id.out, menuFragment);
+        fragmentTransaction.hide(menuFragment);
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
         fragmentTransaction.commit();
-        openCloseButton = (Button)findViewById(R.id.button2);
 
     }
 
     public void openSlideFragment(View v) {
+        showButton.setVisibility(View.INVISIBLE);   //Hides show button
+        RelativeLayout relativeLayoutOut = (RelativeLayout) findViewById(R.id.out);
+        relativeLayoutOut.setBackgroundColor(Color.parseColor("#99000000"));
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        SlideOutPanel menuFragment = new SlideOutPanel();
-//        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, 0);
-        fragmentTransaction.add(R.id.out, menuFragment);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
+        fragmentTransaction.show(menuFragment);
         fragmentTransaction.commit();
-        openCloseButton.setVisibility(View.INVISIBLE);
-
     }
 
-    public void closeSlideFragment(View v){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        DummyFragment menuFragment = new DummyFragment();
-//        fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, 0);
-        fragmentTransaction.replace(R.id.out, menuFragment);
-        fragmentTransaction.commit();
-        openCloseButton.setVisibility(View.VISIBLE);
-
+    public void hideShowButton(){
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+        fadeIn.setDuration(1000);
+        showButton.startAnimation(fadeIn);
+        showButton.setEnabled(true);
+        showButton.setVisibility(View.VISIBLE);   //Hides show button
+        RelativeLayout relativeLayoutOut = (RelativeLayout) findViewById(R.id.out);
+        relativeLayoutOut.setBackgroundColor(Color.TRANSPARENT);
     }
 
     public void onCountryOption1Selected(Country country){
+        countryOneHolder.setText(country.getName());
         Toast.makeText(this,country.toString(),Toast.LENGTH_SHORT).show();
     }
 
     public void onCountryOption2Selected(Country country){
+        countryTwoHolder.setText(country.getName());
         Toast.makeText(this,country.toString(),Toast.LENGTH_SHORT).show();
     }
 

@@ -3,6 +3,7 @@ package com.sage.projectwalk;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,40 +56,63 @@ public class CountryAdapter extends ArrayAdapter<Country> {
 
         Country country = data.get(position);
         holder.countryName.setText(country.getName());
-        Indicator popIndicator = country.getIndicators().get("SP.POP.TOTL");
+//        Indicator popIndicator = country.getIndicators().get("SP.POP.TOTL");
         String population = " ";
-        if(popIndicator != null){
-            Set<Integer> allYears = popIndicator.getIndicatorData().keySet();
-            int maxYear = Collections.max(allYears);
-            Double popAmount = popIndicator.getIndicatorData().get(maxYear);
-            BigDecimal myNumber = new BigDecimal(popAmount);
-            int pop = myNumber.intValue();
-            population += "\t Population("+maxYear+"): "+pop;
-        }else{
-            Log.i("MYAPP","Population empty for "+country.getName());
-        }
+//        if(popIndicator != null){
+//            Set<Integer> allYears = popIndicator.getIndicatorData().keySet();
+//            int maxYear = Collections.max(allYears);
+//            Double popAmount = popIndicator.getIndicatorData().get(maxYear);
+//            BigDecimal myNumber = new BigDecimal(popAmount);
+//            int pop = myNumber.intValue();
+//            population += "\t Population("+maxYear+"): "+pop;
+//        }else{
+//            Log.i("MYAPP","Population empty for "+country.getName());
+//        }
         holder.capitalCity.setText(country.getCapitalCity()+population);
+
+        holder.position = position;
 
         //Finds the image for the flag in the drawable folder
         String uri = "drawable/"+country.getIsoCode().toLowerCase()+"_img";
-        //This generates the resource Id for that flag image
-        int imageResource = context.getResources().getIdentifier(uri,null,context.getPackageName());
-        Drawable flag = null;
-        try{
-            flag = context.getResources().getDrawable(imageResource);
-            holder.countryFlag.setImageDrawable(flag);
-        }catch (Exception e){
-            Log.i("MYAPP","couldn't find image for "+country.getName()+" ISO: "+country.getIsoCode());
-            flag = context.getResources().getDrawable(R.drawable.missingflag);
-            holder.countryFlag.setImageDrawable(flag);
-            missingFlags++;
-        }
+        new FlagImageTask(position,holder,context).execute(uri);
         return row;
+    }
+
+    /**
+     * This AsyncTask fetches a countries flag
+     * This prevents the list from lagging when initially loading
+     */
+    private static class FlagImageTask extends AsyncTask<String,Void,Drawable>{
+        private int mPosition;
+        private ViewHolder mHolder;
+        private Context context;
+
+        public FlagImageTask(int mPosition,ViewHolder mHolder,Context context){
+            this.mPosition = mPosition;
+            this.mHolder = mHolder;
+            this.context = context;
+        }
+
+        @Override
+        protected Drawable doInBackground(String... drawableURI) {
+            //This generates the resource Id for that flag image
+            int imageResource = context.getResources().getIdentifier(drawableURI[0],null,context.getPackageName());
+            return context.getResources().getDrawable(imageResource);
+        }
+
+        @Override
+        protected void onPostExecute(Drawable drawable) {
+            super.onPostExecute(drawable);
+            if(mHolder.position == mPosition && drawable != null){
+                mHolder.countryFlag.setImageDrawable(drawable);
+            }
+        }
     }
 
     static class ViewHolder {
         ImageView countryFlag;
         TextView countryName;
         TextView capitalCity;
+        int position;
     }
 }
