@@ -7,6 +7,14 @@
 
 
 
+    <!-- DUMMY VIEW AREA - IF CLICKED - WILL CLOSE PANEL-->
+    <RelativeLayout
+        android:id="@+id/outsideView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </RelativeLayout>
+
     <!-- SIDE PANEL-->
     <LinearLayout
         android:layout_width="350dp"

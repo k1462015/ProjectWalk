@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 
@@ -71,14 +72,25 @@ public class SlideOutPanel extends Fragment {
         panelSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
-                fragmentTransaction.hide(fragmentManager.findFragmentById(R.id.out));
-                fragmentTransaction.commit();
-                countryListListener.hideShowButton();
+                hidePanel();
             }
         });
+        RelativeLayout outsideView = (RelativeLayout) getView().findViewById(R.id.outsideView);
+        outsideView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hidePanel();
+            }
+        });
+    }
+
+    public void hidePanel(){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
+        fragmentTransaction.hide(fragmentManager.findFragmentById(R.id.out));
+        fragmentTransaction.commit();
+        countryListListener.hideShowButton();
     }
 
     private class ListViewListenerOne implements AdapterView.OnItemClickListener{
