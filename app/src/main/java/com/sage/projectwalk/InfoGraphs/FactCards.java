@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sage.projectwalk.R;
@@ -40,13 +40,11 @@ public class FactCards extends Fragment{
 
         View view = inflater.inflate(R.layout.fact_cards, container, false);
 
-
         mfactLabel = (TextView) view.findViewById(R.id.factTextView);
-        Button mshowFactsButton = (Button) view.findViewById(R.id.showFactsButton);
-        mshowFactsButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
+        RelativeLayout rl = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
+        rl.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
                 String fact = getFact();
                 //Update the label with a fact from the array
                 mfactLabel.setText(fact);
