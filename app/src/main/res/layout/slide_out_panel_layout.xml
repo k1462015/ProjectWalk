@@ -59,7 +59,8 @@
         android:text="Hide"
         android:layout_alignLeft="@id/layoutWrapper"
         android:layout_alignTop="@id/layoutWrapper"
-        android:layout_marginLeft="-82dp"/>
+        android:layout_marginLeft="-82dp"
+        android:elevation="50dp"/>
 
 </RelativeLayout>
 
