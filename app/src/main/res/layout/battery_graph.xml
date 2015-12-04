@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@android:color/white">
 
     <!-- BATTERY FRAGMENT 1-->
     <LinearLayout
@@ -18,13 +20,21 @@
             android:layout_weight="1"
             android:text="60%"
             android:gravity="center_horizontal"
-            android:textSize="50dp"/>
+            android:textSize="40dp" />
         <ImageView
             android:id="@+id/countryOneBattery"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/battery0"/>
+        <SeekBar
+            android:id="@+id/countryOneSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:max="10"/>
+
 
 
     </LinearLayout>
@@ -42,13 +52,21 @@
             android:layout_weight="1"
             android:text="80%"
             android:gravity="center_horizontal"
-            android:textSize="50dp"/>
+            android:textSize="40dp"/>
         <ImageView
             android:id="@+id/countryTwoBattery"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/battery0"/>
+
+        <SeekBar
+            android:id="@+id/countryTwoSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:max="10"/>
 
     </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.sage.projectwalk.InfoGraphs;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.Indicator;
@@ -16,8 +20,10 @@ import java.util.Set;
 
 
 public class BatteryGraph extends Fragment{
-    Country countryOne;
-    Country countryTwo;
+    TextView countryOnePercent;
+    TextView countryTwoPercent;
+    ImageView countryOneBattery;
+    ImageView countryTwoBattery;
 
     @Nullable
     @Override
@@ -28,52 +34,96 @@ public class BatteryGraph extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //Initialises two example countries
-        //Once you have completed the implemention behind this fragment
-        //I will create a link between the activity and this fragment
-        //So the fragment changes data according to selected country
-        //DO NOT CHANGE
-        //<<<<<<<<<<EXAMPLE>>>>>>>>>>>>>>>>//
-//        countryOne = new Country();
-//        countryOne.setName("United States");
-//        countryOne.setIsoCode("US");
-//        countryTwo = new Country();
-//        countryTwo.setName("Russia");
-//        countryTwo.setIsoCode("RU");
 
-//        Indicator indicator = new Indicator();
-//        indicator.setName("3.1.3_HYDRO.CONSUM");
-//        indicator.addData(2015, 34395.0);
-//        indicator.addData(2014, 2434.2);
-//        indicator.addData(2013, 323123.2);
-//        indicator.addData(2012, 321321.0);
+        countryOnePercent = (TextView) getView().findViewById(R.id.countryOnePercent);
+        countryOneBattery  = (ImageView) getView().findViewById(R.id.countryOneBattery);
 
-//        countryOne.addIndicator(indicator);
-//        countryTwo.addIndicator(indicator);
-        //<<<<<<<<<<EXAMPLE>>>>>>>>>>>>>>>>//
-        //This method should be called to create the graph
-        //createGraph();
-    }
+        countryTwoPercent = (TextView) getView().findViewById(R.id.countryTwoPercent);
+        countryTwoBattery = (ImageView) getView().findViewById(R.id.countryTwoBattery);
 
-    /**
-     * This method should use the 2 country objects
-     * in the field variables, extract data from them
-     * And then create 2 graphs (one for each country)
-     */
-    public void createGraph(){
-        //Example of how to extract data
-        //<<<<EXAMPLE>>>
-        ///Let's say I want data for the indicator 3.1.3_HYDRO.CONSUM of countryOne
-        ///of the year 2014
-//        Double value = countryOne.getIndicators().get("3.1.3_HYDRO.CONSUM").getData(2014);
 
-        //Let's say I want all the possible years of data the indicator 3.1.3_HYDRO.CONSUM has
-//        Set<Integer> allYear = countryOne.getIndicators().get("3.1.3_HYDRO.CONSUM").getIndicatorData().keySet();
-        //And then to extract the years, use enhanced for loop
-//        for (Integer year:allYear){
-//            //Log.i("MYAPP",year);
-//        }
-        //<<<<EXAMPLE>>>
 
     }
+
+    public void updateCountryOne(Country country){
+        ///Example for 2002
+        Indicator consumptionIndicator = country.getIndicators().get("3.1_RE.CONSUMPTION");
+        Indicator finalConsumptionIndicator = country.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
+
+        try{
+            int consumptionAmount = consumptionIndicator.getData(2002).intValue();
+            int finalAmount = finalConsumptionIndicator.getData(2002).intValue();
+            Log.i("MYAPP","Consumption Ammount: "+consumptionAmount);
+            Log.i("MYAPP","Fianl Amount: "+finalAmount);
+            float p = (int) consumptionAmount * 100f / finalAmount;
+            int percentage = (int) p;
+            countryOnePercent.setText(percentage+"%");
+            updateCountryImageOne(percentage);
+        }catch (Exception e){
+            Toast.makeText(getActivity(), "No data for 2002 " + country.getName(), Toast.LENGTH_SHORT);
+        }
+    }
+
+    public void updateCountryTwo(Country country){
+        ///Example for 2002
+        Indicator consumptionIndicator = country.getIndicators().get("3.1_RE.CONSUMPTION");
+        Indicator finalConsumptionIndicator = country.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
+        try{
+            int consumptionAmount = consumptionIndicator.getData(2002).intValue();
+            int finalAmount = finalConsumptionIndicator.getData(2002).intValue();
+            Log.i("MYAPP","Consumption Ammount: "+consumptionAmount);
+            Log.i("MYAPP","Fianl Amount: "+finalAmount);
+            float p = (int) consumptionAmount * 100f / finalAmount;
+            int percentage = (int) p;
+
+            countryTwoPercent.setText(percentage+"%");
+            updateCountryImageTwo(percentage);
+        }catch (Exception e){
+            Toast.makeText(getActivity(), "No data for 2002 " + country.getName(), Toast.LENGTH_SHORT);
+        }
+
+    }
+
+    private void updateCountryImageOne(int percentage){
+        percentage = roundUp(percentage);
+        if(percentage <= 100 && percentage >= 0){
+            try{
+                //This generates the resource Id for that flag image
+                int imageResource = getActivity().getResources().getIdentifier("drawable/battery"+percentage,null,getActivity().getPackageName());
+                Drawable batteryImage = getActivity().getResources().getDrawable(imageResource);
+                countryOneBattery.setImageDrawable(batteryImage);
+            }catch (Exception e){
+                Log.e("MYAPP","Error loading image");
+            }
+
+        }
+    }
+
+
+
+    private void updateCountryImageTwo(int percentage){
+        percentage = roundUp(percentage);
+
+        if(percentage <= 100 && percentage >= 0){
+            try{
+                //This generates the resource Id for that flag image
+                int imageResource = getActivity().getResources().getIdentifier("drawable/battery"+percentage,null,getActivity().getPackageName());
+                Drawable batteryImage = getActivity().getResources().getDrawable(imageResource);
+                countryTwoBattery.setImageDrawable(batteryImage);
+            }catch (Exception e){
+                Log.e("MYAPP","Error loading image");
+            }
+
+        }
+
+
+    }
+
+    public int roundUp(int n) {
+        return (n + 4) / 5 * 5;
+    }
+
+
+
+
 }
