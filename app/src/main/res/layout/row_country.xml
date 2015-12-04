@@ -12,7 +12,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:src="@drawable/missingflag" />
+        android:src="@drawable/loading" />
     <!-- COUNTRY CAPITAL CITY-->
     <TextView
         android:id="@+id/capitalCity"
