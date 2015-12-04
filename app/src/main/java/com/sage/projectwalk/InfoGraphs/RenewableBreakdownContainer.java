@@ -25,6 +25,7 @@ import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.R;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -64,7 +65,7 @@ public class RenewableBreakdownContainer extends Fragment{
         for(int i = 0; i< indicators.length; i++){
             indicator = new Indicator();
             indicator.setId(indicators[i]);
-            indicator.addData(2012, 321321.0);
+            indicator.addData(2012, new BigDecimal(321321.0));
 
             countryA.addIndicator(indicator);
             countryB.addIndicator(indicator);
@@ -120,12 +121,12 @@ public class RenewableBreakdownContainer extends Fragment{
         ArrayList<BarEntry> valuesCountryA = new ArrayList<>();
         ArrayList<BarEntry> valuesCountryB = new ArrayList<>();
         for(int i =0; i < indicators.length;i++){
-           double valueA = countryA.getIndicators().get(indicators[i]).getData(2012);
+           double valueA = countryA.getIndicators().get(indicators[i]).getData(2012).doubleValue();
            float a = (float)(valueA/totalREA) *100 ; //have to convert to float as that BarEntrys first param also calculating percentage here
            BarEntry A = new BarEntry(a,i);
            valuesCountryA.add(i,A);  //adding to index I so as to override each time SeekBar changes value
 
-           Double valueB = countryB.getIndicators().get(indicators[i]).getData(2012);
+           Double valueB = countryB.getIndicators().get(indicators[i]).getData(2012).doubleValue();
            float b = (float)(valueB/totalREB)*100; ////have to convert to float as that BarEntrys first param also calculating percentage here
            BarEntry B = new BarEntry(b,i);
            valuesCountryB.add(i,B); //adding to index I so as to override each time SeekBar changes value

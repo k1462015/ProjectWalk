@@ -34,22 +34,22 @@ public class BatteryGraph extends Fragment{
         //So the fragment changes data according to selected country
         //DO NOT CHANGE
         //<<<<<<<<<<EXAMPLE>>>>>>>>>>>>>>>>//
-        countryOne = new Country();
-        countryOne.setName("United States");
-        countryOne.setIsoCode("US");
-        countryTwo = new Country();
-        countryTwo.setName("Russia");
-        countryTwo.setIsoCode("RU");
+//        countryOne = new Country();
+//        countryOne.setName("United States");
+//        countryOne.setIsoCode("US");
+//        countryTwo = new Country();
+//        countryTwo.setName("Russia");
+//        countryTwo.setIsoCode("RU");
 
-        Indicator indicator = new Indicator();
-        indicator.setName("3.1.3_HYDRO.CONSUM");
-        indicator.addData(2015, 34395.0);
-        indicator.addData(2014, 2434.2);
-        indicator.addData(2013, 323123.2);
-        indicator.addData(2012, 321321.0);
+//        Indicator indicator = new Indicator();
+//        indicator.setName("3.1.3_HYDRO.CONSUM");
+//        indicator.addData(2015, 34395.0);
+//        indicator.addData(2014, 2434.2);
+//        indicator.addData(2013, 323123.2);
+//        indicator.addData(2012, 321321.0);
 
-        countryOne.addIndicator(indicator);
-        countryTwo.addIndicator(indicator);
+//        countryOne.addIndicator(indicator);
+//        countryTwo.addIndicator(indicator);
         //<<<<<<<<<<EXAMPLE>>>>>>>>>>>>>>>>//
         //This method should be called to create the graph
         //createGraph();
@@ -65,14 +65,14 @@ public class BatteryGraph extends Fragment{
         //<<<<EXAMPLE>>>
         ///Let's say I want data for the indicator 3.1.3_HYDRO.CONSUM of countryOne
         ///of the year 2014
-        Double value = countryOne.getIndicators().get("3.1.3_HYDRO.CONSUM").getData(2014);
+//        Double value = countryOne.getIndicators().get("3.1.3_HYDRO.CONSUM").getData(2014);
 
         //Let's say I want all the possible years of data the indicator 3.1.3_HYDRO.CONSUM has
-        Set<Integer> allYear = countryOne.getIndicators().get("3.1.3_HYDRO.CONSUM").getIndicatorData().keySet();
+//        Set<Integer> allYear = countryOne.getIndicators().get("3.1.3_HYDRO.CONSUM").getIndicatorData().keySet();
         //And then to extract the years, use enhanced for loop
-        for (Integer year:allYear){
-            //Log.i("MYAPP",year);
-        }
+//        for (Integer year:allYear){
+//            //Log.i("MYAPP",year);
+//        }
         //<<<<EXAMPLE>>>
 
     }
