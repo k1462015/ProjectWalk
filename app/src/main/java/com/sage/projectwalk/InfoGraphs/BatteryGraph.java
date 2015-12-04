@@ -52,7 +52,7 @@ public class BatteryGraph extends Fragment{
         countryTwo.addIndicator(indicator);
         //<<<<<<<<<<EXAMPLE>>>>>>>>>>>>>>>>//
         //This method should be called to create the graph
-        createGraph();
+        //createGraph();
     }
 
     /**
@@ -71,7 +71,7 @@ public class BatteryGraph extends Fragment{
         Set<Integer> allYear = countryOne.getIndicators().get("3.1.3_HYDRO.CONSUM").getIndicatorData().keySet();
         //And then to extract the years, use enhanced for loop
         for (Integer year:allYear){
-            Log.i("MYAPP",year);
+            //Log.i("MYAPP",year);
         }
         //<<<<EXAMPLE>>>
 
