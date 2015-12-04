@@ -1,5 +1,6 @@
 package com.sage.projectwalk.Data;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -10,7 +11,7 @@ public class Indicator {
     private String id;
     private String name;
     private String description;
-    private HashMap<Integer,Double> indicatorData;
+    private HashMap<Integer,BigDecimal> indicatorData;
 
     public Indicator(){
         indicatorData = new HashMap<>();
@@ -40,19 +41,19 @@ public class Indicator {
         this.description = description;
     }
 
-    public void addData(Integer year,Double data){
+    public void addData(Integer year,BigDecimal data){
         indicatorData.put(year,data);
     }
 
-    public Double getData(Integer year){
+    public BigDecimal getData(Integer year){
         return indicatorData.get(year);
     }
 
-    public HashMap<Integer, Double> getIndicatorData() {
+    public HashMap<Integer, BigDecimal> getIndicatorData() {
         return indicatorData;
     }
 
-    public void setIndicatorData(HashMap<Integer, Double> indicatorData) {
+    public void setIndicatorData(HashMap<Integer, BigDecimal> indicatorData) {
         this.indicatorData = indicatorData;
     }
 

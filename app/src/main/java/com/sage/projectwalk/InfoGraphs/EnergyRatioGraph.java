@@ -113,7 +113,7 @@ public class EnergyRatioGraph extends Fragment {
             //Now extract values
             for (int i = 0;i < xValues.length;i++){
                 Integer year = Integer.parseInt(xValues[i]);
-                BigDecimal bigDecimal = new BigDecimal(energyRatioIndicator.getData(year));
+                BigDecimal bigDecimal = energyRatioIndicator.getData(year);
                 dataset.add(new Entry(bigDecimal.intValue(),i));
                 Log.i("MYAPP",bigDecimal.intValue()+"");
             }
@@ -158,7 +158,7 @@ public class EnergyRatioGraph extends Fragment {
             for (int i = 0;i < xValues.length;i++){
                 Integer year = Integer.parseInt(xValues[i]);
                 try {
-                    BigDecimal bigDecimal = new BigDecimal(energyRatioIndicator.getData(year));
+                    BigDecimal bigDecimal = energyRatioIndicator.getData(year);
                     dataset.add(new Entry(bigDecimal.intValue(), i));
                 }catch (NullPointerException e){
 

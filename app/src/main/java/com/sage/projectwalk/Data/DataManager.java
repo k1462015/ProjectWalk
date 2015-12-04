@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -71,9 +72,9 @@ public class DataManager {
                     Log.i("MYAPP","CREATED indicator object "+indicator+" with id "+id+" and name "+name);
                     for (int i = 0;i < indicatorContent.length();i++){
                         JSONObject jsonObject = indicatorContent.getJSONObject(i);
-                        Double value;
+                        BigDecimal value;
                         if(!jsonObject.isNull("value")){
-                            value = Double.parseDouble(jsonObject.getString("value"));
+                            value = new BigDecimal(jsonObject.getString("value"));
                             Integer date;
                             try{
                                 date = Integer.parseInt(jsonObject.getString("date"));
@@ -125,10 +126,10 @@ public class DataManager {
                         JSONObject jsonObject1 = actualPopData.getJSONObject(j);
                         try{
                             if(!jsonObject1.isNull("value") && !jsonObject1.isNull("date")){
-                                Double date = new Double(jsonObject1.getString("value"));
+                                BigDecimal data = new BigDecimal(jsonObject1.getString("value"));
                                 int year = Integer.parseInt(jsonObject1.getString("date"));
-                                indicator.addData(year,date);
-                                Log.i("MYAPP","Added indicator "+date+" "+year+" "+iso2Code);
+                                indicator.addData(year,data);
+                                Log.i("MYAPP","Added indicator "+data+" "+year+" "+iso2Code);
                             }
                         }catch (NumberFormatException e){
                             Log.i("MYAPP","PROBLEM ADDED POPULATION DATA "+iso2Code);
