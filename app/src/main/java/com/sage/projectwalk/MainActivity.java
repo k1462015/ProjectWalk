@@ -28,12 +28,17 @@ import com.sage.projectwalk.InfoGraphs.FactCards;
 import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
 import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity implements SlideOutPanel.CountryListListener{
     DataManager dataManager;
     private Button showButton;
     SlideOutPanel menuFragment;
     TextView countryOneHolder;
     TextView countryTwoHolder;
+    EnergyRatioGraph energyRatioGraph;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
         //Adds all fragments to main activity
         BatteryGraph batteryGraph = new BatteryGraph();
-        EnergyRatioGraph energyRatioGraph = new EnergyRatioGraph();
+        energyRatioGraph = new EnergyRatioGraph();
         FactCards factCards = new FactCards();
         RenewableBreakdownContainer renewableBreakdownContainer = new RenewableBreakdownContainer();
         menuFragment = new SlideOutPanel();
@@ -92,12 +97,26 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
     public void onCountryOption1Selected(Country country){
         countryOneHolder.setText(country.getName());
-        Toast.makeText(this,country.toString(),Toast.LENGTH_SHORT).show();
+        try {
+            country = dataManager.getCountryIndicator(country.getIsoCode(),"8.1.2_FINAL.ENERGY.INTENSITY");
+            energyRatioGraph.updateCountryOne(country);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onCountryOption2Selected(Country country){
         countryTwoHolder.setText(country.getName());
-        Toast.makeText(this,country.toString(),Toast.LENGTH_SHORT).show();
+        try {
+            country = dataManager.getCountryIndicator(country.getIsoCode(),"8.1.2_FINAL.ENERGY.INTENSITY");
+            energyRatioGraph.updateCountryTwo(country);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

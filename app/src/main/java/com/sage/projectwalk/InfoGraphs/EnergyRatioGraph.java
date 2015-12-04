@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,13 @@ import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.R;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -35,8 +42,8 @@ public class EnergyRatioGraph extends Fragment {
 
     private RelativeLayout mainLayout;
     private LineChart mChart;
-
-
+    ArrayList<LineDataSet> lineDataSets;
+    String[] xValues;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,9 +52,6 @@ public class EnergyRatioGraph extends Fragment {
 
         mainLayout = (RelativeLayout) v.findViewById(R.id.mainLayout);
 
-
-
-
         //create line chart
         mChart = new LineChart(getActivity());
         mainLayout = (RelativeLayout) v.findViewById(R.id.mainLayout);
@@ -55,12 +59,9 @@ public class EnergyRatioGraph extends Fragment {
         mainLayout.addView(mChart);
 
         //chart description
-        mChart.setDescription("");
+        mChart.setDescription("Energy Ratio");
         mChart.setNoDataTextDescription("No data at the moment");
-        //enable value highlighting
-        //mChart.setHighlightEnabled(true);
-        mChart.setMinimumHeight(330);
-        mChart.setMinimumWidth(600);
+
         //enable touch gestures
         mChart.setTouchEnabled(true);
 
@@ -71,86 +72,15 @@ public class EnergyRatioGraph extends Fragment {
 
         mChart.setPinchZoom(true);
 
-
-        // Initialises two example countries
-        // Once you have completed the implemention behind this fragment
-        // I will create a link between the activity and this fragment
-        // So the fragment changes data according to selected country
-        // DO NOT CHANGE
-        // <<<<<<<<<<EXAMPLE>>>>>>>>>>>>>>>>
-        Country countryOne = new Country();
-        countryOne.setName("United States");
-        countryOne.setIsoCode("US");
-        Country countryTwo = new Country();
-        countryTwo.setName("Russia");
-        countryTwo.setIsoCode("RU");
-        Indicator indicator = new Indicator();
-        indicator.setName("3.1.3_HYDRO.CONSUM");
-        indicator.addData(2015, 34395.0);
-        indicator.addData(2014, 2434.2);
-        indicator.addData(2013, 323123.2);
-        indicator.addData(2012, 321321.0);
-        countryOne.addIndicator(indicator);
-        countryTwo.addIndicator(indicator);
-
-
-
-
-        //data
-        LineData data = new LineData();
-        data.setValueTextColor(Color.BLACK);
-
-        ArrayList<Entry> dataset1 = new ArrayList<Entry>();
-        dataset1.add(new Entry(1f, 0));
-        dataset1.add(new Entry(2f, 1));
-        dataset1.add(new Entry(3f, 2));
-        dataset1.add(new Entry(4f, 3));
-        dataset1.add(new Entry(5f, 4));
-        dataset1.add(new Entry(6f, 5));
-        dataset1.add(new Entry(7f, 6));
-
-
-        ArrayList<Entry> dataset2 = new ArrayList<Entry>();
-        dataset2.add(new Entry(3f, 0));
-        dataset2.add(new Entry(4f, 1));
-        dataset2.add(new Entry(5f, 2));
-        dataset2.add(new Entry(6f, 6));
-        dataset2.add(new Entry(7f, 8));
-        dataset2.add(new Entry(8f, 9));
-        dataset2.add(new Entry(9f, 8));
-
-
-        String[] xAxis = new String[] {"0", "1", "2", "3", "4", "5", "6", "8", "9"};
-
-
-        ArrayList<LineDataSet> lines = new ArrayList<LineDataSet> ();
-
-        LineDataSet lDataSet1 = new LineDataSet(dataset1, "DataSet1");
-        lDataSet1.setColor(Color.RED);
-        lDataSet1.setCircleColor(Color.RED);
-        lines.add(lDataSet1);
-
-        LineDataSet lDataSet2 = new LineDataSet(dataset2, "DataSet2");
-        lDataSet2.setColor(Color.BLUE);
-        lDataSet2.setCircleColor(Color.BLUE);
-        lines.add(lDataSet2);
-
-
-
-        mChart.setData(new LineData(xAxis, lines));
-
-
-
-
-
+        //To hold all data sets
+        lineDataSets = new ArrayList<>();
+        xValues = null;
         //get legend object
         Legend l = mChart.getLegend();
 
         //customize legend
         l.setForm(Legend.LegendForm.LINE);
         l.setTextColor(Color.BLACK);
-
-
 
 
         mChart.getAxisLeft().setEnabled(true);
@@ -160,35 +90,109 @@ public class EnergyRatioGraph extends Fragment {
         mChart.getAxisLeft().setTextColor(Color.BLACK);
 
         mChart.animateXY(1500, 2000);
-
-
-
-
-
-        //Example of how to extract data
-        // <<<<EXAMPLE>>>
-        // /Let's say I want data for the indicator 3.1.3_HYDRO.CONSUM of countryOne//
-        // /of the year 2014
-        // Double value = countryOne.getIndicators().get("3.1.3_HYDRO.CONSUM").getData(2014);
-        // Let's say I want all the possible years of data the indicator 3.1.3_HYDRO.CONSUM
-        // hasSet<Integer> allYear = countryOne.getIndicators().get("3.1.3_HYDRO.CONSUM").getIndicatorData().keySet();
-        // And then to extract the years, use enhanced for loop
-        // for (Integer year:allYear)
-        // {
-        // Log.i("MYAPP",year);}
-        // <<<<EXAMPLE>>>
-
-
-
-
-
-
         return v;
-
-
 
     }
 
+    public void updateCountryOne(Country country){
+        Indicator energyRatioIndicator = country.getIndicators().get("8.1.2_FINAL.ENERGY.INTENSITY");
+        if(energyRatioIndicator != null){
+            //Get data values
+            ArrayList<Entry> dataset = new ArrayList<Entry>();
 
+            //Get X Axis Values
+            Set<Integer> allYears = energyRatioIndicator.getIndicatorData().keySet();
+            xValues = new String[allYears.size()];
+            int index = 0;
+            for (Integer year:allYears){
+                xValues[index] = year.toString();
+                index++;
+            }
+            Arrays.sort(xValues);
 
+            //Now extract values
+            for (int i = 0;i < xValues.length;i++){
+                Integer year = Integer.parseInt(xValues[i]);
+                BigDecimal bigDecimal = new BigDecimal(energyRatioIndicator.getData(year));
+                dataset.add(new Entry(bigDecimal.intValue(),i));
+                Log.i("MYAPP",bigDecimal.intValue()+"");
+            }
+            LineDataSet lDataSet1 = new LineDataSet(dataset, country.getName());
+            lDataSet1.setColor(Color.RED);
+            lDataSet1.setCircleColor(Color.RED);
+            if(lineDataSets.size() > 0){
+                lineDataSets.remove(0);
+            }
+            lineDataSets.add(0, lDataSet1);
+
+            mChart.removeAllViews();
+            mChart.setData(new LineData(xValues, lineDataSets));
+            mChart.animateXY(1500, 2000);
+            Log.i("MYAPP","Updated country 1 energy ratio");
+        }else{
+            Log.e("MYAPP","Could not find indicator data for energy ratio C1");
+        }
+
+    }
+
+    public void updateCountryTwo(Country country){
+        Indicator energyRatioIndicator = country.getIndicators().get("8.1.2_FINAL.ENERGY.INTENSITY");
+        if(energyRatioIndicator != null){
+            //Get data values
+            ArrayList<Entry> dataset = new ArrayList<Entry>();
+
+            //Check if there are X axis values from country 1
+            //Get X Axis Values
+            if(xValues == null){
+                Set<Integer> allYears = energyRatioIndicator.getIndicatorData().keySet();
+                xValues = new String[allYears.size()];
+                int index = 0;
+                for (Integer year:allYears){
+                    xValues[index] = year.toString();
+                    index++;
+                }
+                Arrays.sort(xValues);
+            }
+
+            //Now extract values
+            for (int i = 0;i < xValues.length;i++){
+                Integer year = Integer.parseInt(xValues[i]);
+                try {
+                    BigDecimal bigDecimal = new BigDecimal(energyRatioIndicator.getData(year));
+                    dataset.add(new Entry(bigDecimal.intValue(), i));
+                }catch (NullPointerException e){
+
+                }
+            }
+            LineDataSet lDataSet1 = new LineDataSet(dataset, country.getName());
+            lDataSet1.setColor(Color.BLUE);
+            lDataSet1.setCircleColor(Color.BLACK);
+            if(lineDataSets.size() > 1){
+                lineDataSets.remove(1);
+            }
+            lineDataSets.add(1, lDataSet1);
+
+            mChart.removeAllViews();
+            mChart.setData(new LineData(xValues, lineDataSets));
+            mChart.refreshDrawableState();
+            mChart.animateXY(1500, 2000);
+            Log.i("MYAPP", "Updated country 2 energy ratio");
+        } else{
+            Log.e("MYAPP","Could not find indicator data for energy ratio C2");
+        }
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                mChart.setMinimumHeight(getView().getHeight()-10);
+                mChart.setMinimumWidth(getView().getWidth()-10);
+            }
+        });
+
+    }
 }
