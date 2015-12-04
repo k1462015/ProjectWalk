@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.R;
 
 import java.util.Random;
@@ -19,6 +20,9 @@ import java.util.Random;
 public class FactCards extends Fragment{
 
     private TextView mfactLabel;
+    private Country mCountryOne;
+    private Country mCountryTwo;
+
 
     private String[] Facts = {
             "Germany's capital is Berlin.",
@@ -40,7 +44,8 @@ public class FactCards extends Fragment{
 
         View view = inflater.inflate(R.layout.fact_cards, container, false);
 
-        mfactLabel = (TextView) view.findViewById(R.id.factTextView);
+        mfactLabel = (TextView) view.findViewById(R.id.textView);
+
 
         RelativeLayout rl = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
         rl.setOnClickListener(new View.OnClickListener(){
