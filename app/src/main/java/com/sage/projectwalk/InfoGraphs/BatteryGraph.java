@@ -18,6 +18,8 @@ import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
 
@@ -94,11 +96,12 @@ public class BatteryGraph extends Fragment{
         for (Integer year:dataYears){
             allYears.add(year);
         }
+        Collections.sort(allYears);
+
         batteryYearSeekBar.setProgress(0);
         batteryYearSeekBar.setMax(allYears.size() - 1);
         if(allYears.size() > 1){
             currentYear.setText(allYears.get(batteryYearSeekBar.getProgress()) + "");
-
             refreshBatteryOne();
             refreshBatteryTwo();
         }else{
