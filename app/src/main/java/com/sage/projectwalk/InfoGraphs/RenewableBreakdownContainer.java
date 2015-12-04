@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.YAxis;
@@ -62,44 +63,47 @@ public class RenewableBreakdownContainer extends Fragment{
 
         for(int i = 0; i< indicators.length; i++){
             indicator = new Indicator();
-            indicator.setName(indicators[i]);
+            indicator.setId(indicators[i]);
             indicator.addData(2012, 321321.0);
 
             countryA.addIndicator(indicator);
             countryB.addIndicator(indicator);
         }
 
+        seekBar =  (SeekBar) getView().findViewById(R.id.YearOfData);
+        seekBar.setMax(22);
+
         final HorizontalBarChart RenewableChart = (HorizontalBarChart) getView().findViewById(R.id.BreakDownChart);
         BarData barData = new BarData(getXAxisValues(),getDataSet());
         RenewableChart.setData(barData);
         RenewableChart.animateXY(2000, 2000);
+        //final String[] description = {"1990"};
+        RenewableChart.setDescription("");
         RenewableChart.invalidate();
 
-        seekBar =  (SeekBar) getView().findViewById(R.id.YearOfData);
-        seekBar.setMax(2012);
-//        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//
-//                //to make sure that the selection is never below 1990, the earliest we have for these indicators
-//                int minYear = 2012; //TODO change itback to 2012, this is only for testing purposes
-//                if (progress < minYear) {
-//                    seekBar.setProgress(minYear);
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
+        final TextView textView = (TextView) getView().findViewById(R.id.YearTextField);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+
+                //to make sure that the selection is never below 1990, the earliest we have for these indicators
+                //description[0] = "Year: " + (1990 + progress);
+                textView.setText(Integer.toString(1990 + progress));
+
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
 
 
@@ -116,7 +120,6 @@ public class RenewableBreakdownContainer extends Fragment{
         ArrayList<BarEntry> valuesCountryA = new ArrayList<>();
         ArrayList<BarEntry> valuesCountryB = new ArrayList<>();
         for(int i =0; i < indicators.length;i++){
-
            double valueA = countryA.getIndicators().get(indicators[i]).getData(2012);
            float a = (float)(valueA/totalREA) *100 ; //have to convert to float as that BarEntrys first param also calculating percentage here
            BarEntry A = new BarEntry(a,i);
