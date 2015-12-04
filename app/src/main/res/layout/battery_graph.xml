@@ -3,71 +3,102 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="@android:color/white">
 
-    <!-- BATTERY FRAGMENT 1-->
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="15">
 
+        <!-- BATTERY FRAGMENT 1-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/countryOnePercent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="60%"
+                android:gravity="center"
+                android:textSize="15dp" />
+            <TextView
+                android:id="@+id/countryOneName"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Name of country"
+                android:gravity="center"
+                android:textSize="15dp" />
+            <ImageView
+                android:id="@+id/countryOneBattery"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="8"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/battery0"/>
+        </LinearLayout>
         <TextView
-            android:id="@+id/countryOnePercent"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="% Of Renewable Energy Used by a Country"
             android:layout_weight="1"
-            android:text="60%"
-            android:gravity="center_horizontal"
-            android:textSize="40dp" />
-        <ImageView
-            android:id="@+id/countryOneBattery"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/battery0"/>
-        <SeekBar
-            android:id="@+id/countryOneSeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:textSize="30dp"
+            android:gravity="center"/>
+        <!-- BATTERY FRAGMENT 1-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:max="10"/>
+            android:orientation="vertical">
 
-
-
+            <TextView
+                android:id="@+id/countryTwoPercent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="80%"
+                android:gravity="center"
+                android:textSize="15dp"/>
+            <TextView
+                android:id="@+id/countryTwoName"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Name of country"
+                android:gravity="center"
+                android:textSize="15dp" />
+            <ImageView
+                android:id="@+id/countryTwoBattery"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="8"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/battery0"/>
+        </LinearLayout>
     </LinearLayout>
-    <!-- BATTERY FRAGMENT 1-->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/countryTwoPercent"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="80%"
-            android:gravity="center_horizontal"
-            android:textSize="40dp"/>
-        <ImageView
-            android:id="@+id/countryTwoBattery"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/battery0"/>
-
-        <SeekBar
-            android:id="@+id/countryTwoSeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:max="10"/>
-
-    </LinearLayout>
+    <SeekBar
+        android:id="@+id/batteryYearSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"/>
+    <TextView
+        android:id="@+id/currentYear"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="No Year"
+        android:gravity="center_horizontal"
+        android:textSize="15dp"
+        android:layout_weight="1"/>
 
 </LinearLayout>
+
+
+
+

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,15 +17,22 @@ import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.R;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 
 public class BatteryGraph extends Fragment{
     TextView countryOnePercent;
     TextView countryTwoPercent;
+    TextView countryOneName;
+    TextView countryTwoName;
+    TextView currentYear;
     ImageView countryOneBattery;
     ImageView countryTwoBattery;
-
+    SeekBar batteryYearSeekBar;
+    ArrayList<Integer> allYears;
+    Country countryOne;
+    Country countryTwo;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,54 +42,121 @@ public class BatteryGraph extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        countryOneName = (TextView) getView().findViewById(R.id.countryOneName);
         countryOnePercent = (TextView) getView().findViewById(R.id.countryOnePercent);
         countryOneBattery  = (ImageView) getView().findViewById(R.id.countryOneBattery);
 
+        countryTwoName = (TextView) getView().findViewById(R.id.countryTwoName);
         countryTwoPercent = (TextView) getView().findViewById(R.id.countryTwoPercent);
         countryTwoBattery = (ImageView) getView().findViewById(R.id.countryTwoBattery);
 
+        batteryYearSeekBar = (SeekBar) getView().findViewById(R.id.batteryYearSeekBar);
+        batteryYearSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(allYears.size() > 0 && allYears.size() >= progress){
+                    currentYear.setText(allYears.get(progress) + "");
+                    refreshBatteryOne();
+                    refreshBatteryTwo();
+                }
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        currentYear = (TextView) getView().findViewById(R.id.currentYear);
+
+        allYears = new ArrayList<>();
+        //User selects a country
+        //This provides a set of years
+        //Use these years to adjust scrollbar
+        //Set the current year to the lowest year
+        //Any increment in the scrollbar should go to the next available year
     }
 
     public void updateCountryOne(Country country){
-        ///Example for 2002
-        Indicator consumptionIndicator = country.getIndicators().get("3.1_RE.CONSUMPTION");
-        Indicator finalConsumptionIndicator = country.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
+        countryOne = country;
+        ///Get indicator objects
+        Indicator consumptionIndicator = countryOne.getIndicators().get("3.1_RE.CONSUMPTION");
+        Indicator finalConsumptionIndicator = countryOne.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
+
+        //Get all Year values
+        Set<Integer> dataYears = consumptionIndicator.getIndicatorData().keySet();
+        allYears = new ArrayList<>();
+        for (Integer year:dataYears){
+            allYears.add(year);
+        }
+        batteryYearSeekBar.setProgress(0);
+        batteryYearSeekBar.setMax(allYears.size() - 1);
+        if(allYears.size() > 1){
+            currentYear.setText(allYears.get(batteryYearSeekBar.getProgress()) + "");
+
+            refreshBatteryOne();
+            refreshBatteryTwo();
+        }else{
+
+        }
+
+    }
+
+    public void updateCountryTwo(Country country){
+        countryTwo = country;
+        refreshBatteryTwo();
+        batteryYearSeekBar.setProgress(0);
+        currentYear.setText(allYears.get(batteryYearSeekBar.getProgress()) + "");
+    }
+
+    private void refreshBatteryOne(){
+        ///Get indicator objects
+        Indicator consumptionIndicator = countryOne.getIndicators().get("3.1_RE.CONSUMPTION");
+        Indicator finalConsumptionIndicator = countryOne.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
 
         try{
-            int consumptionAmount = consumptionIndicator.getData(2002).intValue();
-            int finalAmount = finalConsumptionIndicator.getData(2002).intValue();
+            int yearSelected = allYears.get(batteryYearSeekBar.getProgress());
+            int consumptionAmount = consumptionIndicator.getData(yearSelected).intValue();
+            int finalAmount = finalConsumptionIndicator.getData(yearSelected).intValue();
             Log.i("MYAPP","Consumption Ammount: "+consumptionAmount);
             Log.i("MYAPP","Fianl Amount: "+finalAmount);
             float p = (int) consumptionAmount * 100f / finalAmount;
             int percentage = (int) p;
             countryOnePercent.setText(percentage+"%");
             updateCountryImageOne(percentage);
+            countryOneName.setText(countryOne.getName());
         }catch (Exception e){
-            Toast.makeText(getActivity(), "No data for 2002 " + country.getName(), Toast.LENGTH_SHORT);
+            Toast.makeText(getActivity(), "No data for 2002 " + countryOne.getName(), Toast.LENGTH_SHORT);
         }
     }
 
-    public void updateCountryTwo(Country country){
-        ///Example for 2002
-        Indicator consumptionIndicator = country.getIndicators().get("3.1_RE.CONSUMPTION");
-        Indicator finalConsumptionIndicator = country.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
-        try{
-            int consumptionAmount = consumptionIndicator.getData(2002).intValue();
-            int finalAmount = finalConsumptionIndicator.getData(2002).intValue();
-            Log.i("MYAPP","Consumption Ammount: "+consumptionAmount);
-            Log.i("MYAPP","Fianl Amount: "+finalAmount);
-            float p = (int) consumptionAmount * 100f / finalAmount;
-            int percentage = (int) p;
 
-            countryTwoPercent.setText(percentage+"%");
-            updateCountryImageTwo(percentage);
-        }catch (Exception e){
-            Toast.makeText(getActivity(), "No data for 2002 " + country.getName(), Toast.LENGTH_SHORT);
+    private void refreshBatteryTwo(){
+        if(countryTwo != null){
+            ///Get indicator objects
+            Indicator consumptionIndicator = countryTwo.getIndicators().get("3.1_RE.CONSUMPTION");
+            Indicator finalConsumptionIndicator = countryTwo.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
+
+            try{
+                int yearSelected = allYears.get(batteryYearSeekBar.getProgress());
+                int consumptionAmount = consumptionIndicator.getData(yearSelected).intValue();
+                int finalAmount = finalConsumptionIndicator.getData(yearSelected).intValue();
+                Log.i("MYAPP","Consumption Ammount: "+consumptionAmount);
+                Log.i("MYAPP","Fianl Amount: "+finalAmount);
+                float p = (int) consumptionAmount * 100f / finalAmount;
+                int percentage = (int) p;
+                countryTwoPercent.setText(percentage+"%");
+                updateCountryImageTwo(percentage);
+                countryTwoName.setText(countryTwo.getName());
+            }catch (Exception e){
+                Toast.makeText(getActivity(), "No data for 2002 " + countryOne.getName(), Toast.LENGTH_SHORT);
+            }
         }
-
     }
 
     private void updateCountryImageOne(int percentage){
