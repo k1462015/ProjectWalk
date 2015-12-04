@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     TextView countryOneHolder;
     TextView countryTwoHolder;
     EnergyRatioGraph energyRatioGraph;
+    BatteryGraph batteryGraph;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
 
         //Adds all fragments to main activity
-        BatteryGraph batteryGraph = new BatteryGraph();
+        batteryGraph = new BatteryGraph();
         energyRatioGraph = new EnergyRatioGraph();
         FactCards factCards = new FactCards();
         RenewableBreakdownContainer renewableBreakdownContainer = new RenewableBreakdownContainer();
@@ -100,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         try {
             country = dataManager.getCountryIndicator(country.getIsoCode(),"8.1.2_FINAL.ENERGY.INTENSITY");
             energyRatioGraph.updateCountryOne(country);
+            country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1_RE.CONSUMPTION","8.1.1_FINAL.ENERGY.CONSUMPTION");
+            batteryGraph.updateCountryOne(country);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -112,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         try {
             country = dataManager.getCountryIndicator(country.getIsoCode(),"8.1.2_FINAL.ENERGY.INTENSITY");
             energyRatioGraph.updateCountryTwo(country);
+            country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1_RE.CONSUMPTION","8.1.1_FINAL.ENERGY.CONSUMPTION");
+            batteryGraph.updateCountryTwo(country);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
