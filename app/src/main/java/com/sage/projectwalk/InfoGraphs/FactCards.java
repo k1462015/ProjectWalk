@@ -1,12 +1,16 @@
 package com.sage.projectwalk.InfoGraphs;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -41,7 +45,7 @@ public class FactCards extends Fragment{
     RelativeLayout relativeLayout;
     ArrayList<String> factTitles;
     ArrayList<String> facts;
-
+    GestureDetector gestureScanner;
 
     public void changeFact(){
         //Randomly select a fact
@@ -88,8 +92,40 @@ public class FactCards extends Fragment{
         slideInFromLeftAnim.setDuration(300);
 
         relativeLayout = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
-        relativeLayout.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
+
+        gestureScanner = new GestureDetector(getActivity(),
+                new GestureDetector.SimpleOnGestureListener() {
+
+                    @Override
+                    public boolean onDown(MotionEvent e) {
+                        return true;
+                    }
+
+
+                    @Override
+                    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                                           float velocityY) {
+                        Log.i(SyncStateContract.Constants.CONTENT_DIRECTORY, "onFling has been called!");
+                        final int SWIPE_MIN_DISTANCE = 20;
+                        final int SWIPE_MAX_OFF_PATH = 50;
+                        final int SWIPE_THRESHOLD_VELOCITY = 10;
+                        try {
+                            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                                return false;
+                             if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
+                                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                             //   Log.i(SyncStateContract.Constants.ACCOUNT_NAME, "Left to Right");
+                            } else { return false; }
+                        } catch (Exception e) {
+                            // nothing
+                        }
+                        return super.onFling(e1, e2, velocityX, velocityY);
+                    }
+                });
+
+        factBody.setOnTouchListener(new OnSwipeTouchListener(container.getContext()) {
+            @Override
+            public void onSwipeRight() {
                 relativeLayout.startAnimation(slideOutAnimation);
             }
         });
@@ -135,5 +171,6 @@ public class FactCards extends Fragment{
         }
     }
 
-}
 
+
+}
