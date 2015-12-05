@@ -93,7 +93,7 @@ public class FactCards extends Fragment{
 
         relativeLayout = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
 
-        factBody.setOnTouchListener(new OnSwipeTouchListener(container.getContext()) {
+        relativeLayout.setOnTouchListener(new OnSwipeTouchListener(container.getContext()) {
             @Override
             public void onSwipeRight() {
                 relativeLayout.startAnimation(slideOutAnimation);
