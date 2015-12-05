@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,7 +24,9 @@ public class FactCards extends Fragment{
     private TextView mfactLabel;
     private Country mCountryOne;
     private Country mCountryTwo;
-
+    Animation slideOutAnimation;
+    Animation slideInFromLeftAnim;
+    RelativeLayout relativeLayout;
 
     private String[] Facts = {
             "Germany's capital is Berlin.",
@@ -46,10 +50,30 @@ public class FactCards extends Fragment{
 
         mfactLabel = (TextView) view.findViewById(R.id.textView);
 
+        slideOutAnimation = AnimationUtils.loadAnimation(getActivity(),R.anim.slide_out_right);
+        slideOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
 
-        RelativeLayout rl = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
-        rl.setOnClickListener(new View.OnClickListener(){
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                relativeLayout.startAnimation(slideInFromLeftAnim);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        slideInFromLeftAnim = AnimationUtils.loadAnimation(getActivity(),R.anim.slide_in_left);
+
+
+        relativeLayout = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
+        relativeLayout.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
+                relativeLayout.startAnimation(slideOutAnimation);
                 String fact = getFact();
                 //Update the label with a fact from the array
                 mfactLabel.setText(fact);
