@@ -42,10 +42,11 @@ public class FactCards extends Fragment{
     private Country mCountryTwo;
     Animation slideOutAnimation;
     Animation slideInFromLeftAnim;
+    Animation slideOutRight;
+    Animation slideInFromRightAnim;
     RelativeLayout relativeLayout;
     ArrayList<String> factTitles;
     ArrayList<String> facts;
-    GestureDetector gestureScanner;
 
     public void changeFact(){
         //Randomly select a fact
@@ -69,6 +70,8 @@ public class FactCards extends Fragment{
         imageHolder = (ImageView) view.findViewById(R.id.imageHolder);
         populateFacts();
 
+        //Left Swipe
+
         slideOutAnimation = AnimationUtils.loadAnimation(getActivity(),R.anim.slide_out_right);
         slideOutAnimation.setDuration(300);
         slideOutAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -91,12 +94,41 @@ public class FactCards extends Fragment{
         slideInFromLeftAnim = AnimationUtils.loadAnimation(getActivity(),R.anim.slide_in_left);
         slideInFromLeftAnim.setDuration(300);
 
+        //Right Swipe
+
+        slideOutRight = AnimationUtils.loadAnimation(getActivity(),R.anim.slide_out_left);
+        slideOutRight.setDuration(300);
+        slideOutRight.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                changeFact();
+                relativeLayout.startAnimation(slideInFromRightAnim);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        slideInFromRightAnim = AnimationUtils.loadAnimation(getActivity(),R.anim.slide_in_right);
+        slideInFromRightAnim.setDuration(300);
+
+
         relativeLayout = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
 
         relativeLayout.setOnTouchListener(new OnSwipeTouchListener(container.getContext()) {
             @Override
             public void onSwipeRight() {
                 relativeLayout.startAnimation(slideOutAnimation);
+            }
+            @Override
+            public void onSwipeLeft() {
+                relativeLayout.startAnimation(slideOutRight);
             }
         });
 
