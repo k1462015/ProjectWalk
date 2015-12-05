@@ -51,6 +51,7 @@ public class FactCards extends Fragment{
         mfactLabel = (TextView) view.findViewById(R.id.textView);
 
         slideOutAnimation = AnimationUtils.loadAnimation(getActivity(),R.anim.slide_out_right);
+        slideOutAnimation.setDuration(300);
         slideOutAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -59,6 +60,9 @@ public class FactCards extends Fragment{
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                String fact = getFact();
+                //Update the label with a fact from the array
+                mfactLabel.setText(fact);
                 relativeLayout.startAnimation(slideInFromLeftAnim);
             }
 
@@ -68,15 +72,12 @@ public class FactCards extends Fragment{
             }
         });
         slideInFromLeftAnim = AnimationUtils.loadAnimation(getActivity(),R.anim.slide_in_left);
-
+        slideInFromLeftAnim.setDuration(300);
 
         relativeLayout = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
         relativeLayout.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 relativeLayout.startAnimation(slideOutAnimation);
-                String fact = getFact();
-                //Update the label with a fact from the array
-                mfactLabel.setText(fact);
             }
         });
 
