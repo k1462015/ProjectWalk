@@ -1,6 +1,8 @@
 package com.sage.projectwalk.InfoGraphs;
 
 import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ public class FactCards extends Fragment{
 
     private TextView factBody;
     private TextView factTitle;
+    private ImageView imageHolder;
     private Country mCountryOne;
     private Country mCountryTwo;
     Animation slideOutAnimation;
@@ -45,6 +49,10 @@ public class FactCards extends Fragment{
         int randomNumber = randomGenerator.nextInt(facts.size());
         factTitle.setText(factTitles.get(randomNumber));
         factBody.setText(facts.get(randomNumber));
+        //This generates the resource Id for that flag image
+        int imageResource = getActivity().getResources().getIdentifier("drawable/fact"+randomNumber,null,getActivity().getPackageName());
+        Drawable factImage = getActivity().getResources().getDrawable(imageResource);
+        imageHolder.setImageDrawable(factImage);
     }
 
 
@@ -54,7 +62,7 @@ public class FactCards extends Fragment{
 
         factBody = (TextView) view.findViewById(R.id.factBody);
         factTitle = (TextView) view.findViewById(R.id.factTitle);
-
+        imageHolder = (ImageView) view.findViewById(R.id.imageHolder);
         populateFacts();
 
         slideOutAnimation = AnimationUtils.loadAnimation(getActivity(),R.anim.slide_out_right);
