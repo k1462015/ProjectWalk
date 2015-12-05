@@ -8,6 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -18,7 +23,6 @@ import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
@@ -35,6 +39,7 @@ public class BatteryGraph extends Fragment{
     ArrayList<Integer> allYears;
     Country countryOne;
     Country countryTwo;
+    AlphaAnimation blinkAnimation;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,11 +82,22 @@ public class BatteryGraph extends Fragment{
         currentYear = (TextView) getView().findViewById(R.id.currentYear);
 
         allYears = new ArrayList<>();
-        //User selects a country
-        //This provides a set of years
-        //Use these years to adjust scrollbar
-        //Set the current year to the lowest year
-        //Any increment in the scrollbar should go to the next available year
+
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new DecelerateInterpolator());
+        fadeIn.setDuration(1500);
+
+        Animation fadeOut = new AlphaAnimation(1, 0);
+        fadeOut.setInterpolator(new AccelerateInterpolator());
+        fadeOut.setStartOffset(1500);
+        fadeOut.setDuration(1500);
+
+        blinkAnimation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+        blinkAnimation.setDuration(300); // duration - half a second
+        blinkAnimation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+        blinkAnimation.setRepeatCount(1);
+        blinkAnimation.setRepeatMode(Animation.REVERSE);
+
     }
 
     public void updateCountryOne(Country country){
@@ -100,7 +116,7 @@ public class BatteryGraph extends Fragment{
 
         batteryYearSeekBar.setProgress(0);
         batteryYearSeekBar.setMax(allYears.size() - 1);
-        if(allYears.size() > 1){
+        if(allYears.size() > 0){
             currentYear.setText(allYears.get(batteryYearSeekBar.getProgress()) + "");
             refreshBatteryOne();
             refreshBatteryTwo();
@@ -114,27 +130,32 @@ public class BatteryGraph extends Fragment{
         countryTwo = country;
         refreshBatteryTwo();
         batteryYearSeekBar.setProgress(0);
-        currentYear.setText(allYears.get(batteryYearSeekBar.getProgress()) + "");
+        if(allYears.size() > 0 && allYears.size() >= batteryYearSeekBar.getProgress()){
+            currentYear.setText(allYears.get(batteryYearSeekBar.getProgress()) + "");
+        }
     }
 
     private void refreshBatteryOne(){
         ///Get indicator objects
         Indicator consumptionIndicator = countryOne.getIndicators().get("3.1_RE.CONSUMPTION");
         Indicator finalConsumptionIndicator = countryOne.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
-
         try{
             int yearSelected = allYears.get(batteryYearSeekBar.getProgress());
             int consumptionAmount = consumptionIndicator.getData(yearSelected).intValue();
             int finalAmount = finalConsumptionIndicator.getData(yearSelected).intValue();
-            Log.i("MYAPP","Consumption Ammount: "+consumptionAmount);
-            Log.i("MYAPP","Fianl Amount: "+finalAmount);
             float p = (int) consumptionAmount * 100f / finalAmount;
             int percentage = (int) p;
             countryOnePercent.setText(percentage+"%");
             updateCountryImageOne(percentage);
             countryOneName.setText(countryOne.getName());
+            Log.i("MYAPP", "Country 1 - " + countryOne.getName());
+            Log.i("MYAPP","Year: "+yearSelected);
+            Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
+            Log.i("MYAPP", "Final Amount: " + finalAmount + " Big Decimal " + finalConsumptionIndicator.getData(yearSelected));
+            Log.i("MYAPP", "Percentage: "+percentage+"%");
+
         }catch (Exception e){
-            Toast.makeText(getActivity(), "No data for 2002 " + countryOne.getName(), Toast.LENGTH_SHORT);
+            Toast.makeText(getActivity(), "No data "+ countryOne.getName(), Toast.LENGTH_SHORT);
         }
     }
 
@@ -144,7 +165,6 @@ public class BatteryGraph extends Fragment{
             ///Get indicator objects
             Indicator consumptionIndicator = countryTwo.getIndicators().get("3.1_RE.CONSUMPTION");
             Indicator finalConsumptionIndicator = countryTwo.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
-
             try{
                 int yearSelected = allYears.get(batteryYearSeekBar.getProgress());
                 int consumptionAmount = consumptionIndicator.getData(yearSelected).intValue();
@@ -156,8 +176,13 @@ public class BatteryGraph extends Fragment{
                 countryTwoPercent.setText(percentage+"%");
                 updateCountryImageTwo(percentage);
                 countryTwoName.setText(countryTwo.getName());
+                Log.i("MYAPP","Country 2 - "+countryTwo.getName());
+                Log.i("MYAPP","Year: "+yearSelected);
+                Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
+                Log.i("MYAPP", "Final Amount: " + finalAmount + " Big Decimal " + finalConsumptionIndicator.getData(yearSelected));
+                Log.i("MYAPP", "Percentage: " + percentage + "%");
             }catch (Exception e){
-                Toast.makeText(getActivity(), "No data for 2002 " + countryOne.getName(), Toast.LENGTH_SHORT);
+                Toast.makeText(getActivity(), "No data for "+ countryOne.getName(), Toast.LENGTH_SHORT);
             }
         }
     }
@@ -170,6 +195,7 @@ public class BatteryGraph extends Fragment{
                 int imageResource = getActivity().getResources().getIdentifier("drawable/battery"+percentage,null,getActivity().getPackageName());
                 Drawable batteryImage = getActivity().getResources().getDrawable(imageResource);
                 countryOneBattery.setImageDrawable(batteryImage);
+                countryOneBattery.startAnimation(blinkAnimation);
             }catch (Exception e){
                 Log.e("MYAPP","Error loading image");
             }
@@ -188,6 +214,7 @@ public class BatteryGraph extends Fragment{
                 int imageResource = getActivity().getResources().getIdentifier("drawable/battery"+percentage,null,getActivity().getPackageName());
                 Drawable batteryImage = getActivity().getResources().getDrawable(imageResource);
                 countryTwoBattery.setImageDrawable(batteryImage);
+                countryTwoBattery.startAnimation(blinkAnimation);
             }catch (Exception e){
                 Log.e("MYAPP","Error loading image");
             }
