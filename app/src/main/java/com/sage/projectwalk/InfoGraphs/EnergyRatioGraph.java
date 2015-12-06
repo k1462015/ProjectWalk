@@ -6,14 +6,18 @@ import android.os.Bundle;
 
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 
@@ -24,6 +28,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.R;
+
+import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -44,6 +50,7 @@ public class EnergyRatioGraph extends Fragment {
     private LineChart mChart;
     ArrayList<LineDataSet> lineDataSets;
     String[] xValues;
+    TextView yAxis;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +67,8 @@ public class EnergyRatioGraph extends Fragment {
 
         //chart description
         mChart.setDescription("Energy Ratio");
-        mChart.setNoDataTextDescription("No data at the moment");
+        mChart.setDrawBorders(true);
+        mChart.setNoDataTextDescription("Please select a country from the side panel!");
 
         //enable touch gestures
         mChart.setTouchEnabled(true);
@@ -87,11 +95,13 @@ public class EnergyRatioGraph extends Fragment {
         mChart.getAxisRight().setEnabled(false);
         mChart.getXAxis().setEnabled(true);
         mChart.getXAxis().setTextColor(Color.BLACK);
+        mChart.getXAxis().setDrawGridLines(false);
+
+        mChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         mChart.getAxisLeft().setTextColor(Color.BLACK);
 
         mChart.animateXY(1500, 2000);
         return v;
-
     }
 
     public void updateCountryOne(Country country){
@@ -120,12 +130,15 @@ public class EnergyRatioGraph extends Fragment {
             LineDataSet lDataSet1 = new LineDataSet(dataset, country.getName());
             lDataSet1.setColor(Color.RED);
             lDataSet1.setCircleColor(Color.RED);
+            lDataSet1.setCircleColorHole(Color.RED);
+
             if(lineDataSets.size() > 0){
                 lineDataSets.remove(0);
             }
             lineDataSets.add(0, lDataSet1);
 
             mChart.removeAllViews();
+            addYLabel();
             mChart.setData(new LineData(xValues, lineDataSets));
             mChart.animateXY(1500, 2000);
             Log.i("MYAPP","Updated country 1 energy ratio");
@@ -166,13 +179,15 @@ public class EnergyRatioGraph extends Fragment {
             }
             LineDataSet lDataSet1 = new LineDataSet(dataset, country.getName());
             lDataSet1.setColor(Color.BLUE);
-            lDataSet1.setCircleColor(Color.BLACK);
+            lDataSet1.setCircleColor(Color.BLUE);
+            lDataSet1.setCircleColorHole(Color.BLUE);
             if(lineDataSets.size() > 1){
                 lineDataSets.remove(1);
             }
             lineDataSets.add(1, lDataSet1);
 
             mChart.removeAllViews();
+            addYLabel();
             mChart.setData(new LineData(xValues, lineDataSets));
             mChart.refreshDrawableState();
             mChart.animateXY(1500, 2000);
@@ -189,10 +204,21 @@ public class EnergyRatioGraph extends Fragment {
         view.post(new Runnable() {
             @Override
             public void run() {
-                mChart.setMinimumHeight(getView().getHeight()-10);
-                mChart.setMinimumWidth(getView().getWidth()-10);
+                mChart.setMinimumHeight(getView().getHeight()-30);
+                mChart.setMinimumWidth(getView().getWidth()-15);
             }
         });
 
+    }
+
+    public void addYLabel(){
+        TextView xAxisName = new TextView(getActivity());
+        xAxisName.setText("TJ ()");
+        xAxisName.setActivated(true);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+        params.setMargins(0, 0, 0, 20);
+
+        mChart.addView(xAxisName, params);
     }
 }
