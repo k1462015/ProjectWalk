@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/slideOutRootLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-
-
-    <!-- DUMMY VIEW AREA - IF CLICKED - WILL CLOSE PANEL-->
-    <RelativeLayout
-        android:id="@+id/outsideView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </RelativeLayout>
 
     <!-- SIDE PANEL-->
     <LinearLayout
@@ -59,16 +50,6 @@
             android:animationCache="false"/>
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/panelSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hide"
-        android:layout_alignLeft="@id/layoutWrapper"
-        android:layout_alignTop="@id/layoutWrapper"
-        android:layout_marginLeft="-82dp"
-        android:elevation="50dp"/>
 
 </RelativeLayout>
 

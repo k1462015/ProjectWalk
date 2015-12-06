@@ -2,6 +2,7 @@ package com.sage.projectwalk;
 
 import android.app.ProgressDialog;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.InfoGraphs.DummyFragment;
 import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
 import com.sage.projectwalk.InfoGraphs.FactCards;
+import com.sage.projectwalk.InfoGraphs.OnSwipeTouchListener;
 import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
 import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
@@ -38,17 +41,29 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     SlideOutPanel menuFragment;
     TextView countryOneHolder;
     TextView countryTwoHolder;
+    ImageView mainCountryOneImage;
+    ImageView mainCountryTwoImage;
     EnergyRatioGraph energyRatioGraph;
     BatteryGraph batteryGraph;
+    RelativeLayout mainActivityRoot;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dataManager = new DataManager(this);
 
-        showButton = (Button)findViewById(R.id.Show);
+        mainActivityRoot = (RelativeLayout) findViewById(R.id.mainActivityRoot);
+        mainActivityRoot.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public void onSwipeLeft() {
+                openSlideFragment();
+            }
+        });
+
         countryOneHolder = (TextView) findViewById(R.id.countryOneHolder);
         countryTwoHolder = (TextView) findViewById(R.id.countryTwoHolder);
+        mainCountryOneImage = (ImageView) findViewById(R.id.mainCountryOneImage);
+        mainCountryTwoImage = (ImageView) findViewById(R.id.mainCountryTwoImage);
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -74,8 +89,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
     }
 
-    public void openSlideFragment(View v) {
-        showButton.setVisibility(View.INVISIBLE);   //Hides show button
+    public void openSlideFragment() {
         RelativeLayout relativeLayoutOut = (RelativeLayout) findViewById(R.id.out);
         relativeLayoutOut.setBackgroundColor(Color.parseColor("#99000000"));
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -89,15 +103,27 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
         fadeIn.setDuration(1000);
-        showButton.startAnimation(fadeIn);
-        showButton.setEnabled(true);
-        showButton.setVisibility(View.VISIBLE);   //Hides show button
         RelativeLayout relativeLayoutOut = (RelativeLayout) findViewById(R.id.out);
         relativeLayoutOut.setBackgroundColor(Color.TRANSPARENT);
     }
 
     public void onCountryOption1Selected(Country country){
-        countryOneHolder.setText(country.getName());
+        countryOneHolder.setText(country.getName() + "\n" + country.getCapitalCity());
+        final String isoCode = country.getIsoCode();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Drawable flagImage = getFlagImage(isoCode);
+                if(flagImage != null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mainCountryOneImage.setImageDrawable(flagImage);
+                        }
+                    });
+                }
+            }
+        }).start();
         try {
             country = dataManager.getCountryIndicator(country.getIsoCode(),"8.1.2_FINAL.ENERGY.INTENSITY");
             energyRatioGraph.updateCountryOne(country);
@@ -111,7 +137,22 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     }
 
     public void onCountryOption2Selected(Country country){
-        countryTwoHolder.setText(country.getName());
+        countryTwoHolder.setText(country.getName() + "\n" + country.getCapitalCity());
+        final String isoCode = country.getIsoCode();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Drawable flagImage = getFlagImage(isoCode);
+                if(flagImage != null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mainCountryTwoImage.setImageDrawable(flagImage);
+                        }
+                    });
+                }
+            }
+        }).start();
         try {
             country = dataManager.getCountryIndicator(country.getIsoCode(),"8.1.2_FINAL.ENERGY.INTENSITY");
             energyRatioGraph.updateCountryTwo(country);
@@ -122,6 +163,12 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public Drawable getFlagImage(String iso2Code){
+        //This generates the resource Id for that flag image
+        int imageResource = getResources().getIdentifier("drawable/"+iso2Code.toLowerCase()+"_img",null,getPackageName());
+        return getDrawable(imageResource);
     }
 
     @Override

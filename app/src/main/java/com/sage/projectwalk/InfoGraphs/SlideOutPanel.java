@@ -35,6 +35,7 @@ public class SlideOutPanel extends Fragment {
     ListView countryOption1;
     ListView countryOption2;
     CountryListListener countryListListener;
+    RelativeLayout slideOutRootLayout;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -68,17 +69,10 @@ public class SlideOutPanel extends Fragment {
             Log.e("MYAPP","JSONException when trying to retrieve countries list in ListFragment");
         }
 
-        Button panelSwitch = (Button) getView().findViewById(R.id.panelSwitch);
-        panelSwitch.setOnClickListener(new View.OnClickListener() {
+        slideOutRootLayout = (RelativeLayout) getView().findViewById(R.id.slideOutRootLayout);
+        slideOutRootLayout.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
             @Override
-            public void onClick(View v) {
-                hidePanel();
-            }
-        });
-        RelativeLayout outsideView = (RelativeLayout) getView().findViewById(R.id.outsideView);
-        outsideView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onSwipeRight() {
                 hidePanel();
             }
         });
