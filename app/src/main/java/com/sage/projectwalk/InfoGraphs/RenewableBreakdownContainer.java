@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.YAxis;
@@ -27,23 +29,20 @@ import com.sage.projectwalk.R;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Created by tahmidulislam on 27/11/2015.
  */
 public class RenewableBreakdownContainer extends Fragment{
-    //The two countried and all the inidicator info that is required for the data to be represented correctly
-    Country countryA;
-    Country countryB;
-    Indicator TotalRenewableEnergyConsumed = new Indicator();
-    Indicator indicator = null;
-
-
-    //Easy access to the indicator strings for when fetching the data. Array for all the indicators and a stand alone string for the total renewable consumption
-    String indicators[] = new String[]{"3.1.3_HYDRO.CONSUM","3.1.4_BIOFUELS.CONSUM","3.1.5_WIND.CONSUM","3.1.6_SOLAR.CONSUM","3.1.7_GEOTHERMAL.CONSUM", "3.1.8_WASTE.CONSUM", "3.1.9_BIOGAS.CONSUM"};
-    String renewableTotalEnergy = "3.1_RE.CONSUMPTION";
-    //the data will be changed according to the year of the spinner, needs a listener class to update stuff
+    ArrayList<Integer> dataYears;
+    HorizontalBarChart RenewableChart;
+    Country countryOne;
+    Country countryTwo;
+    TextView YearTextField;
     SeekBar seekBar = null;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,46 +52,13 @@ public class RenewableBreakdownContainer extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //TODO:set here the countries that are selected in the slide out
-        countryA = new Country();
-        countryA.setName("United States");
-        countryA.setIsoCode("US");
-        countryB = new Country();
-        countryB.setName("Russia");
-        countryB.setIsoCode("RU");
-        //TODO:set all the inidicators to the right Data
-
-        for(int i = 0; i< indicators.length; i++){
-            indicator = new Indicator();
-            indicator.setId(indicators[i]);
-            indicator.addData(2012, new BigDecimal(321321.0));
-
-            countryA.addIndicator(indicator);
-            countryB.addIndicator(indicator);
-        }
-
-        seekBar =  (SeekBar) getView().findViewById(R.id.YearOfData);
-        seekBar.setMax(22);
-
-        final HorizontalBarChart RenewableChart = (HorizontalBarChart) getView().findViewById(R.id.BreakDownChart);
-        BarData barData = new BarData(getXAxisValues(),getDataSet());
-        RenewableChart.setData(barData);
-        RenewableChart.animateXY(2000, 2000);
-        //final String[] description = {"1990"};
-        RenewableChart.setDescription("");
-        RenewableChart.invalidate();
-
-        final TextView textView = (TextView) getView().findViewById(R.id.YearTextField);
+        dataYears = new ArrayList<>();
+        YearTextField = (TextView) getView().findViewById(R.id.YearTextField);
+        seekBar = (SeekBar) getView().findViewById(R.id.YearOfData);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-
-                //to make sure that the selection is never below 1990, the earliest we have for these indicators
-                //description[0] = "Year: " + (1990 + progress);
-                textView.setText(Integer.toString(1990 + progress));
-
-
+                refreshBarChart();
             }
 
             @Override
@@ -106,45 +72,150 @@ public class RenewableBreakdownContainer extends Fragment{
             }
         });
 
-
-
+        RenewableChart = (HorizontalBarChart) getView().findViewById(R.id.BreakDownChart);
     }
 
-    //need it to be so that it gets the data from the indicators, at the moment it is hard coded
-    private ArrayList<BarDataSet> getDataSet(){
-        ArrayList<BarDataSet> dataSets = null;
+    public void updateCountryOne(Country country){
+        countryOne = country;
+        //Extract years from the data
+        Indicator hydroIndicator = country.getIndicators().get("3.1.3_HYDRO.CONSUM");
 
-        //get the total Renewable Energy before the for loop TODO get rid of the 5000000 and add in the // bits
-        double totalREA = 5000000;//countryA.getIndicators().get(renewableTotalEnergy).getData(seekBar.getProgress());
-        double totalREB = 5000000;//countryB.getIndicators().get(renewableTotalEnergy).getData(seekBar.getProgress());
+        //Get all Year values
+        Set<Integer> years = hydroIndicator.getIndicatorData().keySet();
+        dataYears = new ArrayList<>();
+        for (Integer year:years){
+            dataYears.add(year);
+        }
+        Collections.sort(dataYears);
+        seekBar.setProgress(0);
+        seekBar.setMax(dataYears.size() - 1);
 
-        ArrayList<BarEntry> valuesCountryA = new ArrayList<>();
-        ArrayList<BarEntry> valuesCountryB = new ArrayList<>();
-        for(int i =0; i < indicators.length;i++){
-           double valueA = countryA.getIndicators().get(indicators[i]).getData(2012).doubleValue();
-           float a = (float)(valueA/totalREA) *100 ; //have to convert to float as that BarEntrys first param also calculating percentage here
-           BarEntry A = new BarEntry(a,i);
-           valuesCountryA.add(i,A);  //adding to index I so as to override each time SeekBar changes value
+        refreshBarChart();
+    }
 
-           Double valueB = countryB.getIndicators().get(indicators[i]).getData(2012).doubleValue();
-           float b = (float)(valueB/totalREB)*100; ////have to convert to float as that BarEntrys first param also calculating percentage here
-           BarEntry B = new BarEntry(b,i);
-           valuesCountryB.add(i,B); //adding to index I so as to override each time SeekBar changes value
+    public void updateCountryTwo(Country country){
+        countryTwo = country;
+        refreshBarChart();
+    }
+
+    public void refreshBarChart(){
+        ArrayList<BarDataSet> dataSets = new ArrayList<>();
+        ArrayList<BarEntry> countryOneData = getCountryOneData();
+        if(countryOneData != null){
+            BarDataSet countryOneBarDataSet = new BarDataSet(getCountryOneData(), countryOne.getName());
+            countryOneBarDataSet.setColor(Color.parseColor("#636161"));
+            dataSets.add(countryOneBarDataSet);
+        }
+        ArrayList<BarEntry> countryTwoData = getCountryTwoData();
+        if(countryTwoData != null){
+            BarDataSet countryTwoBarDataSet = new BarDataSet(getCountryTwoData(), countryTwo.getName());
+            countryTwoBarDataSet.setColor(Color.rgb(0, 155, 0));
+            dataSets.add(countryTwoBarDataSet);
+        }
+        if(dataSets.size() > 0){
+            BarData barData = new BarData(getXAxisValues(),dataSets);
+            RenewableChart.setData(barData);
+            RenewableChart.animateXY(2000, 2000);
         }
 
-        BarDataSet barDataSetA = new BarDataSet(valuesCountryA, countryA.getName());
-        barDataSetA.setColor(Color.rgb(0,0,155));
-
-        BarDataSet barDataSetB = new BarDataSet(valuesCountryB, countryB.getName());
-        barDataSetB.setColor(Color.rgb(155,0,0));
-
-        dataSets = new ArrayList<>();
-        dataSets.add(barDataSetA);
-        dataSets.add(barDataSetB);
-
-        return dataSets;
     }
 
+    public ArrayList<BarEntry> getCountryOneData(){
+        if(countryOne == null){
+            return null;
+        }
+        int year = 2000;
+        if(dataYears.size() >= seekBar.getProgress()){
+            year = dataYears.get(seekBar.getProgress());
+            YearTextField.setText(year+"");
+            Toast.makeText(getActivity(),"Showing data for "+year,Toast.LENGTH_SHORT).show();
+        }else{
+            return null;
+        }
+        //Get data from year
+        Indicator totalConsump = countryOne.getIndicators().get("3.1_RE.CONSUMPTION");
+        Indicator bioFuelIndicator = countryOne.getIndicators().get("3.1.4_BIOFUELS.CONSUM");
+        Indicator hydroIndicator = countryOne.getIndicators().get("3.1.3_HYDRO.CONSUM");
+        Indicator windIndicator = countryOne.getIndicators().get("3.1.5_WIND.CONSUM");
+        Indicator solarIndicator = countryOne.getIndicators().get("3.1.6_SOLAR.CONSUM");
+        Indicator geoIndicator = countryOne.getIndicators().get("3.1.7_GEOTHERMAL.CONSUM");
+        Indicator wasteIndicator = countryOne.getIndicators().get("3.1.8_WASTE.CONSUM");
+        Indicator bioGasIndicator = countryOne.getIndicators().get("3.1.9_BIOGAS.CONSUM");
+
+        try{
+            BigDecimal totalC = totalConsump.getData(year);
+            float hydro = (hydroIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float bioFuel = (bioFuelIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float wind = (windIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float solar = (solarIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float geo = (geoIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float waste = (wasteIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float bio = (bioGasIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            ArrayList<BarEntry> countryOneBarEntry = new ArrayList<>();
+            countryOneBarEntry.add(new BarEntry(hydro,0));
+            countryOneBarEntry.add(new BarEntry(bioFuel,1));
+            countryOneBarEntry.add(new BarEntry(wind,2));
+            countryOneBarEntry.add(new BarEntry(solar,3));
+            countryOneBarEntry.add(new BarEntry(geo,4));
+            countryOneBarEntry.add(new BarEntry(waste,5));
+            countryOneBarEntry.add(new BarEntry(bio,6));
+            Log.i("MYAPP", "Data for country one: Total C: " + totalC +" "+totalConsump.getData(year)+ " Hydro: " + hydro +" "+hydroIndicator.getData(year)+ " BioFuel: " + bioFuel + " Wind: " + wind + " Solar: " + solar);
+            return countryOneBarEntry;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    public ArrayList<BarEntry> getCountryTwoData(){
+        if(countryTwo == null){
+            return null;
+        }
+        int year = 2000;
+        if(dataYears.size() >= seekBar.getProgress()){
+            year = dataYears.get(seekBar.getProgress());
+            YearTextField.setText(year+"");
+            Toast.makeText(getActivity(),"Showing data for "+year,Toast.LENGTH_SHORT).show();
+        }else{
+            return null;
+        }
+        //Get data from year
+        Indicator totalConsump = countryTwo.getIndicators().get("3.1_RE.CONSUMPTION");
+        Indicator bioFuelIndicator = countryTwo.getIndicators().get("3.1.4_BIOFUELS.CONSUM");
+        Indicator hydroIndicator = countryTwo.getIndicators().get("3.1.3_HYDRO.CONSUM");
+        Indicator windIndicator = countryTwo.getIndicators().get("3.1.5_WIND.CONSUM");
+        Indicator solarIndicator = countryTwo.getIndicators().get("3.1.6_SOLAR.CONSUM");
+        Indicator geoIndicator = countryTwo.getIndicators().get("3.1.7_GEOTHERMAL.CONSUM");
+        Indicator wasteIndicator = countryTwo.getIndicators().get("3.1.8_WASTE.CONSUM");
+        Indicator bioGasIndicator = countryTwo.getIndicators().get("3.1.9_BIOGAS.CONSUM");
+
+        try{
+            BigDecimal totalC = totalConsump.getData(year);
+            float hydro = (hydroIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float bioFuel = (bioFuelIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float wind = (windIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float solar = (solarIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float geo = (geoIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float waste = (wasteIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float bio = (bioGasIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            ArrayList<BarEntry> countryTwoBarEntry = new ArrayList<>();
+            countryTwoBarEntry.add(new BarEntry(hydro,0));
+            countryTwoBarEntry.add(new BarEntry(bioFuel,1));
+            countryTwoBarEntry.add(new BarEntry(wind,2));
+            countryTwoBarEntry.add(new BarEntry(solar,3));
+            countryTwoBarEntry.add(new BarEntry(geo,4));
+            countryTwoBarEntry.add(new BarEntry(waste,5));
+            countryTwoBarEntry.add(new BarEntry(bio,6));
+            Log.i("MYAPP", "Data for country two: Total C: " + totalC +" "+totalConsump.getData(year)+ " Hydro: " + hydro +" "+hydroIndicator.getData(year)+ " BioFuel: " + bioFuel + " Wind: " + wind + " Solar: " + solar);
+            return countryTwoBarEntry;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    public int divide(int first,int second){
+        float p = (int) first * 100f / second;
+        return (int) p;
+    }
     private ArrayList<String> getXAxisValues() {
         ArrayList<String> xAxis = new ArrayList<>();
         xAxis.add("Hydro Energy Consumption %");
@@ -152,7 +223,7 @@ public class RenewableBreakdownContainer extends Fragment{
         xAxis.add("Wind Energy Consumption %");
         xAxis.add("Solar Energy Consumption %");
         xAxis.add("Geothermal Energy Consumption %");
-        xAxis.add("Waster Energy Consumption %");
+        xAxis.add("Waste Energy Consumption %");
         xAxis.add("Biogas Consumption %");
         return xAxis;
     }
