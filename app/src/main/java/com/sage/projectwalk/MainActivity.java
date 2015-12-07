@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     BatteryGraph batteryGraph;
     RelativeLayout mainActivityRoot;
     BreakdownPieChart breakdownPieChart;
-//    RenewableBreakdownContainer renewableBreakdownContainer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         //Adds all fragments to main activity
         batteryGraph = new BatteryGraph();
         FactCards factCards = new FactCards();
-//        renewableBreakdownContainer = new RenewableBreakdownContainer();
         menuFragment = new SlideOutPanel();
         breakdownPieChart = new BreakdownPieChart();
 
@@ -130,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1.3_HYDRO.CONSUM","3.1.4_BIOFUELS.CONSUM",
                     "3.1.5_WIND.CONSUM","3.1.6_SOLAR.CONSUM","3.1.7_GEOTHERMAL.CONSUM", "3.1.8_WASTE.CONSUM", "3.1.9_BIOGAS.CONSUM","3.1_RE.CONSUMPTION");
             breakdownPieChart.updateCountryOne(country);
-//            renewableBreakdownContainer.updateCountryOne(country);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -161,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1.3_HYDRO.CONSUM","3.1.4_BIOFUELS.CONSUM",
                     "3.1.5_WIND.CONSUM","3.1.6_SOLAR.CONSUM","3.1.7_GEOTHERMAL.CONSUM", "3.1.8_WASTE.CONSUM", "3.1.9_BIOGAS.CONSUM","3.1_RE.CONSUMPTION");
             breakdownPieChart.updateCountryTwo(country);
-//            renewableBreakdownContainer.updateCountryTwo(country);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {

@@ -1,6 +1,7 @@
 package com.sage.projectwalk.InfoGraphs;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,11 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -37,8 +41,10 @@ public class BreakdownPieChart extends Fragment{
     Country countryTwo;
     ArrayList<Integer> dataYears;
     SeekBar breakdownSeekBar;
-    TextView yearTextField;
-
+    ImageView breakdownMissingOne;
+    ImageView breakdownMissingTwo;
+    ArrayList<String> xAxis = new ArrayList<>();
+    Typeface mTf;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,20 +57,33 @@ public class BreakdownPieChart extends Fragment{
         pieChartOne = (PieChart) getView().findViewById(R.id.pieChartOne);
         pieChartTwo = (PieChart) getView().findViewById(R.id.pieChartTwo);
 
-        dataYears = new ArrayList<>();
+        xAxis.add("Hydro Energy");
+        xAxis.add("Liquid Biofuel");
+        xAxis.add("Wind Energy");
+        xAxis.add("Solar Energy");
+        xAxis.add("Geothermal Energy");
+        xAxis.add("Waste Energy");
+        xAxis.add("Biogas Energy");
+        xAxis.add("Other");
 
-        yearTextField = (TextView) getView().findViewById(R.id.yearTextField);
+        dataYears = new ArrayList<>();
+        mTf = Typeface.createFromAsset(getActivity().getAssets(), "android_7.ttf");
+
+        breakdownMissingOne = (ImageView) getView().findViewById(R.id.breakdownMissingOne);
+        breakdownMissingTwo = (ImageView) getView().findViewById(R.id.breakdownMissingTwo);
 
         breakdownSeekBar = (SeekBar) getView().findViewById(R.id.breakdownSeekBar);
         breakdownSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                yearTextField.setText(dataYears.get(progress)+"");
-                if(countryOne != null){
+                if (countryOne != null) {
                     refreshCountryOne();
+                } else {
+                    Toast.makeText(getActivity(), "Country 1 is not selected", Toast.LENGTH_SHORT).show();
                 }
-                if(countryTwo != null){
+                if (countryTwo != null) {
                     refreshCountryTwo();
+                    Toast.makeText(getActivity(), "Country 2 is not selected", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -87,7 +106,25 @@ public class BreakdownPieChart extends Fragment{
         pieChartOne.setRotationEnabled(true);
         pieChartTwo.setRotationAngle(0);
         pieChartTwo.setRotationEnabled(true);
+        pieChartOne.setHighlightPerTapEnabled(true);
+        pieChartTwo.setHighlightPerTapEnabled(true);
+        pieChartOne.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
+    }
+
+    public void animateAndFixLegend(){
+        Legend l = pieChartOne.getLegend();
+        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+        l.setXEntrySpace(7);
+        l.setYEntrySpace(5);
+        l.setWordWrapEnabled(true);
+        l = pieChartTwo.getLegend();
+        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+        l.setXEntrySpace(7);
+        l.setYEntrySpace(5);
+        l.setWordWrapEnabled(true);
+        pieChartOne.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+        pieChartTwo.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
     }
 
@@ -116,35 +153,23 @@ public class BreakdownPieChart extends Fragment{
     }
 
     private void refreshCountryOne(){
-        if(countryOne == null){
-            return;
+        if(countryOne != null) {
+            if (dataYears.size() > 0 && dataYears.size() >= breakdownSeekBar.getProgress()) {
+                int year = dataYears.get(breakdownSeekBar.getProgress());
+                refreshCountry(countryOne, pieChartOne, year);
+                Toast.makeText(getActivity(), "Showing data for " + year, Toast.LENGTH_SHORT).show();
+            }
         }
-        int year = 2000;
-        if(dataYears.size() >= breakdownSeekBar.getProgress()){
-            year = dataYears.get(breakdownSeekBar.getProgress());
-            yearTextField.setText(year+"");
-            refreshCountry(countryOne,pieChartOne,year);
-            Toast.makeText(getActivity(), "Showing data for " + year, Toast.LENGTH_SHORT).show();
-        }else{
-            return;
-        }
-
     }
 
     private void refreshCountryTwo(){
-        if(countryTwo == null){
-            return;
+        if(countryTwo != null) {
+            if (dataYears.size() > 0 && dataYears.size() >= breakdownSeekBar.getProgress()) {
+                int year = dataYears.get(breakdownSeekBar.getProgress());
+                refreshCountry(countryTwo, pieChartTwo, year);
+                Toast.makeText(getActivity(), "Showing data for " + year, Toast.LENGTH_SHORT).show();
+            }
         }
-        int year = 2000;
-        if(dataYears.size() >= breakdownSeekBar.getProgress()){
-            year = dataYears.get(breakdownSeekBar.getProgress());
-            yearTextField.setText(year+"");
-            refreshCountry(countryTwo,pieChartTwo,year);
-            Toast.makeText(getActivity(), "Showing data for " + year, Toast.LENGTH_SHORT).show();
-        }else{
-            return;
-        }
-
     }
 
     private void refreshCountry(Country country,PieChart pieChart,int year){
@@ -160,38 +185,74 @@ public class BreakdownPieChart extends Fragment{
 
         try{
             BigDecimal totalC = totalConsump.getData(year);
-            float hydro = (hydroIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
-            float bioFuel = (bioFuelIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
-            float wind = (windIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
-            float solar = (solarIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
-            float geo = (geoIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
-            float waste = (wasteIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
-            float bio = (bioGasIndicator.getData(year)).divide(totalC, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
+            float hydro = divideBigDecimal(hydroIndicator.getData(year), totalC);
+            float bioFuel = divideBigDecimal(bioFuelIndicator.getData(year),totalC);
+            float wind = divideBigDecimal(windIndicator.getData(year), totalC);
+            float solar = divideBigDecimal(solarIndicator.getData(year), totalC);
+            float geo = divideBigDecimal(geoIndicator.getData(year), totalC);
+            float waste = divideBigDecimal(wasteIndicator.getData(year),totalC);
+            float bio = divideBigDecimal(bioGasIndicator.getData(year),totalC);
             ArrayList<Entry> countryOneEntry = new ArrayList<>();
+            ArrayList<String> newXAxis = new ArrayList<>();
+
             float other = 100 - (hydro+bioFuel+wind+solar+geo+waste+bio);
-            countryOneEntry.add(new Entry(hydro, 0));
-            countryOneEntry.add(new Entry(bioFuel, 1));
-            countryOneEntry.add(new Entry(wind, 2));
-            countryOneEntry.add(new Entry(solar, 3));
-            countryOneEntry.add(new Entry(geo, 4));
-            countryOneEntry.add(new Entry(waste, 5));
-            countryOneEntry.add(new Entry(bio, 6));
+            if(hydro != 0){
+                countryOneEntry.add(new Entry(hydro, 0));
+                newXAxis.add(xAxis.get(0));
+            }
+            if(bioFuel != 0){
+                countryOneEntry.add(new Entry(bioFuel, 1));
+                newXAxis.add(xAxis.get(1));
+            }
+            if(wind != 0){
+                countryOneEntry.add(new Entry(wind, 2));
+                newXAxis.add(xAxis.get(2));
+            }
+            if(solar != 0){
+                countryOneEntry.add(new Entry(solar, 3));
+                newXAxis.add(xAxis.get(3));
+            }
+            if(geo != 0){
+                countryOneEntry.add(new Entry(geo, 4));
+                newXAxis.add(xAxis.get(4));
+            }
+            if(waste != 0){
+                countryOneEntry.add(new Entry(waste, 5));
+                newXAxis.add(xAxis.get(5));
+            }
+            if(bio != 0){
+                countryOneEntry.add(new Entry(bio, 6));
+                newXAxis.add(xAxis.get(6));
+            }
             countryOneEntry.add(new Entry(other,7));
 
+
             // create pie data set
-            PieDataSet dataSet = new PieDataSet(countryOneEntry, "Market Share");
+            PieDataSet dataSet = new PieDataSet(countryOneEntry, "");
             dataSet.setSliceSpace(3);
             dataSet.setSelectionShift(5);
+
 
             dataSet.setColors(getColors());
 
             // instantiate pie data object now
-            ArrayList<String> xAxis = getXAxisValues();
-            xAxis.add("Other");
+
             PieData data = new PieData(xAxis, dataSet);
+            data.setValueTypeface(mTf);
             data.setValueFormatter(new PercentFormatter());
-            data.setValueTextSize(11f);
-            data.setValueTextColor(Color.GRAY);
+            data.setValueTextSize(15f);
+
+            pieChart.setDrawHoleEnabled(true);
+            pieChart.setHoleColorTransparent(true);
+
+            pieChart.setTransparentCircleColor(Color.WHITE);
+            pieChart.setTransparentCircleAlpha(110);
+
+            pieChart.setHoleRadius(40f);
+            pieChart.setTransparentCircleRadius(50f);
+            pieChart.setCenterText(year+"");
+            pieChart.setCenterTextSize(30);
+            pieChart.setCenterTextTypeface(mTf);
 
             pieChart.setData(data);
             pieChart.setDrawSliceText(false);
@@ -201,80 +262,26 @@ public class BreakdownPieChart extends Fragment{
 
             // update pie chart
             pieChart.invalidate();
-
+            pieChart.setVisibility(View.VISIBLE);
+            if(country.equals(countryOne)){
+                breakdownMissingOne.setVisibility(View.INVISIBLE);
+            }else{
+                breakdownMissingTwo.setVisibility(View.INVISIBLE);
+            }
+            animateAndFixLegend();
             Log.i("MYAPP", "Data for country "+country.getName()+": Total C: " + totalC + " " + totalConsump.getData(year) + " Hydro: " + hydro + " " + hydroIndicator.getData(year) + " BioFuel: " + bioFuel + " Wind: " + wind + " Solar: " + solar);
         }catch (Exception e){
+            pieChart.setVisibility(View.INVISIBLE);
+            if(country.equals(countryOne)){
+                breakdownMissingOne.setVisibility(View.VISIBLE);
+            }else{
+                breakdownMissingTwo.setVisibility(View.VISIBLE);
+            }
         }
     }
 
-    private void addData() {
-//        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-//
-//        for (int i = 0; i < yData.length; i++)
-//            yVals1.add(new Entry(yData[i], i));
-//
-//        ArrayList<String> xVals = new ArrayList<String>();
-//
-//        for (int i = 0; i < xData.length; i++)
-//            xVals.add(xData[i]);
-//
-//        // create pie data set
-//        PieDataSet dataSet = new PieDataSet(yVals1, "Market Share");
-//        dataSet.setSliceSpace(3);
-//        dataSet.setSelectionShift(5);
-//
-//        // add many colors
-//        ArrayList<Integer> colors = new ArrayList<Integer>();
-//
-//        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-//            colors.add(c);
-//
-//        for (int c : ColorTemplate.JOYFUL_COLORS)
-//            colors.add(c);
-//
-//        for (int c : ColorTemplate.COLORFUL_COLORS)
-//            colors.add(c);
-//
-//        for (int c : ColorTemplate.LIBERTY_COLORS)
-//            colors.add(c);
-//
-//        for (int c : ColorTemplate.PASTEL_COLORS)
-//            colors.add(c);
-//
-//        for (int c : ColorTemplate.COLORFUL_COLORS)
-//            colors.add(c);
-//
-//        for (int c : ColorTemplate.JOYFUL_COLORS)
-//            colors.add(c);
-//
-//        colors.add(ColorTemplate.getHoloBlue());
-//        dataSet.setColors(colors);
-//
-//        // instantiate pie data object now
-//        PieData data = new PieData(xVals, dataSet);
-//        data.setValueFormatter(new PercentFormatter());
-//        data.setValueTextSize(11f);
-//        data.setValueTextColor(Color.GRAY);
-//
-//        pieChartOne.setData(data);
-//
-//        // undo all highlights
-//        pieChartOne.highlightValues(null);
-//
-//        // update pie chart
-//        pieChartOne.invalidate();
-    }
-
-    private ArrayList<String> getXAxisValues() {
-        ArrayList<String> xAxis = new ArrayList<>();
-        xAxis.add("Hydro Energy Consumption %");
-        xAxis.add("Liquid Biofuel Consumption %");
-        xAxis.add("Wind Energy Consumption %");
-        xAxis.add("Solar Energy Consumption %");
-        xAxis.add("Geothermal Energy Consumption %");
-        xAxis.add("Waste Energy Consumption %");
-        xAxis.add("Biogas Consumption %");
-        return xAxis;
+    public float divideBigDecimal(BigDecimal firstNumber,BigDecimal secondNumber){
+        return (firstNumber).divide(secondNumber, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
     }
 
     public ArrayList<Integer> getColors(){
@@ -294,12 +301,6 @@ public class BreakdownPieChart extends Fragment{
             colors.add(c);
 
         for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.JOYFUL_COLORS)
             colors.add(c);
         return colors;
     }
