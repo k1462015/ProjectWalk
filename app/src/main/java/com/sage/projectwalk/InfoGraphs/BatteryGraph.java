@@ -148,17 +148,23 @@ public class BatteryGraph extends Fragment{
             int yearSelected = allYears.get(batteryYearSeekBar.getProgress());
             int consumptionAmount = consumptionIndicator.getData(yearSelected).intValue();
             int finalAmount = finalConsumptionIndicator.getData(yearSelected).intValue();
-            float p = (int) consumptionAmount * 100f / finalAmount;
-            int percentage = (int) p;
-            countryOnePercent.setText(percentage + "%");
-            updateCountryImageOne(percentage);
-            countryOneName.setText(countryOne.getName());
-            countryOneTotalEnergy.setText(finalAmount+"(TJ)");
-            Log.i("MYAPP", "Country 1 - " + countryOne.getName());
-            Log.i("MYAPP","Year: "+yearSelected);
-            Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
-            Log.i("MYAPP", "Final Amount: " + finalAmount + " Big Decimal " + finalConsumptionIndicator.getData(yearSelected));
-            Log.i("MYAPP", "Percentage: "+percentage+"%");
+            if(consumptionIndicator.getData(yearSelected) != null
+                    && finalConsumptionIndicator.getData(yearSelected) != null){
+                float p = (int) consumptionAmount * 100f / finalAmount;
+                int percentage = (int) p;
+                countryOnePercent.setText(percentage + "%");
+                updateCountryImageOne(percentage);
+                countryOneName.setText(countryOne.getName());
+                countryOneTotalEnergy.setText(finalAmount + "(TJ)");
+                Log.i("MYAPP", "Country 1 - " + countryOne.getName());
+                Log.i("MYAPP","Year: "+yearSelected);
+                Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
+                Log.i("MYAPP", "Final Amount: " + finalAmount + " Big Decimal " + finalConsumptionIndicator.getData(yearSelected));
+                Log.i("MYAPP", "Percentage: "+percentage+"%");
+            }else{
+                Drawable missingIcon = getActivity().getDrawable(R.drawable.missingdata);
+                countryOneBattery.setImageDrawable(missingIcon);
+            }
 
         }catch (Exception e){
             Toast.makeText(getActivity(), "No data "+ countryOne.getName(), Toast.LENGTH_SHORT);
@@ -175,19 +181,26 @@ public class BatteryGraph extends Fragment{
                 int yearSelected = allYears.get(batteryYearSeekBar.getProgress());
                 int consumptionAmount = consumptionIndicator.getData(yearSelected).intValue();
                 int finalAmount = finalConsumptionIndicator.getData(yearSelected).intValue();
-                Log.i("MYAPP","Consumption Ammount: "+consumptionAmount);
-                Log.i("MYAPP","Fianl Amount: "+finalAmount);
-                float p = (int) consumptionAmount * 100f / finalAmount;
-                int percentage = (int) p;
-                countryTwoPercent.setText(percentage+"%");
-                updateCountryImageTwo(percentage);
-                countryTwoName.setText(countryTwo.getName());
-                countryTwoTotalEnergy.setText(finalAmount+"(TJ)");
-                Log.i("MYAPP","Country 2 - "+countryTwo.getName());
-                Log.i("MYAPP","Year: "+yearSelected);
-                Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
-                Log.i("MYAPP", "Final Amount: " + finalAmount + " Big Decimal " + finalConsumptionIndicator.getData(yearSelected));
-                Log.i("MYAPP", "Percentage: " + percentage + "%");
+                if(consumptionIndicator.getData(yearSelected) != null
+                        && finalConsumptionIndicator.getData(yearSelected) != null){
+                    Log.i("MYAPP","Consumption Ammount: "+consumptionAmount);
+                    Log.i("MYAPP","Fianl Amount: "+finalAmount);
+                    float p = (int) consumptionAmount * 100f / finalAmount;
+                    int percentage = (int) p;
+                    countryTwoPercent.setText(percentage+"%");
+                    updateCountryImageTwo(percentage);
+                    countryTwoName.setText(countryTwo.getName());
+                    countryTwoTotalEnergy.setText(finalAmount+"(TJ)");
+                    Log.i("MYAPP","Country 2 - "+countryTwo.getName());
+                    Log.i("MYAPP","Year: "+yearSelected);
+                    Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
+                    Log.i("MYAPP", "Final Amount: " + finalAmount + " Big Decimal " + finalConsumptionIndicator.getData(yearSelected));
+                    Log.i("MYAPP", "Percentage: " + percentage + "%");
+                }else{
+                    Drawable missingIcon = getActivity().getDrawable(R.drawable.missingdata);
+                    countryTwoBattery.setImageDrawable(missingIcon);
+                }
+
             }catch (Exception e){
                 Toast.makeText(getActivity(), "No data for "+ countryOne.getName(), Toast.LENGTH_SHORT);
             }

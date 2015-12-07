@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.R;
@@ -227,6 +228,8 @@ public class RenewableBreakdownContainer extends Fragment{
         xAxis.add("Biogas Consumption %");
         return xAxis;
     }
+
+
 
 
 }

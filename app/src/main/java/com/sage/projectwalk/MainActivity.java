@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
+import com.sage.projectwalk.InfoGraphs.BreakdownPieChart;
 import com.sage.projectwalk.InfoGraphs.DummyFragment;
 import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
 import com.sage.projectwalk.InfoGraphs.FactCards;
@@ -37,16 +38,15 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements SlideOutPanel.CountryListListener{
     DataManager dataManager;
-    private Button showButton;
     SlideOutPanel menuFragment;
     TextView countryOneHolder;
     TextView countryTwoHolder;
     ImageView mainCountryOneImage;
     ImageView mainCountryTwoImage;
-    EnergyRatioGraph energyRatioGraph;
     BatteryGraph batteryGraph;
     RelativeLayout mainActivityRoot;
-    RenewableBreakdownContainer renewableBreakdownContainer;
+    BreakdownPieChart breakdownPieChart;
+//    RenewableBreakdownContainer renewableBreakdownContainer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,16 +73,15 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
         //Adds all fragments to main activity
         batteryGraph = new BatteryGraph();
-        energyRatioGraph = new EnergyRatioGraph();
         FactCards factCards = new FactCards();
-        renewableBreakdownContainer = new RenewableBreakdownContainer();
+//        renewableBreakdownContainer = new RenewableBreakdownContainer();
         menuFragment = new SlideOutPanel();
+        breakdownPieChart = new BreakdownPieChart();
 
         //Adds all fragments to corresponding containers
         fragmentTransaction.add(R.id.batteryGraphContainer,batteryGraph);
-        fragmentTransaction.add(R.id.energyRatioContainer,energyRatioGraph);
         fragmentTransaction.add(R.id.factCardsContainer,factCards);
-        fragmentTransaction.add(R.id.renewableSourcesContainer, renewableBreakdownContainer);
+        fragmentTransaction.add(R.id.renewableSourcesContainer, breakdownPieChart);
         fragmentTransaction.add(R.id.out, menuFragment);
         fragmentTransaction.hide(menuFragment);
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -126,13 +125,12 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
             }
         }).start();
         try {
-            country = dataManager.getCountryIndicator(country.getIsoCode(),"8.1.2_FINAL.ENERGY.INTENSITY");
-            energyRatioGraph.updateCountryOne(country);
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1_RE.CONSUMPTION","8.1.1_FINAL.ENERGY.CONSUMPTION");
             batteryGraph.updateCountryOne(country);
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1.3_HYDRO.CONSUM","3.1.4_BIOFUELS.CONSUM",
                     "3.1.5_WIND.CONSUM","3.1.6_SOLAR.CONSUM","3.1.7_GEOTHERMAL.CONSUM", "3.1.8_WASTE.CONSUM", "3.1.9_BIOGAS.CONSUM","3.1_RE.CONSUMPTION");
-            renewableBreakdownContainer.updateCountryOne(country);
+            breakdownPieChart.updateCountryOne(country);
+//            renewableBreakdownContainer.updateCountryOne(country);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -158,13 +156,12 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
             }
         }).start();
         try {
-            country = dataManager.getCountryIndicator(country.getIsoCode(),"8.1.2_FINAL.ENERGY.INTENSITY");
-            energyRatioGraph.updateCountryTwo(country);
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1_RE.CONSUMPTION","8.1.1_FINAL.ENERGY.CONSUMPTION");
             batteryGraph.updateCountryTwo(country);
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1.3_HYDRO.CONSUM","3.1.4_BIOFUELS.CONSUM",
                     "3.1.5_WIND.CONSUM","3.1.6_SOLAR.CONSUM","3.1.7_GEOTHERMAL.CONSUM", "3.1.8_WASTE.CONSUM", "3.1.9_BIOGAS.CONSUM","3.1_RE.CONSUMPTION");
-            renewableBreakdownContainer.updateCountryTwo(country);
+            breakdownPieChart.updateCountryTwo(country);
+//            renewableBreakdownContainer.updateCountryTwo(country);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {

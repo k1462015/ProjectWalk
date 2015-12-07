@@ -108,7 +108,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="4">
 
-                <!-- Indicator 1-->
+                <!-- Battery Fragment-->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -117,17 +117,14 @@
                     android:orientation="vertical">
 
                 </LinearLayout>
-                <!-- Indicator 2-->
+                <!-- FACT CARDS-->
                 <LinearLayout
-                    android:id="@+id/energyRatioContainer"
+                    android:id="@+id/factCardsContainer"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:orientation="vertical">
-
-
                 </LinearLayout>
-
             </LinearLayout>
 
             <!-- ROW 2-->
@@ -137,25 +134,14 @@
                 android:layout_height="0dp"
                 android:layout_weight="4">
 
-                <!-- Indicator 1-->
+                <!-- Breakdown-->
                 <LinearLayout
                     android:id="@+id/renewableSourcesContainer"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:orientation="vertical">
-
-
                 </LinearLayout>
-                <!-- Indicator 2-->
-                <LinearLayout
-                    android:id="@+id/factCardsContainer"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-                </LinearLayout>
-
             </LinearLayout>
         </LinearLayout>
 
