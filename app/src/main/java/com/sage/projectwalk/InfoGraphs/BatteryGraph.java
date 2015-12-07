@@ -33,6 +33,8 @@ public class BatteryGraph extends Fragment{
     TextView countryOneName;
     TextView countryTwoName;
     TextView currentYear;
+    TextView countryOneTotalEnergy;
+    TextView countryTwoTotalEnergy;
     ImageView countryOneBattery;
     ImageView countryTwoBattery;
     SeekBar batteryYearSeekBar;
@@ -52,10 +54,13 @@ public class BatteryGraph extends Fragment{
         countryOneName = (TextView) getView().findViewById(R.id.countryOneName);
         countryOnePercent = (TextView) getView().findViewById(R.id.countryOnePercent);
         countryOneBattery  = (ImageView) getView().findViewById(R.id.countryOneBattery);
+        countryOneTotalEnergy = (TextView) getView().findViewById(R.id.countryOneTotalEnergy);
+
 
         countryTwoName = (TextView) getView().findViewById(R.id.countryTwoName);
         countryTwoPercent = (TextView) getView().findViewById(R.id.countryTwoPercent);
         countryTwoBattery = (ImageView) getView().findViewById(R.id.countryTwoBattery);
+        countryTwoTotalEnergy = (TextView) getView().findViewById(R.id.countryTwoTotalEnergy);
 
         batteryYearSeekBar = (SeekBar) getView().findViewById(R.id.batteryYearSeekBar);
         batteryYearSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -145,9 +150,10 @@ public class BatteryGraph extends Fragment{
             int finalAmount = finalConsumptionIndicator.getData(yearSelected).intValue();
             float p = (int) consumptionAmount * 100f / finalAmount;
             int percentage = (int) p;
-            countryOnePercent.setText(percentage+"%");
+            countryOnePercent.setText(percentage + "%");
             updateCountryImageOne(percentage);
             countryOneName.setText(countryOne.getName());
+            countryOneTotalEnergy.setText(finalAmount+"(TJ)");
             Log.i("MYAPP", "Country 1 - " + countryOne.getName());
             Log.i("MYAPP","Year: "+yearSelected);
             Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
@@ -176,6 +182,7 @@ public class BatteryGraph extends Fragment{
                 countryTwoPercent.setText(percentage+"%");
                 updateCountryImageTwo(percentage);
                 countryTwoName.setText(countryTwo.getName());
+                countryTwoTotalEnergy.setText(finalAmount+"(TJ)");
                 Log.i("MYAPP","Country 2 - "+countryTwo.getName());
                 Log.i("MYAPP","Year: "+yearSelected);
                 Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
