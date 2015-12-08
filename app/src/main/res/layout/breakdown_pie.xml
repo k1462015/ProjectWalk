@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="2010"
-            android:textSize="50sp"
+            android:textSize="45sp"
             android:textStyle="bold"/>
         <TextView
             android:layout_below="@id/breakdownYear"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="Year"
             android:gravity="center"
-            android:textSize="24sp"/>
+            android:textSize="16sp"/>
 
     </RelativeLayout>
 

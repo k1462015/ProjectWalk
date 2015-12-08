@@ -1,5 +1,6 @@
 package com.sage.projectwalk.InfoGraphs;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -42,6 +43,9 @@ public class BatteryGraph extends Fragment{
     Country countryOne;
     Country countryTwo;
     AlphaAnimation blinkAnimation;
+    private int badColour = Color.parseColor("#FE0000");
+    private int mediumColour = Color.parseColor("#0106FF");
+    private int goodColour = Color.parseColor("#DEFF00");
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +59,6 @@ public class BatteryGraph extends Fragment{
         countryOnePercent = (TextView) getView().findViewById(R.id.countryOnePercent);
         countryOneBattery  = (ImageView) getView().findViewById(R.id.countryOneBattery);
         countryOneTotalEnergy = (TextView) getView().findViewById(R.id.countryOneTotalEnergy);
-
 
         countryTwoName = (TextView) getView().findViewById(R.id.countryTwoName);
         countryTwoPercent = (TextView) getView().findViewById(R.id.countryTwoPercent);
@@ -106,10 +109,8 @@ public class BatteryGraph extends Fragment{
 
     public void updateCountryOne(Country country){
         countryOne = country;
-        ///Get indicator objects
+        ///Use one of the indicators to extract available years
         Indicator consumptionIndicator = countryOne.getIndicators().get("3.1_RE.CONSUMPTION");
-        Indicator finalConsumptionIndicator = countryOne.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
-
         //Get all Year values
         Set<Integer> dataYears = consumptionIndicator.getIndicatorData().keySet();
         allYears = new ArrayList<>();
@@ -124,10 +125,7 @@ public class BatteryGraph extends Fragment{
             currentYear.setText(allYears.get(batteryYearSeekBar.getProgress()) + "");
             refreshBatteryOne();
             refreshBatteryTwo();
-        }else{
-
         }
-
     }
 
     public void updateCountryTwo(Country country){
@@ -140,9 +138,22 @@ public class BatteryGraph extends Fragment{
     }
 
     private void refreshBatteryOne(){
+        if(countryOne != null){
+            refreshBattery(countryOne,countryOnePercent,countryOneName,countryOneTotalEnergy);
+        }
+    }
+
+    private void refreshBatteryTwo(){
+        if(countryTwo != null){
+            refreshBattery(countryTwo,countryTwoPercent,countryTwoName,countryTwoTotalEnergy);
+        }
+    }
+
+
+    private void refreshBattery(Country country,TextView countryPercent,TextView countryName,TextView countryTotalEnergy){
         ///Get indicator objects
-        Indicator consumptionIndicator = countryOne.getIndicators().get("3.1_RE.CONSUMPTION");
-        Indicator finalConsumptionIndicator = countryOne.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
+        Indicator consumptionIndicator = country.getIndicators().get("3.1_RE.CONSUMPTION");
+        Indicator finalConsumptionIndicator = country.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
         try{
             int yearSelected = allYears.get(batteryYearSeekBar.getProgress());
             int consumptionAmount = consumptionIndicator.getData(yearSelected).intValue();
@@ -151,97 +162,55 @@ public class BatteryGraph extends Fragment{
                     && finalConsumptionIndicator.getData(yearSelected) != null){
                 float p = (int) consumptionAmount * 100f / finalAmount;
                 int percentage = (int) p;
-                countryOnePercent.setText(percentage + "%");
-                updateCountryImageOne(percentage);
-                countryOneName.setText(countryOne.getName());
-                countryOneTotalEnergy.setText(finalAmount+"");
-                Log.i("MYAPP", "Country 1 - " + countryOne.getName());
-                Log.i("MYAPP","Year: "+yearSelected);
-                Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
-                Log.i("MYAPP", "Final Amount: " + finalAmount + " Big Decimal " + finalConsumptionIndicator.getData(yearSelected));
-                Log.i("MYAPP", "Percentage: "+percentage+"%");
+                if(percentage >= 75){
+                    countryPercent.setTextColor(goodColour);
+                }else
+                if(percentage >= 50){
+                    countryPercent.setTextColor(mediumColour);
+                }else{
+                    countryPercent.setTextColor(badColour);
+                }
+                countryPercent.setText(percentage + "%");
+                if(country.equals(countryOne)){
+                    updateCountryImage(percentage,1);
+                }else{
+                    updateCountryImage(percentage,2);
+                }
+                countryName.setText(country.getName());
+                countryTotalEnergy.setText(finalAmount + "");
             }else{
                 Drawable missingIcon = getActivity().getDrawable(R.drawable.missingdata);
-                countryOneBattery.setImageDrawable(missingIcon);
+                if(country.equals(countryOne)){
+                    countryOneBattery.setImageDrawable(missingIcon);
+                }else{
+                    countryTwoBattery.setImageDrawable(missingIcon);
+                }
             }
 
         }catch (Exception e){
-            Toast.makeText(getActivity(), "No data "+ countryOne.getName(), Toast.LENGTH_SHORT);
+            Toast.makeText(getActivity(), "No data "+ country.getName(), Toast.LENGTH_SHORT);
         }
     }
 
-
-    private void refreshBatteryTwo(){
-        if(countryTwo != null){
-            ///Get indicator objects
-            Indicator consumptionIndicator = countryTwo.getIndicators().get("3.1_RE.CONSUMPTION");
-            Indicator finalConsumptionIndicator = countryTwo.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
+    private void updateCountryImage(int percentage,int batteryNumber){
+        percentage = roundUp(percentage);
+        if(percentage <= 100 && percentage >= 0){
             try{
-                int yearSelected = allYears.get(batteryYearSeekBar.getProgress());
-                int consumptionAmount = consumptionIndicator.getData(yearSelected).intValue();
-                int finalAmount = finalConsumptionIndicator.getData(yearSelected).intValue();
-                if(consumptionIndicator.getData(yearSelected) != null
-                        && finalConsumptionIndicator.getData(yearSelected) != null){
-                    Log.i("MYAPP","Consumption Ammount: "+consumptionAmount);
-                    Log.i("MYAPP","Fianl Amount: "+finalAmount);
-                    float p = (int) consumptionAmount * 100f / finalAmount;
-                    int percentage = (int) p;
-                    countryTwoPercent.setText(percentage+"%");
-                    updateCountryImageTwo(percentage);
-                    countryTwoName.setText(countryTwo.getName());
-                    countryTwoTotalEnergy.setText(finalAmount+"");
-                    Toast.makeText(getActivity(),"Country 2 - Final Amount "+finalAmount,Toast.LENGTH_SHORT).show();
-                    Log.i("MYAPP","Country 2 - "+countryTwo.getName());
-                    Log.i("MYAPP","Year: "+yearSelected);
-                    Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
-                    Log.i("MYAPP", "Final Amount: " + finalAmount + " Big Decimal " + finalConsumptionIndicator.getData(yearSelected));
-                    Log.i("MYAPP", "Percentage: " + percentage + "%");
+                //This generates the resource Id for that flag image
+                int imageResource = getActivity().getResources().getIdentifier("drawable/battery"+percentage,null,getActivity().getPackageName());
+                Drawable batteryImage = getActivity().getDrawable(imageResource);
+                if(batteryNumber == 1){
+                    countryOneBattery.setImageDrawable(batteryImage);
+                    countryOneBattery.startAnimation(blinkAnimation);
                 }else{
-                    Drawable missingIcon = getActivity().getDrawable(R.drawable.missingdata);
-                    countryTwoBattery.setImageDrawable(missingIcon);
+                    countryTwoBattery.setImageDrawable(batteryImage);
+                    countryTwoBattery.startAnimation(blinkAnimation);
                 }
-
-            }catch (Exception e){
-                Toast.makeText(getActivity(), "No data for "+ countryTwo.getName(), Toast.LENGTH_SHORT);
-            }
-        }
-    }
-
-    private void updateCountryImageOne(int percentage){
-        percentage = roundUp(percentage);
-        if(percentage <= 100 && percentage >= 0){
-            try{
-                //This generates the resource Id for that flag image
-                int imageResource = getActivity().getResources().getIdentifier("drawable/battery"+percentage,null,getActivity().getPackageName());
-                Drawable batteryImage = getActivity().getResources().getDrawable(imageResource);
-                countryOneBattery.setImageDrawable(batteryImage);
-                countryOneBattery.startAnimation(blinkAnimation);
             }catch (Exception e){
                 Log.e("MYAPP","Error loading image");
             }
 
         }
-    }
-
-
-
-    private void updateCountryImageTwo(int percentage){
-        percentage = roundUp(percentage);
-
-        if(percentage <= 100 && percentage >= 0){
-            try{
-                //This generates the resource Id for that flag image
-                int imageResource = getActivity().getResources().getIdentifier("drawable/battery"+percentage,null,getActivity().getPackageName());
-                Drawable batteryImage = getActivity().getResources().getDrawable(imageResource);
-                countryTwoBattery.setImageDrawable(batteryImage);
-                countryTwoBattery.startAnimation(blinkAnimation);
-            }catch (Exception e){
-                Log.e("MYAPP","Error loading image");
-            }
-
-        }
-
-
     }
 
     public int roundUp(int n) {

@@ -21,6 +21,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.Indicator;
@@ -34,7 +36,7 @@ import java.util.Set;
 /**
  * Created by tahmidulislam on 07/12/2015.
  */
-public class BreakdownPieChart extends Fragment{
+public class BreakdownPieChart extends Fragment implements OnChartValueSelectedListener{
     PieChart pieChartOne;
     PieChart pieChartTwo;
     Country countryOne;
@@ -100,16 +102,22 @@ public class BreakdownPieChart extends Fragment{
         });
 
         pieChartOne.setUsePercentValues(true);
-        pieChartTwo.setUsePercentValues(true);
-        pieChartOne.setDescription("Energy Breakdown");
-        pieChartTwo.setDescription("Energy Breakdown");
+        pieChartOne.setDescription("");
         pieChartOne.setRotationAngle(0);
         pieChartOne.setRotationEnabled(true);
+        pieChartOne.setHighlightPerTapEnabled(true);
+        pieChartOne.setTouchEnabled(true);
+        pieChartOne.setOnChartValueSelectedListener(this);
+        pieChartOne.setElevation(20);
+
+        pieChartTwo.setUsePercentValues(true);
+        pieChartTwo.setDescription("");
         pieChartTwo.setRotationAngle(0);
         pieChartTwo.setRotationEnabled(true);
-        pieChartOne.setHighlightPerTapEnabled(true);
         pieChartTwo.setHighlightPerTapEnabled(true);
-        pieChartOne.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+        pieChartTwo.setTouchEnabled(true);
+        pieChartTwo.setOnChartValueSelectedListener(this);
+        pieChartTwo.setElevation(20);
 
     }
 
@@ -150,7 +158,6 @@ public class BreakdownPieChart extends Fragment{
             if (dataYears.size() > 0 && dataYears.size() >= breakdownSeekBar.getProgress()) {
                 int year = dataYears.get(breakdownSeekBar.getProgress());
                 refreshCountry(countryOne, pieChartOne, year);
-                Toast.makeText(getActivity(), "Showing data for " + year, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -160,7 +167,6 @@ public class BreakdownPieChart extends Fragment{
             if (dataYears.size() > 0 && dataYears.size() >= breakdownSeekBar.getProgress()) {
                 int year = dataYears.get(breakdownSeekBar.getProgress());
                 refreshCountry(countryTwo, pieChartTwo, year);
-                Toast.makeText(getActivity(), "Showing data for " + year, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -189,44 +195,56 @@ public class BreakdownPieChart extends Fragment{
             ArrayList<String> newXAxis = new ArrayList<>();
 
             float other = 100 - (hydro+bioFuel+wind+solar+geo+waste+bio);
+            ArrayList<Integer> colors = new ArrayList<>();
             if(hydro != 0){
                 countryOneEntry.add(new Entry(hydro, 0));
                 newXAxis.add(xAxis.get(0));
+                colors.add(Color.parseColor("#0106FF"));
             }
             if(bioFuel != 0){
                 countryOneEntry.add(new Entry(bioFuel, 1));
                 newXAxis.add(xAxis.get(1));
+                colors.add(Color.parseColor("#DEFF00"));
             }
             if(wind != 0){
                 countryOneEntry.add(new Entry(wind, 2));
                 newXAxis.add(xAxis.get(2));
+                colors.add(Color.parseColor("#FE0000"));
             }
             if(solar != 0){
                 countryOneEntry.add(new Entry(solar, 3));
                 newXAxis.add(xAxis.get(3));
+                colors.add(Color.parseColor("#00EAFF"));
             }
             if(geo != 0){
                 countryOneEntry.add(new Entry(geo, 4));
                 newXAxis.add(xAxis.get(4));
+                colors.add(Color.parseColor("#C4C486"));
             }
             if(waste != 0){
                 countryOneEntry.add(new Entry(waste, 5));
                 newXAxis.add(xAxis.get(5));
+                colors.add(Color.parseColor("#6C6B69"));
             }
             if(bio != 0){
                 countryOneEntry.add(new Entry(bio, 6));
                 newXAxis.add(xAxis.get(6));
+                colors.add(Color.parseColor("#00ff99"));
             }
-            countryOneEntry.add(new Entry(other,7));
+            if(other != 0){
+                countryOneEntry.add(new Entry(other,7));
+                newXAxis.add("Other");
+                colors.add(Color.parseColor("#FFFFFF"));
+            }
 
 
             // create pie data set
             PieDataSet dataSet = new PieDataSet(countryOneEntry, "");
-            dataSet.setSliceSpace(3);
+            dataSet.setSliceSpace(6);
             dataSet.setSelectionShift(5);
 
 
-            dataSet.setColors(getColors());
+            dataSet.setColors(colors );
 
             // instantiate pie data object now
 
@@ -244,7 +262,7 @@ public class BreakdownPieChart extends Fragment{
             pieChart.setHoleRadius(40f);
             pieChart.setTransparentCircleRadius(50f);
 
-            breakdownYear.setText(year+"");
+            breakdownYear.setText(year +"");
 
             pieChart.setData(data);
             pieChart.setDrawSliceText(false);
@@ -261,7 +279,6 @@ public class BreakdownPieChart extends Fragment{
                 breakdownMissingTwo.setVisibility(View.INVISIBLE);
             }
             animateAndFixLegend();
-            Log.i("MYAPP", "Data for country "+country.getName()+": Total C: " + totalC + " " + totalConsump.getData(year) + " Hydro: " + hydro + " " + hydroIndicator.getData(year) + " BioFuel: " + bioFuel + " Wind: " + wind + " Solar: " + solar);
         }catch (Exception e){
             pieChart.setVisibility(View.INVISIBLE);
             if(country.equals(countryOne)){
@@ -276,24 +293,14 @@ public class BreakdownPieChart extends Fragment{
         return (firstNumber).divide(secondNumber, 2, BigDecimal.ROUND_UP).multiply(new BigDecimal("100")).floatValue();
     }
 
-    public ArrayList<Integer> getColors(){
-        // add many colors
-        ArrayList<Integer> colors = new ArrayList<Integer>();
 
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
+    @Override
+    public void onValueSelected(Entry entry, int i, Highlight highlight) {
+        Toast.makeText(getActivity(), entry.getVal()+"% "+xAxis.get(entry.getXIndex()),Toast.LENGTH_SHORT).show();
+    }
 
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
+    @Override
+    public void onNothingSelected() {
 
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-        return colors;
     }
 }
