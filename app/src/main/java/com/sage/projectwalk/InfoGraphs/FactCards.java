@@ -1,5 +1,6 @@
 package com.sage.projectwalk.InfoGraphs;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
@@ -7,6 +8,7 @@ import android.media.Image;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -63,9 +65,16 @@ public class FactCards extends Fragment{
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("Loading InfoGraph");
+        progressDialog.setMessage("Please be patient...");
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+
         View view = inflater.inflate(R.layout.fact_cards, container, false);
 
         factBody = (TextView) view.findViewById(R.id.factBody);
+        factBody.setMovementMethod(new ScrollingMovementMethod());
         factTitle = (TextView) view.findViewById(R.id.factTitle);
         imageHolder = (ImageView) view.findViewById(R.id.imageHolder);
         populateFacts();
@@ -133,6 +142,7 @@ public class FactCards extends Fragment{
         });
 
 
+        progressDialog.hide();
         return view;
 
 
@@ -145,11 +155,8 @@ public class FactCards extends Fragment{
     public void populateFacts(){
         factTitles = new ArrayList<>();
         facts = new ArrayList<>();
-
         factTitles = getFileAsset("factTitles.txt");
         facts = getFileAsset("facts.txt");
-        changeFact();
-
     }
 
     public ArrayList<String> getFileAsset(String fileName){

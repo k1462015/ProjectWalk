@@ -61,7 +61,6 @@ public class BatteryGraph extends Fragment{
         countryTwoPercent = (TextView) getView().findViewById(R.id.countryTwoPercent);
         countryTwoBattery = (ImageView) getView().findViewById(R.id.countryTwoBattery);
         countryTwoTotalEnergy = (TextView) getView().findViewById(R.id.countryTwoTotalEnergy);
-
         batteryYearSeekBar = (SeekBar) getView().findViewById(R.id.batteryYearSeekBar);
         batteryYearSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -155,7 +154,7 @@ public class BatteryGraph extends Fragment{
                 countryOnePercent.setText(percentage + "%");
                 updateCountryImageOne(percentage);
                 countryOneName.setText(countryOne.getName());
-                countryOneTotalEnergy.setText(finalAmount + "(TJ)");
+                countryOneTotalEnergy.setText(finalAmount+"");
                 Log.i("MYAPP", "Country 1 - " + countryOne.getName());
                 Log.i("MYAPP","Year: "+yearSelected);
                 Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
@@ -190,7 +189,8 @@ public class BatteryGraph extends Fragment{
                     countryTwoPercent.setText(percentage+"%");
                     updateCountryImageTwo(percentage);
                     countryTwoName.setText(countryTwo.getName());
-                    countryTwoTotalEnergy.setText(finalAmount+"(TJ)");
+                    countryTwoTotalEnergy.setText(finalAmount+"");
+                    Toast.makeText(getActivity(),"Country 2 - Final Amount "+finalAmount,Toast.LENGTH_SHORT).show();
                     Log.i("MYAPP","Country 2 - "+countryTwo.getName());
                     Log.i("MYAPP","Year: "+yearSelected);
                     Log.i("MYAPP", "Consumption Ammount: " + consumptionAmount + " Big Decimal " + consumptionIndicator.getData(yearSelected));
@@ -202,7 +202,7 @@ public class BatteryGraph extends Fragment{
                 }
 
             }catch (Exception e){
-                Toast.makeText(getActivity(), "No data for "+ countryOne.getName(), Toast.LENGTH_SHORT);
+                Toast.makeText(getActivity(), "No data for "+ countryTwo.getName(), Toast.LENGTH_SHORT);
             }
         }
     }

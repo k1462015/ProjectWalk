@@ -45,6 +45,7 @@ public class BreakdownPieChart extends Fragment{
     ImageView breakdownMissingTwo;
     ArrayList<String> xAxis = new ArrayList<>();
     Typeface mTf;
+    TextView breakdownYear;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class BreakdownPieChart extends Fragment{
 
         dataYears = new ArrayList<>();
         mTf = Typeface.createFromAsset(getActivity().getAssets(), "android_7.ttf");
-
+        breakdownYear = (TextView) getView().findViewById(R.id.breakdownYear);
         breakdownMissingOne = (ImageView) getView().findViewById(R.id.breakdownMissingOne);
         breakdownMissingTwo = (ImageView) getView().findViewById(R.id.breakdownMissingTwo);
 
@@ -113,16 +114,8 @@ public class BreakdownPieChart extends Fragment{
     }
 
     public void animateAndFixLegend(){
-        Legend l = pieChartOne.getLegend();
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
-        l.setXEntrySpace(7);
-        l.setYEntrySpace(5);
-        l.setWordWrapEnabled(true);
-        l = pieChartTwo.getLegend();
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
-        l.setXEntrySpace(7);
-        l.setYEntrySpace(5);
-        l.setWordWrapEnabled(true);
+        pieChartOne.getLegend().setEnabled(false);
+        pieChartTwo.getLegend().setEnabled(false);
         pieChartOne.animateY(1400, Easing.EasingOption.EaseInOutQuad);
         pieChartTwo.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
@@ -250,9 +243,8 @@ public class BreakdownPieChart extends Fragment{
 
             pieChart.setHoleRadius(40f);
             pieChart.setTransparentCircleRadius(50f);
-            pieChart.setCenterText(year+"");
-            pieChart.setCenterTextSize(30);
-            pieChart.setCenterTextTypeface(mTf);
+
+            breakdownYear.setText(year+"");
 
             pieChart.setData(data);
             pieChart.setDrawSliceText(false);

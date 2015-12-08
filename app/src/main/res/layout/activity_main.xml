@@ -8,6 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/background"
     tools:context=".MainActivity">
 
 
@@ -108,23 +109,28 @@
                 android:layout_height="0dp"
                 android:layout_weight="5">
 
+                <!-- FACT CARDS-->
+                <LinearLayout
+                    android:id="@+id/factCardsContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+                </LinearLayout>
+
                 <!-- Battery Fragment-->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="7"
                     android:id="@+id/batteryGraphContainer"
+                    android:background="@drawable/layout_bg"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
                     android:orientation="vertical">
 
                 </LinearLayout>
-                <!-- FACT CARDS-->
-                <!--<LinearLayout-->
-                    <!--android:id="@+id/factCardsContainer"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:orientation="vertical">-->
-                <!--</LinearLayout>-->
+
             </LinearLayout>
 
             <!-- ROW 2-->
@@ -134,12 +140,27 @@
                 android:layout_height="0dp"
                 android:layout_weight="5">
 
+                <!-- PIE CHART LEGENDS -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/legends"/>
+                </LinearLayout>
+
                 <!-- Breakdown-->
                 <LinearLayout
                     android:id="@+id/renewableSourcesContainer"
+                    android:layout_marginTop="5dp"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="7"
+                    android:background="@drawable/layout_bg"
+                    android:layout_marginRight="5dp"
                     android:orientation="vertical">
                 </LinearLayout>
             </LinearLayout>
