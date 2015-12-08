@@ -72,13 +72,13 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
         //Adds all fragments to main activity
         batteryGraph = new BatteryGraph();
-        FactCards factCards = new FactCards();
+//        FactCards factCards = new FactCards();
         menuFragment = new SlideOutPanel();
         breakdownPieChart = new BreakdownPieChart();
 
         //Adds all fragments to corresponding containers
         fragmentTransaction.add(R.id.batteryGraphContainer,batteryGraph);
-        fragmentTransaction.add(R.id.factCardsContainer,factCards);
+//        fragmentTransaction.add(R.id.factCardsContainer,factCards);
         fragmentTransaction.add(R.id.renewableSourcesContainer, breakdownPieChart);
         fragmentTransaction.add(R.id.out, menuFragment);
         fragmentTransaction.hide(menuFragment);
