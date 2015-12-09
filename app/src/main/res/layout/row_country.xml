@@ -11,8 +11,7 @@
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/loading" />
+        android:layout_alignParentLeft="true" />
     <!-- COUNTRY CAPITAL CITY-->
     <TextView
         android:id="@+id/capitalCity"

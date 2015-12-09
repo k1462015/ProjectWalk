@@ -69,7 +69,6 @@ public class DataManager {
                     Indicator ind = new Indicator();
                     ind.setId(id);
                     ind.setName(name);
-                    Log.i("MYAPP","CREATED indicator object "+indicator+" with id "+id+" and name "+name);
                     for (int i = 0;i < indicatorContent.length();i++){
                         JSONObject jsonObject = indicatorContent.getJSONObject(i);
                         BigDecimal value;
@@ -162,34 +161,6 @@ public class DataManager {
             country.setCapitalCity(countryJSON.getString("capitalCity"));
             country.setLongitude(countryJSON.getString("longitude"));
             country.setLatitude(countryJSON.getString("latitude"));
-            Log.i("MYAPP", "COUNTRY LIST: " + country.toString());
-
-//            //Get population data
-//            JSONArray populationData = null;
-//            //Extract population data
-//            try {
-//                String iso2Code = countryJSON.getString("iso2Code");
-//                populationData = retrieveFile(iso2Code + "_SP.POP.TOTL.json");
-//                JSONArray actualPopData = populationData.getJSONArray(1);
-//                Indicator indicator = new Indicator();
-//                indicator.setId("SP.POP.TOTL");
-//                for (int j = 0; j < actualPopData.length(); j++) {
-//                    JSONObject jsonObject1 = actualPopData.getJSONObject(j);
-//                    try {
-//                        if (!jsonObject1.isNull("value") && !jsonObject1.isNull("date")) {
-//                            Double date = new Double(jsonObject1.getString("value"));
-//                            int year = Integer.parseInt(jsonObject1.getString("date"));
-//                            indicator.addData(year, date);
-//                            Log.i("MYAPP", "Added indicator " + date + " " + year + " " + iso2Code);
-//                        }
-//                    } catch (NumberFormatException e) {
-//                        Log.i("MYAPP", "PROBLEM ADDED POPULATION DATA " + iso2Code);
-//                    }
-//                }
-//                country.addIndicator(indicator);
-//            }catch (Exception e){
-//
-//            }
             countries.add(country);
         }
         //Sort all by country name alphabetically
@@ -199,9 +170,6 @@ public class DataManager {
                 return c1.getName().compareTo(c2.getName());
             }
         });
-        for(Country country:countries){
-            Log.i("MYAPP","Country: "+country.getName()+" Capital City: "+country.getCapitalCity()+" Longitude: "+country.getLongitude());
-        }
         return countries;
     }
 
