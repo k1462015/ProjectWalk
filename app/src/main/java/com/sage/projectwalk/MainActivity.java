@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
@@ -49,7 +50,11 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_new);
+        setContentView(R.layout.activity_main);
+        initialiseUi();
+    }
+
+    public void initialiseUi(){
         dataManager = new DataManager(this);
 
         allYears = new ArrayList<>();
@@ -93,8 +98,13 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         fragmentTransaction.hide(menuFragment);
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
         fragmentTransaction.commit();
-
     }
+
+    public void syncData(View view){
+        dataManager.synchronizeData();
+    }
+
+
 
     private class UnifiedSeekBarListener implements SeekBar.OnSeekBarChangeListener {
 

@@ -61,7 +61,6 @@ public class DataManager {
             for (String indicator:indicators){
                 JSONArray indicatorData = retrieveFile(isoCode + "_" + indicator + ".json");
                 if(indicatorData != null){
-                    Log.i("MYAPP","FOUND INDICATOR FOR "+isoCode+indicator);
                     JSONArray indicatorContent = indicatorData.getJSONArray(1);
                     //Create new indicator object
                     String id = indicatorContent.getJSONObject(0).getJSONObject("indicator").getString("id");
@@ -128,7 +127,6 @@ public class DataManager {
                                 BigDecimal data = new BigDecimal(jsonObject1.getString("value"));
                                 int year = Integer.parseInt(jsonObject1.getString("date"));
                                 indicator.addData(year,data);
-                                Log.i("MYAPP","Added indicator "+data+" "+year+" "+iso2Code);
                             }
                         }catch (NumberFormatException e){
                             Log.i("MYAPP","PROBLEM ADDED POPULATION DATA "+iso2Code);

@@ -20,15 +20,16 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="Country #1"
+            android:text="Select Country 1"
             android:layout_weight="1"
-            android:textSize="30dp"/>
+            android:textSize="20dp"
+            android:gravity="center_vertical"/>
 
         <ListView
             android:id="@+id/countryOption1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="8"
             android:smoothScrollbar="true"
             android:scrollingCache="false"
             android:animationCache="false"/>
@@ -37,14 +38,15 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Country #2"
-            android:textSize="30dp"/>
+            android:text="Select Country 2"
+            android:textSize="20dp"
+            android:gravity="center_vertical"/>
 
         <ListView
             android:id="@+id/countryOption2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="8"
             android:smoothScrollbar="true"
             android:scrollingCache="false"
             android:animationCache="false"/>

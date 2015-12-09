@@ -15,17 +15,12 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.R;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
 
 
 public class BatteryGraph extends Fragment{
@@ -45,7 +40,7 @@ public class BatteryGraph extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.battery_graph_new,container,false);
+        return inflater.inflate(R.layout.battery_graph,container,false);
     }
 
     @Override
