@@ -63,6 +63,8 @@ public class SlideOutPanel extends Fragment {
             countries = dataManager.getCountryList();
             countryOption1.setAdapter(new CountryAdapter(getActivity(), R.layout.row_country, countries));
             countryOption2.setAdapter(new CountryAdapter(getActivity(), R.layout.row_country, countries));
+            countryListListener.onCountryOption1Selected(countries.get(2));
+            countryListListener.onCountryOption2Selected(countries.get(10));
         } catch (IOException e) {
             Log.e("MYAPP", "IOException when trying to retrieve countries list in ListFragment");
         } catch (JSONException e) {

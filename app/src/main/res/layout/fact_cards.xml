@@ -19,28 +19,6 @@
             android:background="#F6DC43"
             android:elevation="10dp">
 
-            <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_weight="3">-->
-
-            <!--<ImageView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="2"-->
-            <!--android:id="@+id/imageHolder"-->
-            <!--android:scaleType="centerCrop"-->
-            <!--android:src="@drawable/cd_img"/>-->
-
-            <!--&lt;!&ndash; DARK BLACK EFFECT&ndash;&gt;-->
-            <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="#99000000">-->
-            <!--</RelativeLayout>-->
-
-            <!--</RelativeLayout>-->
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -51,7 +29,7 @@
                     android:id="@+id/factTitle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Fact"
+                    android:text="Welcome!"
                     android:gravity="center"
                     android:textSize="20dp"
                     android:textStyle="bold"/>
@@ -65,7 +43,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:text="Germany is the founding member of the European Union and the Eurozone"
+                android:text="To choose a country, slide your fingers to the left and an option panel will slide out! The batteries show you what percentage of a countries total energy consumption is renewable. Below that you can see the breakdown of the renewable resources. Swipe along here to see more facts!"
                 android:id="@+id/factBody"
                 android:textSize="20dp"
                 android:textColor="#000000"

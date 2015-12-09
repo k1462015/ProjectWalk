@@ -145,7 +145,6 @@ public class BatteryGraph extends Fragment{
             }
 
         }catch (Exception e){
-            Toast.makeText(getActivity(), "No data "+ country.getName(), Toast.LENGTH_SHORT);
         }
     }
 

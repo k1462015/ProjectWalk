@@ -39,9 +39,6 @@ public class FactCards extends Fragment{
 
     private TextView factBody;
     private TextView factTitle;
-//    private ImageView imageHolder;
-    private Country mCountryOne;
-    private Country mCountryTwo;
     Animation slideOutAnimation;
     Animation slideInFromLeftAnim;
     Animation slideOutRight;
@@ -49,19 +46,31 @@ public class FactCards extends Fragment{
     RelativeLayout relativeLayout;
     ArrayList<String> factTitles;
     ArrayList<String> facts;
+    int currentFact = 0;
 
-    public void changeFact(){
-        //Randomly select a fact
-        Random randomGenerator = new Random();
-        int randomNumber = randomGenerator.nextInt(facts.size());
-        factTitle.setText(factTitles.get(randomNumber));
-        factBody.setText(facts.get(randomNumber));
-        //This generates the resource Id for that flag image
-        int imageResource = getActivity().getResources().getIdentifier("drawable/fact"+randomNumber,null,getActivity().getPackageName());
-        Drawable factImage = getActivity().getResources().getDrawable(imageResource);
-//        imageHolder.setImageDrawable(factImage);
+
+
+    public void nextFact(){
+        if(currentFact == facts.size() - 1){
+            currentFact = 0;
+        }else{
+            currentFact++;
+        }
+        changeFact();
     }
 
+    public void prevFact(){
+        if(currentFact == 0){
+            currentFact = facts.size() - 1;
+        }else{
+            currentFact--;
+        }
+        changeFact();
+    }
+    public void changeFact(){
+        factTitle.setText(factTitles.get(currentFact));
+        factBody.setText(facts.get(currentFact));
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -76,7 +85,6 @@ public class FactCards extends Fragment{
         factBody = (TextView) view.findViewById(R.id.factBody);
         factBody.setMovementMethod(new ScrollingMovementMethod());
         factTitle = (TextView) view.findViewById(R.id.factTitle);
-//        imageHolder = (ImageView) view.findViewById(R.id.imageHolder);
         populateFacts();
 
         //Left Swipe
@@ -91,7 +99,7 @@ public class FactCards extends Fragment{
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                changeFact();
+                prevFact();
                 relativeLayout.startAnimation(slideInFromLeftAnim);
             }
 
@@ -115,7 +123,7 @@ public class FactCards extends Fragment{
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                changeFact();
+                nextFact();
                 relativeLayout.startAnimation(slideInFromRightAnim);
             }
 
@@ -131,7 +139,7 @@ public class FactCards extends Fragment{
         relativeLayout = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
 
         relativeLayout.setOnTouchListener(new SwipeListener(container.getContext()));
-        factBody.setOnTouchListener(new SwipeListener(container.getContext()));
+//        factBody.setOnTouchListener(new SwipeListener(container.getContext()));
         factTitle.setOnTouchListener(new SwipeListener(container.getContext()));
         progressDialog.hide();
         return view;
@@ -144,6 +152,8 @@ public class FactCards extends Fragment{
         public SwipeListener(Context context) {
             super(context);
         }
+
+
 
         @Override
         public void onSwipeLeft() {
