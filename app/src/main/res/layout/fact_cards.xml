@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,59 +10,71 @@
 
 
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp"
-        android:elevation="5dp"
-        android:background="@android:color/white">
-
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/mainNote"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3">
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:background="#F6DC43"
+            android:elevation="10dp">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:id="@+id/imageHolder"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cd_img"/>
+            <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="3">-->
 
-            <!-- DARK BLACK EFFECT-->
+            <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="2"-->
+            <!--android:id="@+id/imageHolder"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:src="@drawable/cd_img"/>-->
+
+            <!--&lt;!&ndash; DARK BLACK EFFECT&ndash;&gt;-->
+            <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#99000000">-->
+            <!--</RelativeLayout>-->
+
+            <!--</RelativeLayout>-->
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#99000000">
+                android:layout_height="0dp"
+                android:layout_weight="2">
+
+                <TextView
+                    android:layout_marginLeft="60dp"
+                    android:id="@+id/factTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Fact"
+                    android:gravity="center"
+                    android:textSize="20dp"
+                    android:textStyle="bold"/>
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/pushpin"
+                    android:layout_marginBottom="10dp"/>
             </RelativeLayout>
 
-        </RelativeLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Germany is the founding member of the European Union and the Eurozone"
+                android:id="@+id/factBody"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                android:layout_weight="6"
+                android:scrollbars="vertical"
+                android:lines="10"
+                android:layout_margin="10dp"/>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/factTitle"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:text="Welcome!"
-            android:gravity="center"
-            android:textSize="16dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:text="Swipe here to have a look at a few facts!"
-            android:id="@+id/factBody"
-            android:textSize="12sp"
-            android:textColor="#000000"
-            android:layout_weight="6"
-            android:layout_margin="5dp"
-            android:maxLines = "50"
-            android:scrollbars = "vertical"/>
-    </LinearLayout>
 
 
 </RelativeLayout>

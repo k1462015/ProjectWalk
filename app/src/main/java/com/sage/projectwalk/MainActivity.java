@@ -2,6 +2,7 @@ package com.sage.projectwalk;
 
 import android.app.ProgressDialog;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_new);
         dataManager = new DataManager(this);
 
         mainActivityRoot = (RelativeLayout) findViewById(R.id.mainActivityRoot);
@@ -64,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         countryTwoHolder = (TextView) findViewById(R.id.countryTwoHolder);
         mainCountryOneImage = (ImageView) findViewById(R.id.mainCountryOneImage);
         mainCountryTwoImage = (ImageView) findViewById(R.id.mainCountryTwoImage);
+
+        Typeface tf = Typeface.createFromAsset(getAssets(),"fonts/chalk.ttf");
+        countryOneHolder.setTypeface(tf);
+        countryTwoHolder.setTypeface(tf);
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();

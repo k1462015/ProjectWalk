@@ -39,7 +39,7 @@ public class FactCards extends Fragment{
 
     private TextView factBody;
     private TextView factTitle;
-    private ImageView imageHolder;
+//    private ImageView imageHolder;
     private Country mCountryOne;
     private Country mCountryTwo;
     Animation slideOutAnimation;
@@ -59,7 +59,7 @@ public class FactCards extends Fragment{
         //This generates the resource Id for that flag image
         int imageResource = getActivity().getResources().getIdentifier("drawable/fact"+randomNumber,null,getActivity().getPackageName());
         Drawable factImage = getActivity().getResources().getDrawable(imageResource);
-        imageHolder.setImageDrawable(factImage);
+//        imageHolder.setImageDrawable(factImage);
     }
 
 
@@ -76,7 +76,7 @@ public class FactCards extends Fragment{
         factBody = (TextView) view.findViewById(R.id.factBody);
         factBody.setMovementMethod(new ScrollingMovementMethod());
         factTitle = (TextView) view.findViewById(R.id.factTitle);
-        imageHolder = (ImageView) view.findViewById(R.id.imageHolder);
+//        imageHolder = (ImageView) view.findViewById(R.id.imageHolder);
         populateFacts();
 
         //Left Swipe
@@ -130,22 +130,32 @@ public class FactCards extends Fragment{
 
         relativeLayout = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
 
-        relativeLayout.setOnTouchListener(new OnSwipeTouchListener(container.getContext()) {
-            @Override
-            public void onSwipeRight() {
-                relativeLayout.startAnimation(slideOutAnimation);
-            }
-            @Override
-            public void onSwipeLeft() {
-                relativeLayout.startAnimation(slideOutRight);
-            }
-        });
-
-
+        relativeLayout.setOnTouchListener(new SwipeListener(container.getContext()));
+        factBody.setOnTouchListener(new SwipeListener(container.getContext()));
+        factTitle.setOnTouchListener(new SwipeListener(container.getContext()));
         progressDialog.hide();
         return view;
 
 
+    }
+
+    private class SwipeListener extends OnSwipeTouchListener{
+
+        public SwipeListener(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onSwipeLeft() {
+            super.onSwipeLeft();
+            relativeLayout.startAnimation(slideOutRight);
+        }
+
+        @Override
+        public void onSwipeRight() {
+            super.onSwipeRight();
+            relativeLayout.startAnimation(slideOutAnimation);
+        }
     }
 
     /**

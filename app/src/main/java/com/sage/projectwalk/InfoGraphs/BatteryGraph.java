@@ -31,8 +31,6 @@ import java.util.Set;
 public class BatteryGraph extends Fragment{
     TextView countryOnePercent;
     TextView countryTwoPercent;
-    TextView countryOneName;
-    TextView countryTwoName;
     TextView currentYear;
     TextView countryOneTotalEnergy;
     TextView countryTwoTotalEnergy;
@@ -55,12 +53,10 @@ public class BatteryGraph extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        countryOneName = (TextView) getView().findViewById(R.id.countryOneName);
         countryOnePercent = (TextView) getView().findViewById(R.id.countryOnePercent);
         countryOneBattery  = (ImageView) getView().findViewById(R.id.countryOneBattery);
         countryOneTotalEnergy = (TextView) getView().findViewById(R.id.countryOneTotalEnergy);
 
-        countryTwoName = (TextView) getView().findViewById(R.id.countryTwoName);
         countryTwoPercent = (TextView) getView().findViewById(R.id.countryTwoPercent);
         countryTwoBattery = (ImageView) getView().findViewById(R.id.countryTwoBattery);
         countryTwoTotalEnergy = (TextView) getView().findViewById(R.id.countryTwoTotalEnergy);
@@ -139,18 +135,18 @@ public class BatteryGraph extends Fragment{
 
     private void refreshBatteryOne(){
         if(countryOne != null){
-            refreshBattery(countryOne,countryOnePercent,countryOneName,countryOneTotalEnergy);
+            refreshBattery(countryOne,countryOnePercent,countryOneTotalEnergy);
         }
     }
 
     private void refreshBatteryTwo(){
         if(countryTwo != null){
-            refreshBattery(countryTwo,countryTwoPercent,countryTwoName,countryTwoTotalEnergy);
+            refreshBattery(countryTwo,countryTwoPercent,countryTwoTotalEnergy);
         }
     }
 
 
-    private void refreshBattery(Country country,TextView countryPercent,TextView countryName,TextView countryTotalEnergy){
+    private void refreshBattery(Country country,TextView countryPercent,TextView countryTotalEnergy){
         ///Get indicator objects
         Indicator consumptionIndicator = country.getIndicators().get("3.1_RE.CONSUMPTION");
         Indicator finalConsumptionIndicator = country.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
@@ -176,7 +172,6 @@ public class BatteryGraph extends Fragment{
                 }else{
                     updateCountryImage(percentage,2);
                 }
-                countryName.setText(country.getName());
                 countryTotalEnergy.setText(finalAmount + "");
             }else{
                 Drawable missingIcon = getActivity().getDrawable(R.drawable.missingdata);

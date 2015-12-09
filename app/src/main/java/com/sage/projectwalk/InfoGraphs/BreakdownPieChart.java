@@ -234,7 +234,7 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
             if(other != 0){
                 countryOneEntry.add(new Entry(other,7));
                 newXAxis.add("Other");
-                colors.add(Color.parseColor("#FFFFFF"));
+                colors.add(Color.parseColor("#000000"));
             }
 
 
@@ -250,6 +250,7 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
 
             PieData data = new PieData(xAxis, dataSet);
             data.setValueTypeface(mTf);
+            data.setValueTextColor(Color.parseColor("#FFFFFF"));
             data.setValueFormatter(new PercentFormatter());
             data.setValueTextSize(15f);
 
