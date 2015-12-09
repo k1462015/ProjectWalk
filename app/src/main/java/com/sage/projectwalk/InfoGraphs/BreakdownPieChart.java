@@ -202,8 +202,8 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
 
             // create pie data set
             PieDataSet dataSet = new PieDataSet(countryOneEntry, "");
-            dataSet.setSliceSpace(15);
-            dataSet.setSelectionShift(15);
+            dataSet.setSliceSpace(10);
+            dataSet.setSelectionShift(10);
 
 
             dataSet.setColors(colors );

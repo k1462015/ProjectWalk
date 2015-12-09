@@ -24,7 +24,9 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="Sync Data"
-                android:onClick="syncData"/>
+                android:onClick="syncData"
+                android:textColor="#FFFFFF"
+                android:background="#1B9AAA"/>
 
             <!-- FACT CARDS-->
             <LinearLayout
@@ -170,7 +172,7 @@
                 android:id="@+id/unifiedSeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <!-- BOTTOM ROW -->
             <!-- ROW 2-->

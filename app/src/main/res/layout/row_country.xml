@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="70dp"
-    android:background="@drawable/panelbackblue">
+    android:background="#1B9AAA">
 
     <!-- COUNTRY FLAG-->
     <ImageView
@@ -24,7 +24,8 @@
         android:layout_toRightOf="@id/countryFlag"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:textColor="#FFFFFF"/>
     <!-- COUNTRY NAME-->
     <TextView
         android:id="@+id/countryName"
@@ -37,6 +38,7 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_toRightOf="@id/countryFlag"
         android:gravity="center_vertical"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"/>
 
 </RelativeLayout>

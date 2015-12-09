@@ -1,6 +1,8 @@
 package com.sage.projectwalk;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         allYears = new ArrayList<>();
         unifiedYear = (TextView) findViewById(R.id.unifiedYear);
         unifiedSeekBar = (SeekBar) findViewById(R.id.unifiedSeekBar);
+        unifiedSeekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(Color.parseColor("#DEFF00"), PorterDuff.Mode.MULTIPLY));
         unifiedSeekBar.setOnSeekBarChangeListener(new UnifiedSeekBarListener());
         mainActivityRoot = (RelativeLayout) findViewById(R.id.mainActivityRoot);
         mainActivityRoot.setOnTouchListener(new OnSwipeTouchListener(this) {
