@@ -14,20 +14,20 @@
         <!--android:gravity="center"-->
         <!--android:textStyle="bold"/>-->
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3">
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="3">-->
 
-        <TextView
-            android:id="@+id/currentYear"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="2010"
-            android:textSize="50sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"/>
+        <!--<TextView-->
+            <!--android:id="@+id/currentYear"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center"-->
+            <!--android:text="2010"-->
+            <!--android:textSize="50sp"-->
+            <!--android:textStyle="bold"-->
+            <!--android:textColor="@android:color/white"/>-->
         <!--<TextView-->
             <!--android:layout_below="@id/currentYear"-->
             <!--android:layout_width="match_parent"-->
@@ -36,7 +36,7 @@
             <!--android:gravity="center"-->
             <!--android:textSize="30sp"/>-->
 
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
 
     <LinearLayout
         android:layout_marginLeft="10dp"
@@ -236,13 +236,6 @@
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <SeekBar
-        android:id="@+id/batteryYearSeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
 
 </LinearLayout>
 

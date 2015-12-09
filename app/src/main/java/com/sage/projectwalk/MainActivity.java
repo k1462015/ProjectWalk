@@ -1,6 +1,5 @@
 package com.sage.projectwalk;
 
-import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -10,32 +9,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.DataManager;
+import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.InfoGraphs.BreakdownPieChart;
-import com.sage.projectwalk.InfoGraphs.DummyFragment;
-import com.sage.projectwalk.InfoGraphs.EnergyRatioGraph;
 import com.sage.projectwalk.InfoGraphs.FactCards;
 import com.sage.projectwalk.InfoGraphs.OnSwipeTouchListener;
-import com.sage.projectwalk.InfoGraphs.RenewableBreakdownContainer;
 import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements SlideOutPanel.CountryListListener{
     DataManager dataManager;
@@ -47,12 +43,19 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     BatteryGraph batteryGraph;
     RelativeLayout mainActivityRoot;
     BreakdownPieChart breakdownPieChart;
+    SeekBar unifiedSeekBar;
+    ArrayList<Integer> allYears;
+    TextView unifiedYear;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_new);
         dataManager = new DataManager(this);
 
+        allYears = new ArrayList<>();
+        unifiedYear = (TextView) findViewById(R.id.unifiedYear);
+        unifiedSeekBar = (SeekBar) findViewById(R.id.unifiedSeekBar);
+        unifiedSeekBar.setOnSeekBarChangeListener(new UnifiedSeekBarListener());
         mainActivityRoot = (RelativeLayout) findViewById(R.id.mainActivityRoot);
         mainActivityRoot.setOnTouchListener(new OnSwipeTouchListener(this) {
             @Override
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         Typeface tf = Typeface.createFromAsset(getAssets(),"fonts/chalk.ttf");
         countryOneHolder.setTypeface(tf);
         countryTwoHolder.setTypeface(tf);
+        unifiedYear.setTypeface(tf);
 
         //Gets required fragment stuff
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -90,6 +94,32 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
         fragmentTransaction.commit();
 
+    }
+
+    private class UnifiedSeekBarListener implements SeekBar.OnSeekBarChangeListener {
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if(allYears.size() >= progress && allYears.size() != 0){
+                refreshAllFragments(progress);
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    }
+
+    private void refreshAllFragments(int progress){
+        unifiedYear.setText(allYears.get(progress)+"");
+        batteryGraph.refresh(allYears.get(progress));
+        breakdownPieChart.refresh(allYears.get(progress));
     }
 
     public void openSlideFragment() {
@@ -129,15 +159,31 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         }).start();
         try {
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1_RE.CONSUMPTION","8.1.1_FINAL.ENERGY.CONSUMPTION");
-            batteryGraph.updateCountryOne(country);
+            batteryGraph.setCountryOne(country);
+            extractYears(country,"3.1_RE.CONSUMPTION");
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1.3_HYDRO.CONSUM","3.1.4_BIOFUELS.CONSUM",
                     "3.1.5_WIND.CONSUM","3.1.6_SOLAR.CONSUM","3.1.7_GEOTHERMAL.CONSUM", "3.1.8_WASTE.CONSUM", "3.1.9_BIOGAS.CONSUM","3.1_RE.CONSUMPTION");
-            breakdownPieChart.updateCountryOne(country);
+            breakdownPieChart.setCountryOne(country);
+            refreshAllFragments(0);
+            unifiedSeekBar.setProgress(0);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void extractYears(Country country,String indicatorName){
+        ///Use one of the indicators to extract available years
+        Indicator consumptionIndicator = country.getIndicators().get(indicatorName);
+        //Get all Year values
+        Set<Integer> dataYears = consumptionIndicator.getIndicatorData().keySet();
+        allYears = new ArrayList<>();
+        for (Integer year:dataYears){
+            allYears.add(year);
+        }
+        Collections.sort(allYears);
+        unifiedSeekBar.setMax(allYears.size() - 1);
     }
 
     public void onCountryOption2Selected(Country country){
@@ -159,10 +205,12 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         }).start();
         try {
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1_RE.CONSUMPTION","8.1.1_FINAL.ENERGY.CONSUMPTION");
-            batteryGraph.updateCountryTwo(country);
+            batteryGraph.setCountryTwo(country);
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1.3_HYDRO.CONSUM","3.1.4_BIOFUELS.CONSUM",
                     "3.1.5_WIND.CONSUM","3.1.6_SOLAR.CONSUM","3.1.7_GEOTHERMAL.CONSUM", "3.1.8_WASTE.CONSUM", "3.1.9_BIOGAS.CONSUM","3.1_RE.CONSUMPTION");
-            breakdownPieChart.updateCountryTwo(country);
+            breakdownPieChart.setCountryTwo(country);
+            refreshAllFragments(0);
+            unifiedSeekBar.setProgress(0);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {

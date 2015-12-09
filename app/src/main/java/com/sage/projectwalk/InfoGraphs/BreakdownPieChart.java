@@ -41,8 +41,6 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
     PieChart pieChartTwo;
     Country countryOne;
     Country countryTwo;
-    ArrayList<Integer> dataYears;
-    SeekBar breakdownSeekBar;
     ImageView breakdownMissingOne;
     ImageView breakdownMissingTwo;
     ArrayList<String> xAxis = new ArrayList<>();
@@ -69,37 +67,9 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
         xAxis.add("Biogas Energy");
         xAxis.add("Other");
 
-        dataYears = new ArrayList<>();
         mTf = Typeface.createFromAsset(getActivity().getAssets(), "android_7.ttf");
-        breakdownYear = (TextView) getView().findViewById(R.id.breakdownYear);
         breakdownMissingOne = (ImageView) getView().findViewById(R.id.breakdownMissingOne);
         breakdownMissingTwo = (ImageView) getView().findViewById(R.id.breakdownMissingTwo);
-
-        breakdownSeekBar = (SeekBar) getView().findViewById(R.id.breakdownSeekBar);
-        breakdownSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (countryOne != null) {
-                    refreshCountryOne();
-                } else {
-                    Toast.makeText(getActivity(), "Country 1 is not selected", Toast.LENGTH_SHORT).show();
-                }
-                if (countryTwo != null) {
-                    refreshCountryTwo();
-                    Toast.makeText(getActivity(), "Country 2 is not selected", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
         pieChartOne.setUsePercentValues(true);
         pieChartOne.setDescription("");
@@ -129,45 +99,28 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
 
     }
 
-    public void updateCountryOne(Country country){
+    public void setCountryOne(Country country){
         countryOne = country;
-
-        //Extract years from the data
-        Indicator hydroIndicator = country.getIndicators().get("3.1.3_HYDRO.CONSUM");
-
-        //Get all Year values
-        Set<Integer> years = hydroIndicator.getIndicatorData().keySet();
-        dataYears = new ArrayList<>();
-        for (Integer year:years){
-            dataYears.add(year);
-        }
-        Collections.sort(dataYears);
-        breakdownSeekBar.setProgress(0);
-        breakdownSeekBar.setMax(dataYears.size() - 1);
-
-        refreshCountryOne();
     }
 
-    public void updateCountryTwo(Country country){
+    public void setCountryTwo(Country country){
         countryTwo = country;
-        refreshCountryTwo();
     }
 
-    private void refreshCountryOne(){
+    public void refresh(int year){
+        refreshCountryOne(year);
+        refreshCountryTwo(year);
+    }
+
+    private void refreshCountryOne(int year){
         if(countryOne != null) {
-            if (dataYears.size() > 0 && dataYears.size() >= breakdownSeekBar.getProgress()) {
-                int year = dataYears.get(breakdownSeekBar.getProgress());
-                refreshCountry(countryOne, pieChartOne, year);
-            }
+            refreshCountry(countryOne, pieChartOne, year);
         }
     }
 
-    private void refreshCountryTwo(){
+    private void refreshCountryTwo(int year){
         if(countryTwo != null) {
-            if (dataYears.size() > 0 && dataYears.size() >= breakdownSeekBar.getProgress()) {
-                int year = dataYears.get(breakdownSeekBar.getProgress());
-                refreshCountry(countryTwo, pieChartTwo, year);
-            }
+            refreshCountry(countryTwo, pieChartTwo, year);
         }
     }
 
@@ -240,8 +193,8 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
 
             // create pie data set
             PieDataSet dataSet = new PieDataSet(countryOneEntry, "");
-            dataSet.setSliceSpace(6);
-            dataSet.setSelectionShift(5);
+            dataSet.setSliceSpace(15);
+            dataSet.setSelectionShift(15);
 
 
             dataSet.setColors(colors );
@@ -249,10 +202,10 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
             // instantiate pie data object now
 
             PieData data = new PieData(xAxis, dataSet);
-            data.setValueTypeface(mTf);
+            data.setHighlightEnabled(true);
             data.setValueTextColor(Color.parseColor("#FFFFFF"));
             data.setValueFormatter(new PercentFormatter());
-            data.setValueTextSize(15f);
+            data.setValueTextSize(11f);
 
             pieChart.setDrawHoleEnabled(true);
             pieChart.setHoleColorTransparent(true);
@@ -263,13 +216,11 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
             pieChart.setHoleRadius(40f);
             pieChart.setTransparentCircleRadius(50f);
 
-            breakdownYear.setText(year +"");
-
             pieChart.setData(data);
             pieChart.setDrawSliceText(false);
 
             // undo all highlights
-            pieChart.highlightValues(null);
+//            pieChart.highlightValues(null);
 
             // update pie chart
             pieChart.invalidate();

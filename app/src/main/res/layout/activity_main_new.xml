@@ -127,6 +127,17 @@
                 </LinearLayout>
             </LinearLayout>
 
+
+            <TextView
+                android:id="@+id/unifiedYear"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="2015"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:textColor="#FFFFFF"/>
+
             <!-- TOP ROW-->
             <LinearLayout
                 android:orientation="horizontal"
@@ -147,6 +158,12 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/unifiedSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
             <!-- BOTTOM ROW -->
             <!-- ROW 2-->

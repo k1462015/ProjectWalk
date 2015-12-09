@@ -31,16 +31,14 @@ import java.util.Set;
 public class BatteryGraph extends Fragment{
     TextView countryOnePercent;
     TextView countryTwoPercent;
-    TextView currentYear;
     TextView countryOneTotalEnergy;
     TextView countryTwoTotalEnergy;
     ImageView countryOneBattery;
     ImageView countryTwoBattery;
-    SeekBar batteryYearSeekBar;
-    ArrayList<Integer> allYears;
     Country countryOne;
     Country countryTwo;
     AlphaAnimation blinkAnimation;
+    int currentYear;
     private int badColour = Color.parseColor("#FE0000");
     private int mediumColour = Color.parseColor("#0106FF");
     private int goodColour = Color.parseColor("#DEFF00");
@@ -60,31 +58,27 @@ public class BatteryGraph extends Fragment{
         countryTwoPercent = (TextView) getView().findViewById(R.id.countryTwoPercent);
         countryTwoBattery = (ImageView) getView().findViewById(R.id.countryTwoBattery);
         countryTwoTotalEnergy = (TextView) getView().findViewById(R.id.countryTwoTotalEnergy);
-        batteryYearSeekBar = (SeekBar) getView().findViewById(R.id.batteryYearSeekBar);
-        batteryYearSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(allYears.size() > 0 && allYears.size() >= progress){
-                    currentYear.setText(allYears.get(progress) + "");
-                    refreshBatteryOne();
-                    refreshBatteryTwo();
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        currentYear = (TextView) getView().findViewById(R.id.currentYear);
-
-        allYears = new ArrayList<>();
+//        batteryYearSeekBar = (SeekBar) getView().findViewById(R.id.batteryYearSeekBar);
+//        batteryYearSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                if(allYears.size() > 0 && allYears.size() >= progress){
+//                    currentYear.setText(allYears.get(progress) + "");
+//                    refreshBatteryOne();
+//                    refreshBatteryTwo();
+//                }
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//        });
 
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new DecelerateInterpolator());
@@ -103,34 +97,18 @@ public class BatteryGraph extends Fragment{
 
     }
 
-    public void updateCountryOne(Country country){
+    public void setCountryOne(Country country){
         countryOne = country;
-        ///Use one of the indicators to extract available years
-        Indicator consumptionIndicator = countryOne.getIndicators().get("3.1_RE.CONSUMPTION");
-        //Get all Year values
-        Set<Integer> dataYears = consumptionIndicator.getIndicatorData().keySet();
-        allYears = new ArrayList<>();
-        for (Integer year:dataYears){
-            allYears.add(year);
-        }
-        Collections.sort(allYears);
-
-        batteryYearSeekBar.setProgress(0);
-        batteryYearSeekBar.setMax(allYears.size() - 1);
-        if(allYears.size() > 0){
-            currentYear.setText(allYears.get(batteryYearSeekBar.getProgress()) + "");
-            refreshBatteryOne();
-            refreshBatteryTwo();
-        }
     }
 
-    public void updateCountryTwo(Country country){
+    public void setCountryTwo(Country country){
         countryTwo = country;
+    }
+
+    public void refresh(int year){
+        currentYear = year;
+        refreshBatteryOne();
         refreshBatteryTwo();
-        batteryYearSeekBar.setProgress(0);
-        if(allYears.size() > 0 && allYears.size() >= batteryYearSeekBar.getProgress()){
-            currentYear.setText(allYears.get(batteryYearSeekBar.getProgress()) + "");
-        }
     }
 
     private void refreshBatteryOne(){
@@ -151,7 +129,7 @@ public class BatteryGraph extends Fragment{
         Indicator consumptionIndicator = country.getIndicators().get("3.1_RE.CONSUMPTION");
         Indicator finalConsumptionIndicator = country.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
         try{
-            int yearSelected = allYears.get(batteryYearSeekBar.getProgress());
+            int yearSelected = currentYear;
             int consumptionAmount = consumptionIndicator.getData(yearSelected).intValue();
             int finalAmount = finalConsumptionIndicator.getData(yearSelected).intValue();
             if(consumptionIndicator.getData(yearSelected) != null
