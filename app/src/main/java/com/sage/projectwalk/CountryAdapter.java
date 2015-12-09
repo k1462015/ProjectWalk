@@ -28,7 +28,6 @@ public class CountryAdapter extends ArrayAdapter<Country> {
     private final Context context;
     private final ArrayList<Country> data;
     private final int layoutResourceId;
-    public static int missingFlags = 0;
 
     public CountryAdapter(Context context,int layoutResourceId,ArrayList<Country> data){
         super(context,layoutResourceId,data);
@@ -56,18 +55,7 @@ public class CountryAdapter extends ArrayAdapter<Country> {
 
         Country country = data.get(position);
         holder.countryName.setText(country.getName());
-//        Indicator popIndicator = country.getIndicators().get("SP.POP.TOTL");
         String population = " ";
-//        if(popIndicator != null){
-//            Set<Integer> allYears = popIndicator.getIndicatorData().keySet();
-//            int maxYear = Collections.max(allYears);
-//            Double popAmount = popIndicator.getIndicatorData().get(maxYear);
-//            BigDecimal myNumber = new BigDecimal(popAmount);
-//            int pop = myNumber.intValue();
-//            population += "\t Population("+maxYear+"): "+pop;
-//        }else{
-//            Log.i("MYAPP","Population empty for "+country.getName());
-//        }
         holder.capitalCity.setText(country.getCapitalCity()+population);
 
         holder.position = position;

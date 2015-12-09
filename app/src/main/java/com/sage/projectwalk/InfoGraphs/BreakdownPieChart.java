@@ -45,7 +45,6 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
     ImageView breakdownMissingTwo;
     ArrayList<String> xAxis = new ArrayList<>();
     Typeface mTf;
-    TextView breakdownYear;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -125,6 +124,16 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
     }
 
     private void refreshCountry(Country country,PieChart pieChart,int year){
+        //9999 indicates no years is selected
+        if(year == 99999){
+            pieChart.setVisibility(View.INVISIBLE);
+            if(country.equals(countryOne)){
+                breakdownMissingOne.setVisibility(View.VISIBLE);
+            }else{
+                breakdownMissingTwo.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
         //Get data from year
         Indicator totalConsump = country.getIndicators().get("3.1_RE.CONSUMPTION");
         Indicator bioFuelIndicator = country.getIndicators().get("3.1.4_BIOFUELS.CONSUM");
@@ -218,9 +227,6 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
 
             pieChart.setData(data);
             pieChart.setDrawSliceText(false);
-
-            // undo all highlights
-//            pieChart.highlightValues(null);
 
             // update pie chart
             pieChart.invalidate();

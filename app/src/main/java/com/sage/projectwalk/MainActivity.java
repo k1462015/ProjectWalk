@@ -117,9 +117,15 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     }
 
     private void refreshAllFragments(int progress){
-        unifiedYear.setText(allYears.get(progress)+"");
-        batteryGraph.refresh(allYears.get(progress));
-        breakdownPieChart.refresh(allYears.get(progress));
+        if(allYears.size() > 0){
+            unifiedYear.setText(allYears.get(progress)+"");
+            batteryGraph.refresh(allYears.get(progress));
+            breakdownPieChart.refresh(allYears.get(progress));
+        }else{
+            unifiedYear.setText("Please select a country");
+            breakdownPieChart.refresh(99999);
+            batteryGraph.refresh(99999);
+        }
     }
 
     public void openSlideFragment() {

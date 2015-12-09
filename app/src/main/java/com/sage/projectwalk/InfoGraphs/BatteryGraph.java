@@ -58,27 +58,6 @@ public class BatteryGraph extends Fragment{
         countryTwoPercent = (TextView) getView().findViewById(R.id.countryTwoPercent);
         countryTwoBattery = (ImageView) getView().findViewById(R.id.countryTwoBattery);
         countryTwoTotalEnergy = (TextView) getView().findViewById(R.id.countryTwoTotalEnergy);
-//        batteryYearSeekBar = (SeekBar) getView().findViewById(R.id.batteryYearSeekBar);
-//        batteryYearSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                if(allYears.size() > 0 && allYears.size() >= progress){
-//                    currentYear.setText(allYears.get(progress) + "");
-//                    refreshBatteryOne();
-//                    refreshBatteryTwo();
-//                }
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
 
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new DecelerateInterpolator());
@@ -125,6 +104,16 @@ public class BatteryGraph extends Fragment{
 
 
     private void refreshBattery(Country country,TextView countryPercent,TextView countryTotalEnergy){
+        if(currentYear == 9999){
+            Drawable missingIcon = getActivity().getDrawable(R.drawable.missingdata);
+            if(country.equals(countryOne)){
+                countryOneBattery.setImageDrawable(missingIcon);
+            }else{
+                countryTwoBattery.setImageDrawable(missingIcon);
+            }
+            countryTotalEnergy.setText(0 + "");
+            countryPercent.setText(0 + "%");
+        }
         ///Get indicator objects
         Indicator consumptionIndicator = country.getIndicators().get("3.1_RE.CONSUMPTION");
         Indicator finalConsumptionIndicator = country.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION");
@@ -132,32 +121,32 @@ public class BatteryGraph extends Fragment{
             int yearSelected = currentYear;
             int consumptionAmount = consumptionIndicator.getData(yearSelected).intValue();
             int finalAmount = finalConsumptionIndicator.getData(yearSelected).intValue();
-            if(consumptionIndicator.getData(yearSelected) != null
-                    && finalConsumptionIndicator.getData(yearSelected) != null){
-                float p = (int) consumptionAmount * 100f / finalAmount;
-                int percentage = (int) p;
-                if(percentage >= 75){
-                    countryPercent.setTextColor(goodColour);
-                }else
-                if(percentage >= 50){
-                    countryPercent.setTextColor(mediumColour);
-                }else{
-                    countryPercent.setTextColor(badColour);
-                }
-                countryPercent.setText(percentage + "%");
-                if(country.equals(countryOne)){
-                    updateCountryImage(percentage,1);
-                }else{
-                    updateCountryImage(percentage,2);
-                }
-                countryTotalEnergy.setText(finalAmount + "");
-            }else{
+            if(consumptionIndicator.getData(yearSelected) == null || finalConsumptionIndicator.getData(yearSelected) == null){
                 Drawable missingIcon = getActivity().getDrawable(R.drawable.missingdata);
                 if(country.equals(countryOne)){
                     countryOneBattery.setImageDrawable(missingIcon);
                 }else{
                     countryTwoBattery.setImageDrawable(missingIcon);
                 }
+                countryTotalEnergy.setText(0 + "");
+                countryPercent.setText(0 + "%");
+            }else{
+                float p = (int) consumptionAmount * 100f / finalAmount;
+                int percentage = (int) p;
+                if(percentage >= 75){
+                    countryPercent.setTextColor(goodColour);
+                }else if(percentage >= 50){
+                    countryPercent.setTextColor(mediumColour);
+                }else{
+                    countryPercent.setTextColor(badColour);
+                }
+                countryPercent.setText(percentage + "%");
+                if(country.equals(countryOne)){
+                    updateCountryImage(percentage, 1);
+                }else{
+                    updateCountryImage(percentage, 2);
+                }
+                countryTotalEnergy.setText(finalAmount + "");
             }
 
         }catch (Exception e){
