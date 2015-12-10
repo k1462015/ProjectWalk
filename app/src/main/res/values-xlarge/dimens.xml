@@ -17,4 +17,7 @@
     <dimen name="fact_title_text_size">20dp</dimen>
     <dimen name="push_pin_width">60dp</dimen>
     <dimen name="push_pin_height">60dp</dimen>
+    <dimen name="breakdown_title">24sp</dimen>
+    <dimen name="breakdown_missingdata_two">50dp</dimen>
+    <dimen name="breakdown_missingdata_one">5dp</dimen>
 </resources>

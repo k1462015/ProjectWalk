@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/missingdata"
-                android:layout_margin="50dp"/>
+                android:layout_margin="@dimen/breakdown_missingdata_one"/>
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pieChartOne"
@@ -44,7 +44,7 @@
             android:layout_weight="2"
             android:text="Energy Source Breakdown"
             android:gravity="center"
-            android:textSize="24dp"
+            android:textSize="@dimen/breakdown_title"
             android:textColor="#FFFFFF"/>
 
 
@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/missingdata"
-                android:layout_margin="50dp"/>
+                android:layout_margin="@dimen/breakdown_missingdata_two"/>
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pieChartTwo"
