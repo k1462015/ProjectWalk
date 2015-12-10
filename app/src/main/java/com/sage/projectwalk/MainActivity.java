@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -77,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         mainCountryTwoImage = (ImageView) findViewById(R.id.mainCountryTwoImage);
 
         Typeface tf = Typeface.createFromAsset(getAssets(),"fonts/chalk.ttf");
+        Button syncButton = (Button) findViewById(R.id.syncButton);
+        syncButton.setTypeface(tf);
         countryOneHolder.setTypeface(tf);
         countryTwoHolder.setTypeface(tf);
         unifiedYear.setTypeface(tf);
@@ -240,6 +243,14 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         //This generates the resource Id for that flag image
         int imageResource = getResources().getIdentifier("drawable/"+iso2Code.toLowerCase()+"_img",null,getPackageName());
         return getDrawable(imageResource);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!menuFragment.isHidden()){
+            openSlideFragment();
+        }
     }
 
     @Override

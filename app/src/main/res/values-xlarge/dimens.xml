@@ -13,7 +13,7 @@
     <dimen name="battery_c2_percent_subtitle">12dp</dimen>
     <dimen name="battery_c2_totalenergy">50sp</dimen>
     <dimen name="c2_totalenergy_subtitle">12dp</dimen>
-    <dimen name="fact_body_text_size">16dp</dimen>
+    <dimen name="fact_body_text_size">14dp</dimen>
     <dimen name="fact_title_text_size">20dp</dimen>
     <dimen name="push_pin_width">60dp</dimen>
     <dimen name="push_pin_height">60dp</dimen>

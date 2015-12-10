@@ -20,13 +20,15 @@
             android:layout_weight="1">
 
             <Button
+                android:id="@+id/syncButton"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="Sync Data"
                 android:onClick="syncData"
                 android:textColor="#FFFFFF"
-                android:background="#1B9AAA"/>
+                android:layout_margin="5dp"
+                android:background="@drawable/panelbackblue"/>
 
             <!-- FACT CARDS-->
             <LinearLayout
@@ -89,7 +91,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:text="Bangladesh\nCapital City"
-                        android:textSize="22sp"
+                        android:textSize="@dimen/main_c1_name"
                         android:textStyle="bold"
                         android:gravity="left|center_vertical"
                         android:textColor="@android:color/white"/>
@@ -119,7 +121,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="4"
                         android:text="Bangladesh\nCapital City"
-                        android:textSize="22sp"
+                        android:textSize="@dimen/main_c2_name"
                         android:textStyle="bold"
                         android:gravity="right|center_vertical"
                         android:textColor="@android:color/white"/>
@@ -144,7 +146,7 @@
                 android:layout_weight="1"
                 android:text="2015"
                 android:gravity="center"
-                android:textSize="30sp"
+                android:textSize="@dimen/main_current_year"
                 android:textColor="#FFFFFF"/>
 
             <!-- TOP ROW-->

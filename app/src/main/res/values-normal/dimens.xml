@@ -2,8 +2,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">0dp</dimen>
     <dimen name="activity_vertical_margin">0dp</dimen>
-    <dimen name="main_c1_name">20sp</dimen>
-    <dimen name="main_c2_name">20sp</dimen>
+    <dimen name="main_c1_name">14sp</dimen>
+    <dimen name="main_c2_name">14sp</dimen>
     <dimen name="main_current_year">20sp</dimen>
     <dimen name="battery_c1_percent">30sp</dimen>
     <dimen name="battery_c1_percent_subtitle">12dp</dimen>
@@ -13,8 +13,8 @@
     <dimen name="battery_c2_percent_subtitle">12dp</dimen>
     <dimen name="battery_c2_totalenergy">30sp</dimen>
     <dimen name="c2_totalenergy_subtitle">12dp</dimen>
-    <dimen name="fact_body_text_size">16dp</dimen>
-    <dimen name="fact_title_text_size">20dp</dimen>
+    <dimen name="fact_body_text_size">11dp</dimen>
+    <dimen name="fact_title_text_size">15dp</dimen>
     <dimen name="push_pin_width">40dp</dimen>
     <dimen name="push_pin_height">40dp</dimen>
 </resources>

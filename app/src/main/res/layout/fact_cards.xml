@@ -15,7 +15,10 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_margin="10dp"
             android:background="#F6DC43"
             android:elevation="10dp">
 
@@ -30,12 +33,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Welcome!"
-                    android:gravity="center"
-                    android:textSize="20dp"
+                    android:gravity="center_vertical|left"
+                    android:textSize="@dimen/fact_title_text_size"
                     android:textStyle="bold"/>
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="@dimen/push_pin_width"
+                    android:layout_height="@dimen/push_pin_height"
                     android:src="@drawable/pushpin"
                     android:layout_marginBottom="10dp"/>
             </RelativeLayout>
@@ -45,7 +48,7 @@
                 android:layout_height="0dp"
                 android:text="To choose a country, slide your fingers to the left and an option panel will slide out! The batteries show you what percentage of a countries total energy consumption is renewable. Below that you can see the breakdown of the renewable resources. Swipe along here to see more facts!"
                 android:id="@+id/factBody"
-                android:textSize="20dp"
+                android:textSize="@dimen/fact_body_text_size"
                 android:textColor="#000000"
                 android:layout_weight="6"
                 android:scrollbars="vertical"

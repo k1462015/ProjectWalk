@@ -130,7 +130,7 @@ public class FactCards extends Fragment{
         relativeLayout = (RelativeLayout) view.findViewById(R.id.factCardsLayout);
 
         relativeLayout.setOnTouchListener(new SwipeListener(container.getContext()));
-//        factBody.setOnTouchListener(new SwipeListener(container.getContext()));
+        factBody.setOnTouchListener(new SwipeListener(container.getContext()));
         factTitle.setOnTouchListener(new SwipeListener(container.getContext()));
         progressDialog.hide();
         return view;
