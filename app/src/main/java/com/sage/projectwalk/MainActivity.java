@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         try {
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1_RE.CONSUMPTION","8.1.1_FINAL.ENERGY.CONSUMPTION");
             batteryGraph.setCountryOne(country);
-            extractYears(country,"3.1_RE.CONSUMPTION");
+            extractYears(country, "3.1_RE.CONSUMPTION");
             country = dataManager.getCountryIndicator(country.getIsoCode(),"3.1.3_HYDRO.CONSUM","3.1.4_BIOFUELS.CONSUM",
                     "3.1.5_WIND.CONSUM","3.1.6_SOLAR.CONSUM","3.1.7_GEOTHERMAL.CONSUM", "3.1.8_WASTE.CONSUM", "3.1.9_BIOGAS.CONSUM","3.1_RE.CONSUMPTION");
             breakdownPieChart.setCountryOne(country);
@@ -251,27 +252,19 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         if(!menuFragment.isHidden()){
             openSlideFragment();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up openCloseButton, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        View decorView = getWindow().getDecorView();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            }
         }
-
-        return super.onOptionsItemSelected(item);
     }
+
+
+
 }
