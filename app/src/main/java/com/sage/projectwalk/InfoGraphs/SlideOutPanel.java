@@ -37,7 +37,8 @@ public class SlideOutPanel extends Fragment {
     RelativeLayout slideOutRootLayout;
     Country countryOne;
     Country countryTwo;
-
+    CountryAdapter countryAdapter1;
+    CountryAdapter countryAdapter2;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.slide_out_panel_layout, container, false);
@@ -62,8 +63,10 @@ public class SlideOutPanel extends Fragment {
         try {
             //Retrieves all countries in Country object form
             countries = dataManager.getCountryList();
-            countryOption1.setAdapter(new CountryAdapter(getActivity(), R.layout.row_country, countries));
-            countryOption2.setAdapter(new CountryAdapter(getActivity(), R.layout.row_country, countries));
+            countryAdapter1 = new CountryAdapter(getActivity(), R.layout.row_country, countries,1);
+            countryAdapter2 = new CountryAdapter(getActivity(), R.layout.row_country, countries,2);
+            countryOption1.setAdapter(countryAdapter1);
+            countryOption2.setAdapter(countryAdapter2);
             countryListListener.onCountryOption1Selected(countries.get(2));
             countryListListener.onCountryOption2Selected(countries.get(10));
         } catch (IOException e) {
@@ -90,16 +93,15 @@ public class SlideOutPanel extends Fragment {
         countryListListener.hideShowButton();
     }
 
-
-
     private class ListViewListenerOne implements AdapterView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Country selectedCountry = (Country) countryOption1.getItemAtPosition(position);
             if(countryTwo == null || !countryTwo.equals(selectedCountry)) {
                 countryOne = selectedCountry;
-                view.setSelected(true);
+                countryAdapter1.setSelectedIndex1(position);
                 countryListListener.onCountryOption1Selected(selectedCountry);
+                countryAdapter1.notifyDataSetChanged();
             }else{
                 Toast.makeText(getActivity(),"Please select a country different from your other choice",Toast.LENGTH_SHORT).show();
             }
@@ -111,7 +113,8 @@ public class SlideOutPanel extends Fragment {
             Country selectedCountry = (Country) countryOption1.getItemAtPosition(position);
             if(countryOne == null || !countryOne.equals(selectedCountry)) {
                 countryTwo = selectedCountry;
-                view.setSelected(true);
+                countryAdapter2.setSelectedIndex2(position);
+                countryAdapter2.notifyDataSetChanged();
                 countryListListener.onCountryOption2Selected(selectedCountry);
             }else{
                 Toast.makeText(getActivity(),"Please select a country different from your other choice",Toast.LENGTH_SHORT).show();
@@ -119,9 +122,6 @@ public class SlideOutPanel extends Fragment {
 
         }
     }
-
-
-
 
     @Override
     public void onAttach(Context context) {

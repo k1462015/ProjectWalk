@@ -2,6 +2,7 @@ package com.sage.projectwalk.CountryListPanel;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -29,12 +30,32 @@ public class CountryAdapter extends ArrayAdapter<Country> {
     private final Context context;
     private final ArrayList<Country> data;
     private final int layoutResourceId;
+    private final int listIdentifier;
+    private static int selectedIndex1;
+    private static int selectedIndex2;
 
-    public CountryAdapter(Context context,int layoutResourceId,ArrayList<Country> data){
+    public CountryAdapter(Context context,int layoutResourceId,ArrayList<Country> data,int listIdentifier){
         super(context,layoutResourceId,data);
         this.context = context;
         this.data = data;
         this.layoutResourceId = layoutResourceId;
+        this.listIdentifier = listIdentifier;
+    }
+
+    public static int getSelectedIndex1() {
+        return selectedIndex1;
+    }
+
+    public static void setSelectedIndex1(int selectedIndex1) {
+        CountryAdapter.selectedIndex1 = selectedIndex1;
+    }
+
+    public static int getSelectedIndex2() {
+        return selectedIndex2;
+    }
+
+    public static void setSelectedIndex2(int selectedIndex2) {
+        CountryAdapter.selectedIndex2 = selectedIndex2;
     }
 
     @Override
@@ -56,14 +77,28 @@ public class CountryAdapter extends ArrayAdapter<Country> {
 
         Country country = data.get(position);
         holder.countryName.setText(country.getName());
-        String population = " ";
-        holder.capitalCity.setText(country.getCapitalCity()+population);
+        holder.capitalCity.setText(country.getCapitalCity());
 
         holder.position = position;
 
         //Finds the image for the flag in the drawable folder
         String uri = "drawable/"+country.getIsoCode().toLowerCase()+"_img";
         new FlagImageTask(position,holder,context).execute(uri);
+
+        if(listIdentifier == 1){
+            if(position == selectedIndex1){
+                row.setBackgroundColor(Color.parseColor("#F79722"));
+            }else{
+                row.setBackgroundColor(Color.parseColor("#1B9AAA"));
+            }
+        }
+        if(listIdentifier == 2){
+            if(position == selectedIndex2){
+                row.setBackgroundColor(Color.parseColor("#F79722"));
+            }else{
+                row.setBackgroundColor(Color.parseColor("#1B9AAA"));
+            }
+        }
         return row;
     }
 

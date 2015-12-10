@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
             batteryGraph.refresh(allYears.get(progress));
             breakdownPieChart.refresh(allYears.get(progress));
         }else{
-            unifiedYear.setText("Please select a country");
+            unifiedYear.setText("Please select a different country for option 1");
             breakdownPieChart.refresh(99999);
             batteryGraph.refresh(99999);
         }
