@@ -1,4 +1,4 @@
-package com.sage.projectwalk.InfoGraphs;
+package com.sage.projectwalk;
 
 import android.content.Context;
 import android.view.GestureDetector;

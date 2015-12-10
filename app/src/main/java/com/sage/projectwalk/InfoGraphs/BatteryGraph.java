@@ -1,6 +1,7 @@
 package com.sage.projectwalk.InfoGraphs;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +22,8 @@ import android.widget.Toast;
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.R;
+
+import org.w3c.dom.Text;
 
 
 public class BatteryGraph extends Fragment{
@@ -46,6 +49,7 @@ public class BatteryGraph extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         countryOnePercent = (TextView) getView().findViewById(R.id.countryOnePercent);
         countryOneBattery  = (ImageView) getView().findViewById(R.id.countryOneBattery);
         countryOneTotalEnergy = (TextView) getView().findViewById(R.id.countryOneTotalEnergy);

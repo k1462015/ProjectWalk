@@ -1,4 +1,4 @@
-package com.sage.projectwalk;
+package com.sage.projectwalk.CountryListPanel;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.Indicator;
+import com.sage.projectwalk.R;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

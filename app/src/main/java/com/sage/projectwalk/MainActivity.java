@@ -26,7 +26,6 @@ import com.sage.projectwalk.Data.Indicator;
 import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 import com.sage.projectwalk.InfoGraphs.BreakdownPieChart;
 import com.sage.projectwalk.InfoGraphs.FactCards;
-import com.sage.projectwalk.InfoGraphs.OnSwipeTouchListener;
 import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
 import org.json.JSONException;

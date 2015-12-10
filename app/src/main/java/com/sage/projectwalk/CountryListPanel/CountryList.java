@@ -1,20 +1,14 @@
-package com.sage.projectwalk.InfoGraphs;
+package com.sage.projectwalk.CountryListPanel;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sage.projectwalk.CountryAdapter;
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.MainActivity;

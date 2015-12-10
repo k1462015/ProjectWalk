@@ -3,33 +3,24 @@ package com.sage.projectwalk.InfoGraphs;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.sage.projectwalk.Data.Country;
+import com.sage.projectwalk.OnSwipeTouchListener;
 import com.sage.projectwalk.R;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by tahmidulislam on 27/11/2015.
@@ -147,7 +138,7 @@ public class FactCards extends Fragment{
 
     }
 
-    private class SwipeListener extends OnSwipeTouchListener{
+    private class SwipeListener extends OnSwipeTouchListener {
 
         public SwipeListener(Context context) {
             super(context);

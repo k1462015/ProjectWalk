@@ -3,5 +3,6 @@
 
 
     <color name="background">#55000000</color>
-
+    <color name="pressed_color">#F79722</color>
+    <color name="default_color">#1B9AAA</color>
 </resources>

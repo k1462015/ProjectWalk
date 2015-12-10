@@ -10,17 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
+import android.widget.Toast;
 
 
-import com.sage.projectwalk.CountryAdapter;
+import com.sage.projectwalk.CountryListPanel.CountryAdapter;
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.Data.DataManager;
 import com.sage.projectwalk.MainActivity;
+import com.sage.projectwalk.OnSwipeTouchListener;
 import com.sage.projectwalk.R;
 
 import org.json.JSONException;
@@ -36,6 +35,8 @@ public class SlideOutPanel extends Fragment {
     ListView countryOption2;
     CountryListListener countryListListener;
     RelativeLayout slideOutRootLayout;
+    Country countryOne;
+    Country countryTwo;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -89,21 +90,37 @@ public class SlideOutPanel extends Fragment {
         countryListListener.hideShowButton();
     }
 
+
+
     private class ListViewListenerOne implements AdapterView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Country selectedCountry = (Country) countryOption1.getItemAtPosition(position);
-            countryListListener.onCountryOption1Selected(selectedCountry);
+            if(countryTwo == null || !countryTwo.equals(selectedCountry)) {
+                countryOne = selectedCountry;
+                view.setSelected(true);
+                countryListListener.onCountryOption1Selected(selectedCountry);
+            }else{
+                Toast.makeText(getActivity(),"Please select a country different from your other choice",Toast.LENGTH_SHORT).show();
+            }
         }
     }
     private class ListViewListenerTwo implements AdapterView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
             Country selectedCountry = (Country) countryOption1.getItemAtPosition(position);
-            countryListListener.onCountryOption2Selected(selectedCountry);
+            if(countryOne == null || !countryOne.equals(selectedCountry)) {
+                countryTwo = selectedCountry;
+                view.setSelected(true);
+                countryListListener.onCountryOption2Selected(selectedCountry);
+            }else{
+                Toast.makeText(getActivity(),"Please select a country different from your other choice",Toast.LENGTH_SHORT).show();
+            }
 
         }
     }
+
+
 
 
     @Override

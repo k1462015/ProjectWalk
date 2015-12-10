@@ -45,6 +45,7 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
     ImageView breakdownMissingTwo;
     ArrayList<String> xAxis = new ArrayList<>();
     Typeface mTf;
+    Typeface chalkTypeFace;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,6 +89,9 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
         pieChartTwo.setOnChartValueSelectedListener(this);
         pieChartTwo.setElevation(20);
 
+        chalkTypeFace = Typeface.createFromAsset(getActivity().getAssets(),"fonts/chalk.ttf");
+        TextView title = (TextView) getView().findViewById(R.id.breakdownTitle);
+        title.setTypeface(chalkTypeFace);
     }
 
     public void animateAndFixLegend(){
