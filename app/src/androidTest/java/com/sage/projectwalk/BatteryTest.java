@@ -50,6 +50,12 @@ public class BatteryTest extends ActivityInstrumentationTestCase2<MainActivity> 
             }
 
 
+         public void testFragment(){
+        getInstrumentation().waitForIdleSync();
+        assertNotNull(getActivity().batteryGraph);
+    }
+
+
         }
 
 
