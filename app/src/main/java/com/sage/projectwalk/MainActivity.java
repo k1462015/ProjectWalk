@@ -1,13 +1,18 @@
 package com.sage.projectwalk;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -108,7 +113,28 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     }
 
     public void syncData(View view){
-        dataManager.synchronizeData();
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected;
+        if (activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting()) isConnected = true;
+        else isConnected = false;
+        if(isConnected){
+            dataManager.synchronizeData();
+        }else{
+            giveWarningDialog("No internet connection available. Unable to synchronise.");
+        }
+    }
+
+    public void giveWarningDialog(String message){
+        // Use the Builder class for convenient dialog construction
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message)
+        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        }).show();
     }
 
 
