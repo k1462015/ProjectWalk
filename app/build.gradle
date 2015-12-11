@@ -17,11 +17,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets { main { java.srcDirs = ['src/main/java'] } }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.1.0'
+    testCompile 'junit:junit:4.12'
     compile files('src/main/lib/mpandroidchartlibrary-2-1-6.jar')
     androidTestCompile 'com.android.support:support-annotations:23.1.0'
     androidTestCompile 'com.android.support.test:runner:0.4.1'

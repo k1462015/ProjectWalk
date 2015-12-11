@@ -112,31 +112,6 @@ public class DataManager {
                 country.setCapitalCity(jsonObject.getString("capitalCity"));
                 country.setLongitude(jsonObject.getString("longitude"));
                 country.setLatitude(jsonObject.getString("latitude"));
-                //Get population data
-                JSONArray populationData = null;
-                //Extract population data
-                try{
-                    populationData = retrieveFile(iso2Code+"_SP.POP.TOTL.json");
-                    JSONArray actualPopData= populationData.getJSONArray(1);
-                    Indicator indicator = new Indicator();
-                    indicator.setId("SP.POP.TOTL");
-                    for (int j = 0;j < actualPopData.length();j++){
-                        JSONObject jsonObject1 = actualPopData.getJSONObject(j);
-                        try{
-                            if(!jsonObject1.isNull("value") && !jsonObject1.isNull("date")){
-                                BigDecimal data = new BigDecimal(jsonObject1.getString("value"));
-                                int year = Integer.parseInt(jsonObject1.getString("date"));
-                                indicator.addData(year,data);
-                            }
-                        }catch (NumberFormatException e){
-                            Log.i("MYAPP","PROBLEM ADDED POPULATION DATA "+iso2Code);
-                        }
-                    }
-                    country.addIndicator(indicator);
-                }catch (Exception e){
-                    Log.e("MYAPP","JSON Exception for retrieving population data for "+iso2Code);
-                }
-
                 return country;
             }
         }

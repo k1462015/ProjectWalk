@@ -17,15 +17,12 @@ public class RenewableTest extends ActivityInstrumentationTestCase2<TestFragment
     private TestFragmentActivity testFragmentActivity;
 
     public RenewableTest(){
-
         super(TestFragmentActivity.class);
     }
 
     protected void setUp() throws Exception{
-
         super.setUp();
         testFragmentActivity = getActivity();
-
     }
 
     private android.support.v4.app.Fragment startFragment(android.support.v4.app.Fragment fragment){
@@ -71,6 +68,7 @@ public class RenewableTest extends ActivityInstrumentationTestCase2<TestFragment
 
             }
         };
-        android.support.v4.app.Fragment frag = startFragment(renewableTest); }
+        android.support.v4.app.Fragment frag = startFragment(renewableTest);
+    }
 
 }
