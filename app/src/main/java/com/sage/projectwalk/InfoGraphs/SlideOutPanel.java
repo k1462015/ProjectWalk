@@ -140,5 +140,7 @@ public class SlideOutPanel extends Fragment {
         }
     }
 
-
+    public ListView getCountryOption1() {
+        return countryOption1;
+    }
 }

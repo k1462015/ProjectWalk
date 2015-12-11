@@ -179,5 +179,27 @@ public class BatteryGraph extends Fragment{
 
 
 
+    public Country getCountryTwo() {
+        return countryTwo;
+    }
+
+    public Country getCountryOne() {
+        return countryOne;
+    }
+
+
+    public TextView getCountryOnePercent() {
+        return countryOnePercent;
+    }
+
+    public TextView getCountryTwoPercent() {
+        return countryTwoPercent;
+    }
+
+
+    public TextView getCountryOneTotalEnergy() {
+        return countryOneTotalEnergy;
+    }
+
 
 }

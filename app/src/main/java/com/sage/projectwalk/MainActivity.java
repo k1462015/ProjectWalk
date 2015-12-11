@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         }
     }
 
-    private void refreshAllFragments(int progress){
+    public void refreshAllFragments(int progress){
         if(allYears.size() > 0){
             unifiedYear.setText(allYears.get(progress)+"");
             batteryGraph.refresh(allYears.get(progress));
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
     public Drawable getFlagImage(String iso2Code){
         //This generates the resource Id for that flag image
-        int imageResource = getResources().getIdentifier("drawable/"+iso2Code.toLowerCase()+"_img",null,getPackageName());
+        int imageResource = getResources().getIdentifier("drawable/" + iso2Code.toLowerCase() + "_img", null, getPackageName());
         return getDrawable(imageResource);
     }
 
@@ -264,6 +264,19 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
         }
+    }
+
+    public TextView getCountryOneHolder() {
+        return countryOneHolder;
+    }
+
+
+    public SeekBar getUnifiedSeekBar() {
+        return unifiedSeekBar;
+    }
+
+    public TextView getCountryTwoHolder() {
+        return countryTwoHolder;
     }
 
 

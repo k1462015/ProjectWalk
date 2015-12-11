@@ -265,4 +265,13 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
     public void onNothingSelected() {
 
     }
+
+    public Country getCountryOne() {
+        return countryOne;
+    }
+
+    public Country getCountryTwo() {
+        return countryTwo;
+    }
+
 }
