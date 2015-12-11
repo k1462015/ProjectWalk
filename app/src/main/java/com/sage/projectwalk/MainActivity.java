@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     SeekBar unifiedSeekBar;
     ArrayList<Integer> allYears;
     TextView unifiedYear;
+    FactCards factCards;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
         //Adds all fragments to main activity
         batteryGraph = new BatteryGraph();
-        FactCards factCards = new FactCards();
+        factCards = new FactCards();
         menuFragment = new SlideOutPanel();
         breakdownPieChart = new BreakdownPieChart();
 

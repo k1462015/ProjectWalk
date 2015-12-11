@@ -36,8 +36,8 @@ public class FactCards extends Fragment{
     Animation slideInFromRightAnim;
     RelativeLayout relativeLayout;
     ArrayList<String> factTitles;
-    ArrayList<String> facts;
-    int currentFact = 0;
+    public ArrayList<String> facts;
+    public int currentFact = 0;
 
 
 

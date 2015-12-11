@@ -27,7 +27,7 @@ public class DataFetchingTest extends ActivityInstrumentationTestCase2<MainActiv
 
     /**
      * Tests if correct country is retrieved
-     * When given ISO
+     * When given ISO code
      */
     public void testCountryByISO() throws Exception {
         getInstrumentation().waitForIdleSync();
