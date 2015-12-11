@@ -140,8 +140,8 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
         }
         //Get data from year
         Indicator totalConsump = country.getIndicators().get("3.1_RE.CONSUMPTION");
-        Indicator bioFuelIndicator = country.getIndicators().get("3.1.4_BIOFUELS.CONSUM");
         Indicator hydroIndicator = country.getIndicators().get("3.1.3_HYDRO.CONSUM");
+        Indicator bioFuelIndicator = country.getIndicators().get("3.1.4_BIOFUELS.CONSUM");
         Indicator windIndicator = country.getIndicators().get("3.1.5_WIND.CONSUM");
         Indicator solarIndicator = country.getIndicators().get("3.1.6_SOLAR.CONSUM");
         Indicator geoIndicator = country.getIndicators().get("3.1.7_GEOTHERMAL.CONSUM");
@@ -156,16 +156,16 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
             float solar = divideBigDecimal(solarIndicator.getData(year), totalC);
             float geo = divideBigDecimal(geoIndicator.getData(year), totalC);
             float waste = divideBigDecimal(wasteIndicator.getData(year),totalC);
-            float bio = divideBigDecimal(bioGasIndicator.getData(year),totalC);
+            float bioGas = divideBigDecimal(bioGasIndicator.getData(year),totalC);
             ArrayList<Entry> countryOneEntry = new ArrayList<>();
             ArrayList<String> newXAxis = new ArrayList<>();
 
-            float other = 100 - (hydro+bioFuel+wind+solar+geo+waste+bio);
+            float other = 100 - (hydro+bioFuel+wind+solar+geo+waste+bioGas);
             ArrayList<Integer> colors = new ArrayList<>();
             if(hydro != 0){
                 countryOneEntry.add(new Entry(hydro, 0));
                 newXAxis.add(xAxis.get(0));
-                colors.add(Color.parseColor("#0106FF"));
+                colors.add(Color.parseColor("#0006FF"));
             }
             if(bioFuel != 0){
                 countryOneEntry.add(new Entry(bioFuel, 1));
@@ -175,7 +175,7 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
             if(wind != 0){
                 countryOneEntry.add(new Entry(wind, 2));
                 newXAxis.add(xAxis.get(2));
-                colors.add(Color.parseColor("#FE0000"));
+                colors.add(Color.parseColor("#FF0000"));
             }
             if(solar != 0){
                 countryOneEntry.add(new Entry(solar, 3));
@@ -190,12 +190,12 @@ public class BreakdownPieChart extends Fragment implements OnChartValueSelectedL
             if(waste != 0){
                 countryOneEntry.add(new Entry(waste, 5));
                 newXAxis.add(xAxis.get(5));
-                colors.add(Color.parseColor("#6C6B69"));
+                colors.add(Color.parseColor("#6D6B69"));
             }
-            if(bio != 0){
-                countryOneEntry.add(new Entry(bio, 6));
+            if(bioGas != 0){
+                countryOneEntry.add(new Entry(bioGas, 6));
                 newXAxis.add(xAxis.get(6));
-                colors.add(Color.parseColor("#00ff99"));
+                colors.add(Color.parseColor("#0B7C83"));
             }
             if(other != 0){
                 countryOneEntry.add(new Entry(other,7));
