@@ -16,47 +16,49 @@ import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 public class BatteryTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
 
-    public BatteryTest (){
+    public BatteryTest() {
         super(MainActivity.class);
     }
 
-    protected void setUp() throws Exception{
+    protected void setUp() throws Exception {
         super.setUp();
     }
 
-
-
-    public void testPercentage(){
+    /**
+     * Adjusts seekbar, and checks
+     * if battery renewable energy percentage is correct
+     * @throws Throwable
+     */
+    public void testPercentage() throws Throwable {
         getInstrumentation().waitForIdleSync();
-
-          SeekBar seekBar= getActivity().getUnifiedSeekBar();
-                seekBar.setProgress(2012);
-
-
-
-
-                float i = getActivity().batteryGraph.getCountryOne().getIndicators().get("3.1_RE.CONSUMPTION").getData(2012).intValue() *100f
-                        / getActivity().batteryGraph.getCountryOne().getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION").getData(2012).intValue();
-                float j = getActivity().batteryGraph.getCountryTwo().getIndicators().get("3.1_RE.CONSUMPTION").getData(2012).intValue() *100f
-                        / getActivity().batteryGraph.getCountryTwo().getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION").getData(2012).intValue();
-
-                String per1 = "" +i;
-                String per2 = "" +j;
-
-                assertEquals("Correct percentage showing", per1 , getActivity().batteryGraph.getCountryOnePercent().getText() );
-                assertEquals("Correct percentage showing", per2, getActivity().batteryGraph.getCountryTwoPercent().getText());
-                assertEquals(2012, seekBar.getMax());
-
+        final SeekBar seekBar = getActivity().getUnifiedSeekBar();
+        seekBar.setProgress(seekBar.getMax());
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getActivity().refreshAllFragments(seekBar.getProgress());
             }
+        });
+        //Initially application loads data for Albania
+        float expecRenewPercentCountryOne = getActivity().batteryGraph.getCountryOne().getIndicators().get("3.1_RE.CONSUMPTION").getData(2012).intValue() * 100f
+                / getActivity().batteryGraph.getCountryOne().getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION").getData(2012).intValue();
+        float expecRenewPercentCountryTwo = getActivity().batteryGraph.getCountryTwo().getIndicators().get("3.1_RE.CONSUMPTION").getData(2012).intValue() * 100f
+                / getActivity().batteryGraph.getCountryTwo().getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION").getData(2012).intValue();
 
+        assertEquals("Incorrect % for country 1", ((int) expecRenewPercentCountryOne)+"%", getActivity().batteryGraph.getCountryOnePercent().getText());
+        assertEquals("Incorrect % for country 1", ((int) expecRenewPercentCountryTwo)+"%", getActivity().batteryGraph.getCountryTwoPercent().getText());
 
-         public void testFragment(){
+    }
+
+    /**
+     * Checks if fragment actually exists
+     */
+    public void testFragment() {
         getInstrumentation().waitForIdleSync();
         assertNotNull(getActivity().batteryGraph);
     }
 
-
-        }
+}
 
 
 

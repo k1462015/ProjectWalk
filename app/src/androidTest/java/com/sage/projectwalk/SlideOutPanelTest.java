@@ -7,6 +7,7 @@ import android.test.TouchUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.sage.projectwalk.CountryListPanel.CountryAdapter;
 import com.sage.projectwalk.Data.Country;
 import com.sage.projectwalk.InfoGraphs.SlideOutPanel;
 
@@ -25,13 +26,29 @@ public class SlideOutPanelTest extends ActivityInstrumentationTestCase2<MainActi
         super.setUp();
     }
 
-    public void testName() throws Exception{
+    /**
+     * Tests if selecting a country in the side panel
+     * Changes country selected in the main activity
+     * @throws Exception
+     */
+    public void testSelection() throws Throwable {
+        final ListView countryOneListView = getActivity().menuFragment.getCountryOption1();
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                countryOneListView.performItemClick(countryOneListView.getAdapter().getView(3,null,null),3,countryOneListView.getItemIdAtPosition(3));
+            }
+        });
         getInstrumentation().waitForIdleSync();
-        getActivity().menuFragment.getCountryOption1().performClick();
-
-            assertEquals("", "Albania", getActivity().getCountryOneHolder().getText().subSequence(0,7));
+        //Expected Country ISO Code
+        String expectedCountryName = "Andorra";
+        String currentCountryName = getActivity().getCountryOneHolder().getText().toString();
+        assertTrue(currentCountryName.contains(expectedCountryName));
     }
 
+    /**
+     * Tests if fragment actually exists
+     */
     public void testFragment(){
         getInstrumentation().waitForIdleSync();
         assertNotNull(getActivity().menuFragment);

@@ -48,8 +48,9 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     RelativeLayout mainActivityRoot;
     BreakdownPieChart breakdownPieChart;
     SeekBar unifiedSeekBar;
-     ArrayList<Integer> allYears;
+    ArrayList<Integer> allYears;
     TextView unifiedYear;
+    FactCards factCards;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
         //Adds all fragments to main activity
         batteryGraph = new BatteryGraph();
-        FactCards factCards = new FactCards();
+        factCards = new FactCards();
         menuFragment = new SlideOutPanel();
         breakdownPieChart = new BreakdownPieChart();
 
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
         }
     }
 
-    private void refreshAllFragments(int progress){
+    public void refreshAllFragments(int progress){
         if(allYears.size() > 0){
             unifiedYear.setText(allYears.get(progress)+"");
             batteryGraph.refresh(allYears.get(progress));
