@@ -113,17 +113,21 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     }
 
     public void syncData(View view){
+        if(checkInternetConnection()){
+            dataManager.synchronizeData();
+        }else{
+            giveWarningDialog("No internet connection available. Unable to synchronise.");
+        }
+    }
+
+    public boolean checkInternetConnection(){
         ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected;
         if (activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting()) isConnected = true;
         else isConnected = false;
-        if(isConnected){
-            dataManager.synchronizeData();
-        }else{
-            giveWarningDialog("No internet connection available. Unable to synchronise.");
-        }
+        return isConnected;
     }
 
     public void giveWarningDialog(String message){
