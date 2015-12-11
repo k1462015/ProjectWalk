@@ -13,75 +13,44 @@ import com.sage.projectwalk.InfoGraphs.BatteryGraph;
 /**
  * Created by Mihai on 07/12/2015.
  */
-public class BatteryTest extends ActivityInstrumentationTestCase2<TestFragmentActivity> {
+public class BatteryTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
-    private TestFragmentActivity testFragmentActivity;
 
     public BatteryTest (){
-        super(TestFragmentActivity.class);
-
+        super(MainActivity.class);
     }
 
     protected void setUp() throws Exception{
-
         super.setUp();
-        testFragmentActivity = getActivity();
-
     }
 
-    private android.support.v4.app.Fragment startFragment(android.support.v4.app.Fragment fragment){
 
-        FragmentTransaction transaction = testFragmentActivity.getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.activity_test_fragment_linearlayout, fragment, "tag");
-        transaction.commit();
 
+    public void testPercentage(){
         getInstrumentation().waitForIdleSync();
-        android.support.v4.app.Fragment frag = testFragmentActivity.getSupportFragmentManager().findFragmentByTag("tag");
 
-        return frag;
-    }
-
-
-    public void testFragment(){
-
-      BatteryGraph batteryTest = new BatteryGraph(){
-
-            public void testPreconditions(){
-               assertNotNull(this);
-            }
-
-            public void testPercentage(){
-
-                SeekBar batteryYearSeekBar = (SeekBar) getView().findViewById(R.id.unifiedSeekBar);
-                batteryYearSeekBar.setProgress(2012);
-                Country country1 = new Country();
-                Country country2 = new Country();
+          SeekBar seekBar= getActivity().getUnifiedSeekBar();
+                seekBar.setProgress(2012);
 
 
 
-                float i = country1.getIndicators().get("3.1_RE.CONSUMPTION").getData(batteryYearSeekBar.getProgress()).intValue() *100f
-                        / country1.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION").getData(batteryYearSeekBar.getProgress()).intValue();
-                float j = country2.getIndicators().get("3.1_RE.CONSUMPTION").getData(batteryYearSeekBar.getProgress()).intValue() *100f
-                        / country2.getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION").getData(batteryYearSeekBar.getProgress()).intValue();
+
+                float i = getActivity().batteryGraph.getCountryOne().getIndicators().get("3.1_RE.CONSUMPTION").getData(2012).intValue() *100f
+                        / getActivity().batteryGraph.getCountryOne().getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION").getData(2012).intValue();
+                float j = getActivity().batteryGraph.getCountryTwo().getIndicators().get("3.1_RE.CONSUMPTION").getData(2012).intValue() *100f
+                        / getActivity().batteryGraph.getCountryTwo().getIndicators().get("8.1.1_FINAL.ENERGY.CONSUMPTION").getData(2012).intValue();
 
                 String per1 = "" +i;
                 String per2 = "" +j;
 
-                TextView countryOne = (TextView) getView().findViewById(R.id.countryOnePercent);
-                TextView coutnryTwo = (TextView) getView().findViewById(R.id.countryTwoPercent);
-
-                assertEquals("Correct percentage showing", per1 , countryOne.getText() );
-                assertEquals("Correct percentage showing", per2, coutnryTwo.getText());
-                assertEquals(2012, batteryYearSeekBar.getMax());
+                assertEquals("Correct percentage showing", per1 , getActivity().batteryGraph.getCountryOnePercent().getText() );
+                assertEquals("Correct percentage showing", per2, getActivity().batteryGraph.getCountryTwoPercent().getText());
+                assertEquals(2012, seekBar.getMax());
 
             }
 
 
-        };
-        android.support.v4.app.Fragment frag = startFragment(batteryTest); }
-
-
-    }
+        }
 
 
 

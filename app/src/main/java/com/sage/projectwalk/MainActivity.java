@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
     RelativeLayout mainActivityRoot;
     BreakdownPieChart breakdownPieChart;
     SeekBar unifiedSeekBar;
-    ArrayList<Integer> allYears;
+     ArrayList<Integer> allYears;
     TextView unifiedYear;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
 
     public Drawable getFlagImage(String iso2Code){
         //This generates the resource Id for that flag image
-        int imageResource = getResources().getIdentifier("drawable/"+iso2Code.toLowerCase()+"_img",null,getPackageName());
+        int imageResource = getResources().getIdentifier("drawable/" + iso2Code.toLowerCase() + "_img", null, getPackageName());
         return getDrawable(imageResource);
     }
 
@@ -263,6 +263,19 @@ public class MainActivity extends AppCompatActivity implements SlideOutPanel.Cou
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
         }
+    }
+
+    public TextView getCountryOneHolder() {
+        return countryOneHolder;
+    }
+
+
+    public SeekBar getUnifiedSeekBar() {
+        return unifiedSeekBar;
+    }
+
+    public TextView getCountryTwoHolder() {
+        return countryTwoHolder;
     }
 
 
