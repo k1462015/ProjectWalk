@@ -1,5 +1,5 @@
 # Interactive Infographic Android app
-In this project, our team was tasked with creating an Android tablet application that displayed a single interactive infographic from data that could be retrieved from the World Bank data set.
+In this project, our team was tasked with creating an Android application that displayed a single interactive infographic from data that could be retrieved from the World Bank data set. We focused on renewable energy usage of countries.
 # Features
 * Allow syncing of data from the World Data Bank
 * Support caching for offline usage
